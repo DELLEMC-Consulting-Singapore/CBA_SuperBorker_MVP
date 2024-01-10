@@ -1,0 +1,33 @@
+body {
+  margin: 0;
+  font-family: 'Roboto' !important
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.demo-logo-vertical {
+  height: 80px;
+  margin: 16px;
+}
+
+.signin {
+  position: absolute;
+  right: "0";
+  width: 60px;
+  height: 60px;
+  font-size: 30px;
+}
+
+.home-title-section {
+  font-size: "3rem";
+  font-weight: "400";
+  font-stretch: "normal";
+  line-height: "1.05";
+  color: "#565656";
+  text-align: "center";
+  margin: "2rem 0";
+  width: "100%"
+}
