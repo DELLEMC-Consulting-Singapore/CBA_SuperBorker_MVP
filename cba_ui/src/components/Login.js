@@ -44,6 +44,7 @@ const Login = (props) => {
     }
 
     const onSubmit = async (value) => {
+      console.log('values', value)
       //console.log('URL : ', window._env_.API_URL);
       message.loading({
         content: 'Loading...',

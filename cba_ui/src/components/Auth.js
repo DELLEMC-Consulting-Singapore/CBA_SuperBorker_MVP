@@ -17,6 +17,7 @@ const Auth = {
     if (email != '' && password != '') {
       try {
         localStorage.setItem('token', true)
+        localStorage.setItem('username', email)
         await this.getUserProfile()
       } catch (err) {
         console.log(err)
@@ -32,15 +33,14 @@ const Auth = {
     return this.isValidToken()
   },
   getUserProfile: async function () {
-    let session = localStorage.getItem('token')
-    if (!session) {
+    let token = localStorage.getItem('token')
+    let username = localStorage.getItem('username')
+    if (!token) {
       throw new Error('User Not Authenticated .')
     } else {
-      session = JSON.parse(session)
-      if (session.profile) {
-        return session.profile
-      } else {
-        throw new Error('User Cannot Be Retrieved')
+      return {
+        token,
+        username,
       }
     }
   },
@@ -50,6 +50,7 @@ const Auth = {
   },
   invalidate: function () {
     localStorage.removeItem('token')
+    localStorage.removeItem('username')
   },
 }
 
