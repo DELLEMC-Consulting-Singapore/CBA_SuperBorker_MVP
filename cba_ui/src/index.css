@@ -9,8 +9,8 @@ code {
 }
 
 .demo-logo-vertical {
-  height: 80px;
-  margin: 16px;
+  height: 120px;
+  margin: 0px;
 }
 
 .signin {
@@ -30,4 +30,27 @@ code {
   text-align: "center";
   margin: "2rem 0";
   width: "100%"
+}
+
+.ant-input:focus {
+  border-color: #fc0;
+}
+
+.ant-input:hover {
+  border-color: #fc0;
+}
+
+.login-form {
+  left: 50%;
+  top: 50%;
+  position: absolute;
+
+}
+
+.login-form-forgot {
+  float: right;
+}
+
+.login-form-button {
+  width: 100%;
 }

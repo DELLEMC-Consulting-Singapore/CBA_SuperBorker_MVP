@@ -37,8 +37,8 @@ export const DevBoxRequestForm = () => {
     validateMessages={validateMessages}
   >
     <Form.Item
-      name={['user', 'catalog_item']}
-      label="Catalog Item"
+      name={['user', 'os']}
+      label="Operating System"
       rules={[
         {
           required: true,
@@ -48,30 +48,39 @@ export const DevBoxRequestForm = () => {
       <Input />
     </Form.Item>
     <Form.Item
-      name={['user', 'email']}
-      label="Item Type & Catagory"
+      name={['user', 'cpu']}
+      label="CPU"
       rules={[
         {
-          type: 'email',
+          required:true,
         },
       ]}
     >
       <Input />
     </Form.Item>
     <Form.Item
-      name={['user', 'age']}
-      label="Item Plan"
+      name={['user', 'memory']}
+      label="Memory"
       rules={[
         {
-          type: 'number',
-          min: 0,
-          max: 99,
+          required:true,
         },
       ]}
     >
-      <InputNumber />
+      <Input />
     </Form.Item>
-    <Form.Item name={['user', 'website']} label="Item SLA">
+    <Form.Item name={['user', 'disk_drive']} label="Disk Drive" rules={[
+        {
+          required:true,
+        },
+      ]}>
+      <Input />
+    </Form.Item>
+    <Form.Item name={['user', 'application_stack']} label="Application Stack" rules={[
+        {
+          required:true,
+        },
+      ]}>
       <Input />
     </Form.Item>
     
