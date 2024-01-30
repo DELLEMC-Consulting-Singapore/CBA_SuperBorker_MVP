@@ -97,16 +97,7 @@ export const DevBoxRequestForm = () => {
           offset: 8,
         }}
       >
-        <Button
-          type="primary"
-          size="large"
-          htmlType="submit"
-          class="button-css"
-          style={{
-            'background-color': '#fc0',
-            color: '#231f20',
-          }}
-        >
+        <Button type="primary" htmlType="submit">
           Submit
         </Button>
       </Form.Item>

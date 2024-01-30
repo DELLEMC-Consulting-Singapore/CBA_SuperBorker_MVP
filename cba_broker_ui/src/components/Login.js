@@ -170,7 +170,6 @@ const Login = (props) => {
                       class="button-css"
                       style={{
                         'background-color': '#fc0',
-                        color: '#231f20',
                       }}
                     >
                       Login

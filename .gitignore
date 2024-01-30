@@ -2,6 +2,7 @@
 
 # dependencies
 /cba_ui/node_modules
+/cba_broker_ui/node_modules
 /.pnp
 .pnp.js
 
