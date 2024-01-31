@@ -16,8 +16,8 @@ const Auth = {
   authenticate: async function (email, password) {
     if (email != '' && password != '') {
       try {
-        localStorage.setItem('token', true)
-        localStorage.setItem('username', email)
+        localStorage.setItem('token1', true)
+        localStorage.setItem('username1', email)
         await this.getUserProfile()
       } catch (err) {
         console.log(err)
@@ -26,15 +26,15 @@ const Auth = {
     }
   },
   isAuthenticated: function () {
-    let session = localStorage.getItem('token')
+    let session = localStorage.getItem('token1')
     if (!session) {
       return false
     }
-    return this.isValidToken()
+    return this.isValidtoken1()
   },
   getUserProfile: async function () {
-    let token = localStorage.getItem('token')
-    let username = localStorage.getItem('username')
+    let token = localStorage.getItem('token1')
+    let username = localStorage.getItem('username1')
     if (!token) {
       throw new Error('User Not Authenticated .')
     } else {
@@ -44,13 +44,13 @@ const Auth = {
       }
     }
   },
-  isValidToken: function () {
-    let session = localStorage.getItem('token')
+  isValidtoken1: function () {
+    let session = localStorage.getItem('token1')
     return session ? true : false
   },
   invalidate: function () {
-    localStorage.removeItem('token')
-    localStorage.removeItem('username')
+    localStorage.removeItem('token1')
+    localStorage.removeItem('username1')
   },
 }
 

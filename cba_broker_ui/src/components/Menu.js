@@ -32,17 +32,18 @@ export const MenuBar = () => {
   const [current, setCurrent] = useState(1)
   console.log('current', current)
   const items = [
-    getItem('Home', 1, <HomeOutlined />),
-    getItem('Product Catalog', 'sub1', <AppstoreOutlined />, [
-      getItem('Cache', 3),
-      getItem('DevBox', 4),
-      getItem('Compute', 5),
-      getItem('Database', 6),
-      getItem('Load Balancers', 7),
-      getItem('Networking', 8),
-      getItem('Block Storage', 9),
-      getItem('Group File Share', 10),
-    ]),
+    getItem('Dashboard', 1, <HomeOutlined />),
+    // getItem('Product Catalog', 'sub1', <AppstoreOutlined />, [
+    //   getItem('Cache', 3),
+    //   getItem('DevBox', 4),
+    //   getItem('Compute', 5),
+    //   getItem('Database', 6),
+    //   getItem('Load Balancers', 7),
+    //   getItem('Networking', 8),
+    //   getItem('Block Storage', 9),
+    //   getItem('Group File Share', 10),
+    // ]),
+    getItem('Transaction Status', 16, <CalculatorOutlined />),
     getItem('Capacity Calculation', 11, <CalculatorOutlined />),
     getItem('Integrations', 12, <InteractionOutlined />),
     getItem('User Administration', 13, <TeamOutlined />),
@@ -64,6 +65,8 @@ export const MenuBar = () => {
     setCurrent(e.key)
     if (e.key == 4) {
       history('/devbox')
+    }else if (e.key == 16) {
+      history('/transaction-status')
     } else if (e.key == 1) {
       history('/home')
     } else if (e.key == 15) {

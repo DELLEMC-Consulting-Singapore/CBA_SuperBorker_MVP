@@ -26,6 +26,7 @@ import {
 import { DevBox } from './components/DevBox'
 import { DevBoxRequestForm } from './components/DevBoxRequestForm'
 import Login from './components/Login'
+import TransactionStatus from './components/TransactionStatus'
 
 const { Content, Footer, Sider } = Layout
 
@@ -142,6 +143,15 @@ const App = () => {
                       element={
                         <Protected isLoggedIn={Auth.isAuthenticated()}>
                           <DevBoxRequestForm />
+                        </Protected>
+                      }
+                    />
+                    
+                    <Route
+                      path="/transaction-status"
+                      element={
+                        <Protected isLoggedIn={Auth.isAuthenticated()}>
+                          <TransactionStatus />
                         </Protected>
                       }
                     />

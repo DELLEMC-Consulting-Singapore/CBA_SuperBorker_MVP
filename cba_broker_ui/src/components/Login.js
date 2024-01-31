@@ -114,6 +114,15 @@ const Login = (props) => {
                   >
                     Commonwealth Bank
                   </span>
+                  <span
+                    style={{
+                      fontSize: 'larger',
+                      fontWeight: '800',
+                      padding: '0px 0px 0px 122px',
+                    }}
+                  >
+                   Open Service Broker
+                  </span>
                 </div>
 
                 <StyledForm
@@ -122,7 +131,6 @@ const Login = (props) => {
                   onFinish={onSubmit}
                   style={{ padding: '10px 35px' }}
                 >
-                  <h3>Services Catalog</h3>
                   <FormItem
                     // label='User Email'
                     name="username"

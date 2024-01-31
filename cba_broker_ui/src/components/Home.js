@@ -21,7 +21,7 @@ const Home = () => {
           width: "100%"
         }}
       >
-        Products
+        Open Service Broker
     </Typography.Title>
 
     <Paragraph style={{
@@ -34,7 +34,7 @@ const Home = () => {
     "text-align": "center",
         "margin-bottom": "24px"
     }}>
-      The services under below product catalogs are available for self-service on the CBA Digital Cloud.
+      The Open Service Broker API connects the Developers to CBA's ecosystem of services & platforms
     </Paragraph>
 
     {/* <Card

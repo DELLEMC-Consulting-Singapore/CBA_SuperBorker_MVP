@@ -34,7 +34,7 @@ const Home = () => {
     "text-align": "center",
         "margin-bottom": "24px"
     }}>
-      The services under below product catalogs are available for self-service on the CBA Digital Cloud.
+      The services under below product catalogs are available for self-service on the CBA Digital Cloud
     </Paragraph>
 
     {/* <Card

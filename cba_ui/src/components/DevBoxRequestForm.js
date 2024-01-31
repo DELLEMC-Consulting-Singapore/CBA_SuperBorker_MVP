@@ -36,7 +36,7 @@ export const DevBoxRequestForm = () => {
       validateMessages={validateMessages}
     >
       <Form.Item
-        name={['user', 'os']}
+        name={['payload', 'os']}
         label="Operating System"
         rules={[
           {
@@ -47,7 +47,7 @@ export const DevBoxRequestForm = () => {
         <Input />
       </Form.Item>
       <Form.Item
-        name={['user', 'cpu']}
+        name={['payload', 'cpu']}
         label="CPU"
         rules={[
           {
@@ -58,7 +58,7 @@ export const DevBoxRequestForm = () => {
         <Input />
       </Form.Item>
       <Form.Item
-        name={['user', 'memory']}
+        name={['payload', 'memory']}
         label="Memory (In GB)"
         rules={[
           {
@@ -69,7 +69,7 @@ export const DevBoxRequestForm = () => {
         <Input />
       </Form.Item>
       <Form.Item
-        name={['user', 'disk_drive']}
+        name={['payload', 'disk_drive']}
         label="Disk Drive (In GB)"
         rules={[
           {
@@ -80,7 +80,7 @@ export const DevBoxRequestForm = () => {
         <Input />
       </Form.Item>
       <Form.Item
-        name={['user', 'application_stack']}
+        name={['payload', 'application_stack']}
         label="Application Stack (Only One)"
         rules={[
           {
