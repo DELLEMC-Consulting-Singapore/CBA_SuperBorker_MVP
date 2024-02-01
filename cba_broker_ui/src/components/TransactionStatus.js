@@ -41,12 +41,13 @@ const columns = [
     title: 'Order No',
     dataIndex: 'order_no',
     key: 'order_no',
-    render: (text) => <a>{text}</a>,
+    width:280
   },
   {
     title: 'Service Name',
     dataIndex: 'service_name',
     key: 'service_name',
+    width:130
   },
   {
     title: 'Date & Time',
@@ -57,6 +58,7 @@ const columns = [
     title: 'Service Action',
     dataIndex: 'service_action',
     key: 'service_action',
+    width:130
   },
   {
     title: 'Payload Request',
@@ -89,11 +91,13 @@ const columns = [
           {tag.toUpperCase()}
         </Tag></span>)
     },
+    width:130
   },
 {
     title: 'Created By',
     dataIndex: 'created_by',
     key: 'created_by',
+    width:100
   },
 //   {
 //     title: 'Action',
@@ -108,7 +112,7 @@ const columns = [
 ];
 const data = [
   {
-    order_no: '1',
+    order_no: '81729-r5lPk-1706771350353-a7egb',
     service_name: 'VM',
     date_time: "01-31-2024 22:03",
     service_action: "Create",
@@ -118,17 +122,17 @@ const data = [
     created_by: "Admin",
   },
   {
-    order_no: '1',
+    order_no: '81729-r5lPk-1706771350353-a7egz',
     service_name: 'VM',
     date_time: "01-31-2024 22:03",
     service_action: "Create",
     payload: JSON.stringify({'os':'linux', 'cpu':'core','memory':'8', 'disk_drive':'500', 'application_stack':'vm'}),
     request_status:'completed',
     request_status1:'completed',
-    created_by: "Admin",
+    created_by: "Admin", 
   },
   {
-    order_no: '1',
+    order_no: '81729-r5lPk-1706771350353-a7egx',
     service_name: 'VM',
     date_time: "01-31-2024 22:03",
     service_action: "Create",

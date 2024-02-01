@@ -1,5 +1,22 @@
 import React from 'react'
 import { Button, Form, Input, InputNumber } from 'antd'
+
+function randomString(length) {
+  var chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  var result = "";
+  for (var i = length; i > 0; --i)
+    result += chars[Math.floor(Math.random() * chars.length)];
+  return result;
+}
+
+function randomNumeric(length) {
+  var chars = "0123456789";
+  var result = "";
+  for (var i = length; i > 0; --i)
+    result += chars[Math.floor(Math.random() * chars.length)];
+  return result;
+}
+
 const layout = {
   labelCol: {
     span: 8,
@@ -20,7 +37,9 @@ const validateMessages = {
   },
 }
 
-const onFinish = (values) => {
+const onFinish = (values) => {  
+  let orderId = randomNumeric(5)+"-"+randomString(5)+'-'+new Date().valueOf()+"-"+randomString(5)
+  values['payload']['orderId'] = orderId
   console.log(values)
 }
 

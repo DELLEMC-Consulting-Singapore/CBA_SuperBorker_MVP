@@ -1,5 +1,5 @@
 import React from 'react'
-import { Typography, Card, Row, Col } from 'antd';
+import { Typography, Card, Row, Col, Progress, Space } from 'antd';
 import { Link } from 'react-router-dom';
 const { Meta } = Card;
 const { Paragraph } = Typography;
@@ -52,6 +52,26 @@ const Home = () => {
           />
         </Skeleton>
       </Card> */}
+      <Row gutter={16} style={{"margin-left": "190px","margin-right": "-40px","padding-top": "30px","padding-bottom": "45px"}}>
+        <Col span={6}>
+          <Space style={{"flex-direction": "column-reverse"}}>
+            <h3>Running</h3>
+            <Progress type="circle" percent={75} strokeColor="geekblue" status="normal"/>
+          </Space>
+        </Col>
+        <Col span={6}>
+        <Space style={{"flex-direction": "column-reverse"}}>
+          <h3>Completed</h3>
+            <Progress type="circle" percent={63} strokeColor="green" status="normal"/>
+          </Space>
+        </Col>
+        <Col span={6}>
+        <Space style={{"flex-direction": "column-reverse"}}>
+        <h3>Failed</h3>
+            <Progress type="circle" percent={80} strokeColor="red" status="normal"/>
+          </Space>
+        </Col>
+        </Row>
       <Row gutter={16}>
         <Col span={6}>
           <Card
@@ -84,7 +104,7 @@ const Home = () => {
             </Card>
         </Col>
         <Col span={6}>
-          <Link to={"/devbox"}>
+          {/* <Link to={"/devbox"}> */}
               <Card
               hoverable
               style={{ width: 240, justifyContent:"center" }}
@@ -99,7 +119,7 @@ const Home = () => {
               </Paragraph>
 
             </Card>
-          </Link>
+          {/* </Link> */}
           
         </Col>
         <Col span={6}>
