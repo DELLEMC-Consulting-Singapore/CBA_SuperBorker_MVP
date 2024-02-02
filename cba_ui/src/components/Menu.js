@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   TeamOutlined,
   CalculatorOutlined,
@@ -29,7 +29,7 @@ function getItem(label, key, icon, children) {
 
 export const MenuBar = () => {
   const history = useNavigate()
-  const [current, setCurrent] = useState(1)
+  const [current, setCurrent] = useState("1")
   console.log('current', current)
   const items = [
     getItem('Home', 1, <HomeOutlined />),
@@ -73,6 +73,15 @@ export const MenuBar = () => {
       history('#')
     }
   }
+
+  useEffect(()=>{
+    if(window.location.pathname == "/devbox"){
+      setCurrent("4")
+    }else if(window.location.pathname == "/home" || window.location.pathname == "/"){
+      setCurrent("1")
+    }
+  })
+
   return (
     <ConfigProvider
       theme={{
@@ -86,7 +95,7 @@ export const MenuBar = () => {
       <Menu
         theme="dark"
         selectedKeys={[current]}
-        defaultSelectedKeys={4}
+        defaultSelectedKeys={[current]}
         mode="inline"
         items={items}
         onClick={onClick}

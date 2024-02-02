@@ -116,9 +116,9 @@ const App = () => {
                     <Route
                       path="/"
                       element={
-                        <Login
-                          isAuthAuthenticated={getAuthAuthenticatedStatus}
-                        />
+                        <Protected isLoggedIn={Auth.isAuthenticated()}>
+                          <Home />
+                        </Protected>
                       }
                     />
                     <Route

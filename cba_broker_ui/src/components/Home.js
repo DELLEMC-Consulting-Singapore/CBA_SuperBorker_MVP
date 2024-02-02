@@ -56,19 +56,19 @@ const Home = () => {
         <Col span={6}>
           <Space style={{"flex-direction": "column-reverse"}}>
             <h3>Running</h3>
-            <Progress type="circle" percent={75} strokeColor="geekblue" status="normal"/>
+            <Progress type="circle" percent={20} strokeColor="geekblue" status="normal"/>
           </Space>
         </Col>
         <Col span={6}>
         <Space style={{"flex-direction": "column-reverse"}}>
           <h3>Completed</h3>
-            <Progress type="circle" percent={63} strokeColor="green" status="normal"/>
+            <Progress type="circle" percent={72} strokeColor="green" status="normal"/>
           </Space>
         </Col>
         <Col span={6}>
         <Space style={{"flex-direction": "column-reverse"}}>
         <h3>Failed</h3>
-            <Progress type="circle" percent={80} strokeColor="red" status="normal"/>
+            <Progress type="circle" percent={8} strokeColor="red" status="normal"/>
           </Space>
         </Col>
         </Row>

@@ -1,5 +1,11 @@
 import React from 'react'
-import { Button, Form, Input, InputNumber } from 'antd'
+import { Button, Form, Input, InputNumber, Modal } from 'antd'
+
+function success(requestId) {
+  Modal.success({
+    content: `Request ${requestId} has been opened successfully`,
+  });
+}
 
 function randomString(length) {
   var chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -15,6 +21,13 @@ function randomNumeric(length) {
   for (var i = length; i > 0; --i)
     result += chars[Math.floor(Math.random() * chars.length)];
   return result;
+}
+
+function getRandomInt(min = 2000, max = 2999) {
+  
+  const minCeiled = Math.ceil(min);
+  const maxFloored = Math.floor(max);
+  return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
 }
 
 const layout = {
@@ -37,16 +50,25 @@ const validateMessages = {
   },
 }
 
-const onFinish = (values) => {  
-  let orderId = randomNumeric(5)+"-"+randomString(5)+'-'+new Date().valueOf()+"-"+randomString(5)
-  values['payload']['orderId'] = orderId
-  console.log(values)
-}
 
 export const DevBoxRequestForm = () => {
+  const [form] = Form.useForm();
+
+  
+  const onFinish = (values) => {  
+    let transactionId = `${randomNumeric(5)}-${randomString(5)}-${new Date().valueOf()}-${randomString(5)}`
+    values['payload']['transactionId'] = transactionId
+    let requestId = `REQ${getRandomInt()}`
+    values['payload']['requestId'] = requestId
+    console.log(values)  
+    success(requestId)
+    form.resetFields()
+  }
+
   return (
     <Form
       {...layout}
+      form = {form}
       name="nest-messages"
       onFinish={onFinish}
       style={{

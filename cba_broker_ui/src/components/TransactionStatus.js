@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
 import { Radio, Space, Table, Tag, Tooltip } from 'antd';
+
+function getRandomInt(min = 2000, max = 2999) {
+  
+  const minCeiled = Math.ceil(min);
+  const maxFloored = Math.floor(max);
+  return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
+}
+
 const topOptions = [
   {
     label: 'topLeft',
@@ -36,11 +44,22 @@ const bottomOptions = [
     value: 'none',
   },
 ];
-const columns = [
+const columns = [  
   {
-    title: 'Order No',
-    dataIndex: 'order_no',
-    key: 'order_no',
+    title: 'Date & Time',
+    dataIndex: 'date_time',
+    key: 'date_time',
+  },
+  {
+    title: 'Request Id',
+    dataIndex: 'request_id',
+    key: 'request_id',
+    width:100
+  },
+  {
+    title: 'Transaction Id',
+    dataIndex: 'transaction_id',
+    key: 'transaction_id',
     width:280
   },
   {
@@ -50,18 +69,13 @@ const columns = [
     width:130
   },
   {
-    title: 'Date & Time',
-    dataIndex: 'date_time',
-    key: 'date_time',
-  },
-  {
     title: 'Service Action',
     dataIndex: 'service_action',
     key: 'service_action',
     width:130
   },
   {
-    title: 'Payload Request',
+    title: 'Payload',
     dataIndex: 'payload',
     key: 'payload',
     //ellipsis: true,
@@ -75,7 +89,7 @@ const columns = [
       )
   },
   {
-    title: 'Request Status',
+    title: 'Status',
     key: 'request_status',
     dataIndex: 'request_status',
     render: (tag) => { 
@@ -112,30 +126,33 @@ const columns = [
 ];
 const data = [
   {
-    order_no: '81729-r5lPk-1706771350353-a7egb',
-    service_name: 'VM',
+    request_id: `REQ${getRandomInt()}`,
+    transaction_id: '81729-r5lPk-1706771350353-a7egb',
+    service_name: 'DevBox',
     date_time: "01-31-2024 22:03",
-    service_action: "Create",
+    service_action: "Create".toUpperCase(),
     payload: JSON.stringify({'os':'linux', 'cpu':'core','memory':'8', 'disk_drive':'500', 'application_stack':'vm'}),
     request_status:'running',
     request_status1:'running',
     created_by: "Admin",
   },
   {
-    order_no: '81729-r5lPk-1706771350353-a7egz',
-    service_name: 'VM',
+    request_id: `REQ${getRandomInt()}`,
+    transaction_id: '81729-r5lPk-1706771350353-a7egz',
+    service_name: 'DevBox',
     date_time: "01-31-2024 22:03",
-    service_action: "Create",
+    service_action: "Create".toUpperCase(),
     payload: JSON.stringify({'os':'linux', 'cpu':'core','memory':'8', 'disk_drive':'500', 'application_stack':'vm'}),
     request_status:'completed',
     request_status1:'completed',
     created_by: "Admin", 
   },
   {
-    order_no: '81729-r5lPk-1706771350353-a7egx',
-    service_name: 'VM',
+    request_id: `REQ${getRandomInt()}`,
+    transaction_id: '81729-r5lPk-1706771350353-a7egx',
+    service_name: 'DevBox',
     date_time: "01-31-2024 22:03",
-    service_action: "Create",
+    service_action: "Create".toUpperCase(),
     payload: JSON.stringify({'os':'linux', 'cpu':'core','memory':'8', 'disk_drive':'500', 'application_stack':'vm'}),
     request_status:'failed',
     request_status1:'failed',
