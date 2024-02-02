@@ -186,7 +186,7 @@ const Home = () => {
                   "font-size":"25px",
                   "margin": "0"
                 }}>
-                  Netwoking
+                  Networking
                 </Paragraph>
 
               </Card>

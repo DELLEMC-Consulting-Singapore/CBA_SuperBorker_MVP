@@ -89,7 +89,7 @@ export const DevBox = () => {
             margin: 0,
           }}
         >
-          Assigns a pre-provisioned VM with root/admin to the user for 48 hours
+          Provisions a VM for CBA developers to use for a span of 7 days
         </Paragraph>
       </Card>
     </>
