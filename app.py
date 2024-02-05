@@ -1,26 +1,32 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import pika
 import requests
 
 app = Flask(__name__)
+CORS(app)
 
 # RabbitMQ connection parameters
 rabbitmq_params = {
-    'host': 'localhost',  # Change this to your RabbitMQ server host
+    'host': '10.118.168.237',  # Change this to your RabbitMQ server host
     'port': 5672,
     'queue_name': 'test_queue',
 }
 
 # Establish connection to RabbitMQ
+credentials = pika.PlainCredentials(username='test', password='test@123')
+
 connection = pika.BlockingConnection(pika.ConnectionParameters(
-    host=rabbitmq_params['host'],
-    port=rabbitmq_params['port']
+    rabbitmq_params['host'],
+    rabbitmq_params['port'],
+    '/',
+    credentials
 ))
 channel = connection.channel()
 channel.queue_declare(queue=rabbitmq_params['queue_name'], durable=True)
 
 # Route to handle POST requests
-@app.route('/send', methods=['POST'])
+@app.route('/api/transaction', methods=['POST'])
 def send_message():
     try:
         # Get JSON data from the request
@@ -51,7 +57,7 @@ def send_message():
         return jsonify({'error': str(e)}), 500
 
 # Route to handle GET requests
-@app.route('/receive', methods=['GET'])
+@app.route('/api/transaction', methods=['GET'])
 def receive_message():
     try:
         # Get a message from RabbitMQ with auto-acknowledgment
@@ -69,4 +75,4 @@ def receive_message():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='10.118.168.237', port=5000, debug=True)
