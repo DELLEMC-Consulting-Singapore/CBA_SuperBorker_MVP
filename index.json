@@ -1,0 +1,5 @@
+{
+  "rabbitmq_host": "10.118.168.237",
+  "rabbitmq_port": 5672,
+  "rabbitmq_queue_name": "test_queue"
+}
