@@ -15,7 +15,7 @@ def read_rabbitmq_config(file_path):
     return config_data
 
 # Get RabbitMQ parameters
-data = read_rabbitmq_config('/opt/python_rabbitmq/CBA_SuperBorker_MVP/index.json')
+rmq_data = read_rabbitmq_config('/opt/python_rabbitmq/CBA_SuperBorker_MVP/index.json')
 
 # Read the Encoded RabbitMQ credentials
 with open("/opt/python_rabbitmq/CBA_SuperBorker_MVP/rabbitmq.txt") as f:
@@ -34,13 +34,13 @@ rmq_user, rmq_pass = decode_rmq_credentials()
 credentials = pika.PlainCredentials(username=rmq_user, password=rmq_pass)
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(
-    data['rabbitmq_host'],
-    data['rabbitmq_port'],
+    rmq_data['rabbitmq_host'],
+    rmq_data['rabbitmq_port'],
     '/',
     credentials
 ))
 channel = connection.channel()
-channel.queue_declare(queue=data['rabbitmq_queue_name'], durable=True)
+channel.queue_declare(queue=rmq_data['rabbitmq_queue_name'], durable=True)
 
 # Route to handle POST requests
 @app.route('/api/transaction', methods=['POST'])
@@ -59,7 +59,7 @@ def send_message():
         # Publish the message to RabbitMQ
         channel.basic_publish(
             exchange='',
-            routing_key=data['rabbitmq_queue_name'],
+            routing_key=rmq_data['rabbitmq_queue_name'],
             body=message_body,
             properties=pika.BasicProperties(
                 delivery_mode=2,  # Make the message persistent
@@ -78,7 +78,7 @@ def send_message():
 def receive_message():
     try:
         # Get a message from RabbitMQ with auto-acknowledgment
-        method_frame, header_frame, body = channel.basic_get(queue=data['rabbitmq_queue_name'], auto_ack=False)
+        method_frame, header_frame, body = channel.basic_get(queue=rmq_data['rabbitmq_queue_name'], auto_ack=True)
 
         if method_frame:
             # Convert the message body to JSON
@@ -92,4 +92,4 @@ def receive_message():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host=data['rabbitmq_host'], port=5000, debug=True)
+    app.run(host=rmq_data['rabbitmq_host'], port=5000, debug=True)
