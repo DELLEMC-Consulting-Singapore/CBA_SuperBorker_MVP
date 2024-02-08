@@ -78,7 +78,7 @@ const Home = () => {
           <Link to={"/"}>
           <Card
               hoverable
-              style={{ width: 190, justifyContent:"center", height:175 }}
+              style={{ width: 190, justifyContent:"center", border:"2px solid #f0f0f0",  height:175 }}
               cover={<img alt="AriaAutomation" src={window.location.origin + '/products/AriaAutomation.png'} style={{
                 "width":"120px",
                 "padding":"10px 0px 0px 20px",
@@ -111,7 +111,7 @@ const Home = () => {
           <Link to={"/"}>
               <Card
               hoverable
-              style={{ width: 190, justifyContent:"center", height:175 }}
+              style={{ width: 190, justifyContent:"center", border:"2px solid #f0f0f0",  height:175 }}
               cover={<img alt="Puppet" src={window.location.origin + '/products/Puppet.jpg'} style={{
                 "width":"120px",
                 "padding":"5px 0px 0px 20px",
@@ -141,7 +141,7 @@ const Home = () => {
           <Link to={"/"}>
               <Card
               hoverable
-              style={{ width: 190, justifyContent:"center", height:175 }}
+              style={{ width: 190, justifyContent:"center", border:"2px solid #f0f0f0",  height:175 }}
               cover={<img alt="Qualys" src={window.location.origin + '/products/Qualys.png'} style={{
                 "width":"120px",
                 "padding":"5px 0px 0px 20px",
@@ -172,7 +172,7 @@ const Home = () => {
           <Link to={"/"}>
               <Card
               hoverable
-              style={{ width: 190, justifyContent:"center", height:175 }}
+              style={{ width: 190, justifyContent:"center", border:"2px solid #f0f0f0",  height:175 }}
               cover={<img alt="ServiceNow" src={window.location.origin + '/products/ServiceNow.png'} style={{
                 "width":"120px",
                 "padding":"5px 0px 0px 20px",
@@ -203,7 +203,7 @@ const Home = () => {
           <Link to={"/"}>
               <Card
               hoverable
-              style={{ width: 190, justifyContent:"center", height:175 }}
+              style={{ width: 190, justifyContent:"center", border:"2px solid #f0f0f0",  height:175 }}
               cover={<img alt="Ansible" src={window.location.origin + '/products/Ansible.png'} style={{
                 "width":"200px",
                 "padding":"5px 0px 0px 0px",
@@ -239,7 +239,7 @@ const Home = () => {
           <Link to={"/"}>
               <Card
               hoverable
-              style={{ width: 190, justifyContent:"center", height:175 }}
+              style={{ width: 190, justifyContent:"center", border:"2px solid #f0f0f0",  height:175 }}
               cover={<img alt="NSX" src={window.location.origin + '/products/NSX.png'} style={{
                 "width":"100px",
                 "padding":"5px 0px 0px 0px",
@@ -269,7 +269,7 @@ const Home = () => {
           <Link to={"/"}>
           <Card
               hoverable
-              style={{ width: 190, justifyContent:"center", height:175 }}
+              style={{ width: 190, justifyContent:"center", border:"2px solid #f0f0f0",  height:175 }}
               cover={<img alt="AWS" src={window.location.origin + '/products/AWS.png'} style={{
                 "width":"120px",
                 "padding":"10px 0px 0px 20px",
@@ -302,7 +302,7 @@ const Home = () => {
           <Link to={"/"}>
               <Card
               hoverable
-              style={{ width: 190, justifyContent:"center", height:175 }}
+              style={{ width: 190, justifyContent:"center", border:"2px solid #f0f0f0",  height:175 }}
               cover={<img alt="ANZ" src={window.location.origin + '/products/ANZ.png'} style={{
                 "width":"120px",
                 "padding":"5px 0px 0px 20px",
@@ -332,7 +332,7 @@ const Home = () => {
           <Link to={"/"}>
               <Card
               hoverable
-              style={{ width: 190, justifyContent:"center", height:175 }}
+              style={{ width: 190, justifyContent:"center", border:"2px solid #f0f0f0",  height:175 }}
               cover={<img alt="Kubernetes" src={window.location.origin + '/products/Kubernetes.png'} style={{
                 "width":"140px",
                 "padding":"5px 0px 0px 20px",
@@ -363,7 +363,7 @@ const Home = () => {
           <Link to={"/"}>
               <Card
               hoverable
-              style={{ width: 190, justifyContent:"center", height:175 }}
+              style={{ width: 190, justifyContent:"center", border:"2px solid #f0f0f0",  height:175 }}
               cover={<img alt="TeamCity" src={window.location.origin + '/products/TeamCity.png'} style={{
                 "width":"120px",
                 "padding":"5px 0px 0px 20px",
