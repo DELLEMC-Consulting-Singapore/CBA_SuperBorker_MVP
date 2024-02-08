@@ -27,6 +27,10 @@ import { DevBox } from './components/DevBox'
 import { DevBoxRequestForm } from './components/DevBoxRequestForm'
 import Login from './components/Login'
 import TransactionStatus from './components/TransactionStatus'
+import AriaAutomation from './components/AriaAutomation'
+import Puppet from './components/Puppet'
+import Qualys from './components/Qualys'
+import ServiceNow from './components/ServiceNow'
 
 const { Content, Footer, Sider } = Layout
 
@@ -155,6 +159,45 @@ const App = () => {
                         </Protected>
                       }
                     />
+
+                    
+<Route
+                      path="/aria-automation-transaction-status"
+                      element={
+                        <Protected isLoggedIn={Auth.isAuthenticated()}>
+                          <AriaAutomation />
+                        </Protected>
+                      }
+                    />
+
+                    
+<Route
+                      path="/puppet-transaction-status"
+                      element={
+                        <Protected isLoggedIn={Auth.isAuthenticated()}>
+                          <Puppet />
+                        </Protected>
+                      }
+                    />
+
+                    
+<Route
+                      path="/qualys-transaction-status"
+                      element={
+                        <Protected isLoggedIn={Auth.isAuthenticated()}>
+                          <Qualys />
+                        </Protected>
+                      }
+                    />
+                    <Route
+                                          path="/servicenow-transaction-status"
+                                          element={
+                                            <Protected isLoggedIn={Auth.isAuthenticated()}>
+                                              <ServiceNow />
+                                            </Protected>
+                                          }
+                                        />
+
                     {/* <Route path='/login' element={<Login />}></Route> */}
                   </Routes>
                 </div>

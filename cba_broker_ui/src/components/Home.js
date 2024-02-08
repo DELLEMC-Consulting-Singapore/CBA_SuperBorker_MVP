@@ -72,29 +72,32 @@ const Home = () => {
           </Space>
         </Col>
         </Row>
-      <Row gutter={16}>
-        <Col span={6}>
+      <Row gutter={250}>
+        
+      <Col span={4}>
+          <Link to={"/"}>
           <Card
               hoverable
-              style={{ width: 240, justifyContent:"center" }}
-              // cover={<img alt="example" src={window.location.origin + '/products/Cache.png'} style={{
-              //   "width":"120px",
-              //   "padding":"5px 0px 0px 20px",
-              //   "position": "relative",
-              //   "min-width": "unset!important",
-              //   "min-height": "unset",
-              //   transform: "unset",
-              //   "justify-content": "center"
-              // }}/>}
+              style={{ width: 190, justifyContent:"center", height:175 }}
+              cover={<img alt="AriaAutomation" src={window.location.origin + '/products/AriaAutomation.png'} style={{
+                "width":"120px",
+                "padding":"10px 0px 0px 20px",
+                "position": "relative",
+                "min-width": "unset!important",
+                "min-height": "unset",
+                "margin-left": "20px",
+    "margin-right": "auto"
+              }}/>}
             >
-              <i class="dds__icon dds__icon--cloud-document dds__icon--color"></i>
+              {/* <i class="dds__icon dds__icon--cloud-document dds__icon--color"></i> */}
 
               <Paragraph style={{
                 "font-weight":"630",
-                "font-size":"25px",
-                "margin": "0"
+                "font-size":"17px",
+                "margin-left": "5px",
+    "margin-right": "auto"
               }}>
-                Cache
+                Aria Automation
               </Paragraph>
 
               {/* <Paragraph>
@@ -102,129 +105,292 @@ const Home = () => {
               </Paragraph> */}
 
             </Card>
+            </Link>
         </Col>
-        <Col span={6}>
-          {/* <Link to={"/devbox"}> */}
+        <Col span={4}>
+          <Link to={"/"}>
               <Card
               hoverable
-              style={{ width: 240, justifyContent:"center" }}
+              style={{ width: 190, justifyContent:"center", height:175 }}
+              cover={<img alt="Puppet" src={window.location.origin + '/products/Puppet.jpg'} style={{
+                "width":"120px",
+                "padding":"5px 0px 0px 20px",
+                "position": "relative",
+                "min-width": "unset!important",
+                "min-height": "102px",
+                "margin-left": "20px",
+    "margin-right": "auto"
+              }}/>}
             >
-            <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i>
+            {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
               <Paragraph style={{
                 "font-weight":"630",
-                "font-size":"25px",
-                "margin": "0"
+                "font-size":"17px",
+                "margin-left": "40px",
+    "margin-right": "auto"
               }}>
-                DevBox
+                Puppet
               </Paragraph>
 
             </Card>
-          {/* </Link> */}
+          </Link>
           
         </Col>
-        <Col span={6}>
-          <Card
+        
+        <Col span={4}>
+          <Link to={"/"}>
+              <Card
               hoverable
-              style={{ width: 240, justifyContent:"center" }}
+              style={{ width: 190, justifyContent:"center", height:175 }}
+              cover={<img alt="Qualys" src={window.location.origin + '/products/Qualys.png'} style={{
+                "width":"120px",
+                "padding":"5px 0px 0px 20px",
+                "position": "relative",
+                "min-width": "unset!important",
+                "min-height": "102px",
+                "margin-left": "20px",
+    "margin-right": "auto"
+              }}/>}
             >
-              <i class="dds__icon dds__icon--virtualization dds__icon--color"></i>
+            {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
               <Paragraph style={{
                 "font-weight":"630",
-                "font-size":"25px",
-                "margin": "0"
+                "font-size":"17px",
+                "margin-left": "40px",
+    "margin-right": "auto"
               }}>
-                VMaas
+                Qualys
               </Paragraph>
 
             </Card>
+          </Link>
+          
         </Col>
-        <Col span={6}>
-          <Card
+
+        
+        <Col span={4}>
+          <Link to={"/"}>
+              <Card
               hoverable
-              style={{ width: 240, justifyContent:"center" }}
+              style={{ width: 190, justifyContent:"center", height:175 }}
+              cover={<img alt="ServiceNow" src={window.location.origin + '/products/ServiceNow.png'} style={{
+                "width":"120px",
+                "padding":"5px 0px 0px 20px",
+                "position": "relative",
+                "min-width": "unset!important",
+                "min-height": "102px",
+                "margin-left": "20px",
+    "margin-right": "auto"
+              }}/>}
             >
-              <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i>
-              {/* <img alt="example" src={window.location.origin + '/products/compute.svg'} height={95}/> */}
+            {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
               <Paragraph style={{
                 "font-weight":"630",
-                "font-size":"25px",
-                "margin": "0"
+                "font-size":"17px",
+                "margin-left": "20px",
+    "margin-right": "auto"
               }}>
-                SQL Clusters
+                ServiceNow
               </Paragraph>
 
             </Card>
+          </Link>
+          
         </Col>
+
+        
+        <Col span={4}>
+          <Link to={"/"}>
+              <Card
+              hoverable
+              style={{ width: 190, justifyContent:"center", height:175 }}
+              cover={<img alt="Ansible" src={window.location.origin + '/products/Ansible.png'} style={{
+                "width":"200px",
+                "padding":"5px 0px 0px 0px",
+                "position": "relative",
+                "min-width": "unset!important",
+                "min-height": "102px",
+                "margin-left": "-5px",
+    "margin-right": "auto"
+              }}/>}
+            >
+            {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
+              <Paragraph style={{
+                "font-weight":"630",
+                "font-size":"17px",
+                "margin-left": "40px",
+    "margin-right": "auto"
+              }}>
+                Ansible
+              </Paragraph>
+
+            </Card>
+          </Link>
+          
+        </Col>
+
+
       </Row>
-      <Row gutter={16} style={{marginTop: 16}}>
-        <Col span={6}>
-            <Card
-                  hoverable
-                style={{ width: 240, justifyContent:"center" }}
-              >
-                <i class="dds__icon dds__icon--scale dds__icon--color"></i>
-                {/* <img alt="example" src={window.location.origin + '/products/compute.svg'} height={95}/> */}
-                <Paragraph style={{
-                  "font-weight":"630",
-                  "font-size":"25px",
-                  "margin": "0"
-                }}>
-                  F5 LB
-                </Paragraph>
 
-              </Card>
-        </Col>
-        <Col span={6}>
-            <Card
-                  hoverable
-                style={{ width: 240, justifyContent:"center" }}
-              >
-                <i class="dds__icon dds__icon--network-vert dds__icon--color"></i>
-                {/* <img alt="example" src={window.location.origin + '/products/compute.svg'} height={95}/> */}
-                <Paragraph style={{
-                  "font-weight":"630",
-                  "font-size":"25px",
-                  "margin": "0"
-                }}>
-                  Networking
-                </Paragraph>
+      
+      <Row gutter={250} style={{marginTop:15}}>
+        
+      <Col span={4}>
+          <Link to={"/"}>
+              <Card
+              hoverable
+              style={{ width: 190, justifyContent:"center", height:175 }}
+              cover={<img alt="NSX" src={window.location.origin + '/products/NSX.png'} style={{
+                "width":"100px",
+                "padding":"5px 0px 0px 0px",
+                "position": "relative",
+                "min-width": "unset!important",
+                "min-height": "102px",
+                "margin-left": "40px",
+    "margin-right": "auto"
+              }}/>}
+            >
+            {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
+              <Paragraph style={{
+                "font-weight":"630",
+                "font-size":"17px",
+                "margin-left": "40px",
+    "margin-right": "auto"
+              }}>
+                NSX
+              </Paragraph>
 
-              </Card>
+            </Card>
+          </Link>
+          
         </Col>
-        <Col span={6}>
-            <Card
-                  hoverable
-                style={{ width: 240, justifyContent:"center" }}
-              >
-                <i class="dds__icon dds__icon--device-storage-array dds__icon--color"></i>
-                {/* <img alt="example" src={window.location.origin + '/products/compute.svg'} height={95}/> */}
-                <Paragraph style={{
-                  "font-weight":"630",
-                  "font-size":"25px",
-                  "margin": "0"
-                }}>
-                  Block Storage
-                </Paragraph>
 
-              </Card>
-        </Col>
-        <Col span={6}>
-            <Card
-                  hoverable
-                style={{ width: 240, justifyContent:"center" }}
-              >
-                <i class="dds__icon dds__icon--share dds__icon--color"></i>
-                {/* <img alt="example" src={window.location.origin + '/products/compute.svg'} height={95}/> */}
-                <Paragraph style={{
-                  "font-weight":"630",
-                  "font-size":"25px",
-                  "margin": "0"
-                }}>
-                  Group File Share
-                </Paragraph>
+      <Col span={4}>
+          <Link to={"/"}>
+          <Card
+              hoverable
+              style={{ width: 190, justifyContent:"center", height:175 }}
+              cover={<img alt="AWS" src={window.location.origin + '/products/AWS.png'} style={{
+                "width":"120px",
+                "padding":"10px 0px 0px 20px",
+                "position": "relative",
+                "min-width": "unset!important",
+                "min-height": "102px",
+                "margin-left": "25px",
+    "margin-right": "auto"
+              }}/>}
+            >
+              {/* <i class="dds__icon dds__icon--cloud-document dds__icon--color"></i> */}
 
-              </Card>
+              <Paragraph style={{
+                "font-weight":"630",
+                "font-size":"17px",
+                "margin-left": "30px",
+    "margin-right": "auto"
+              }}>
+                AWS
+              </Paragraph>
+
+              {/* <Paragraph>
+                In computing, a cache is a high-speed data storage layer which stores a subset ...
+              </Paragraph> */}
+
+            </Card>
+            </Link>
         </Col>
+        <Col span={4}>
+          <Link to={"/"}>
+              <Card
+              hoverable
+              style={{ width: 190, justifyContent:"center", height:175 }}
+              cover={<img alt="ANZ" src={window.location.origin + '/products/ANZ.png'} style={{
+                "width":"120px",
+                "padding":"5px 0px 0px 20px",
+                "position": "relative",
+                "min-width": "unset!important",
+                "min-height": "102px",
+                "margin-left": "25px",
+    "margin-right": "auto"
+              }}/>}
+            >
+            {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
+              <Paragraph style={{
+                "font-weight":"630",
+                "font-size":"17px",
+                "margin-left": "50px",
+    "margin-right": "auto"
+              }}>
+                ANZ
+              </Paragraph>
+
+            </Card>
+          </Link>
+          
+        </Col>
+        
+        <Col span={4}>
+          <Link to={"/"}>
+              <Card
+              hoverable
+              style={{ width: 190, justifyContent:"center", height:175 }}
+              cover={<img alt="Kubernetes" src={window.location.origin + '/products/Kubernetes.png'} style={{
+                "width":"140px",
+                "padding":"5px 0px 0px 20px",
+                "position": "relative",
+                "min-width": "unset!important",
+                "min-height": "102px",
+                "margin-left": "12px",
+    "margin-right": "auto"
+              }}/>}
+            >
+            {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
+              <Paragraph style={{
+                "font-weight":"630",
+                "font-size":"17px",
+                "margin-left": "25px",
+    "margin-right": "auto"
+              }}>
+                Kubernetes
+              </Paragraph>
+
+            </Card>
+          </Link>
+          
+        </Col>
+
+        
+        <Col span={4}>
+          <Link to={"/"}>
+              <Card
+              hoverable
+              style={{ width: 190, justifyContent:"center", height:175 }}
+              cover={<img alt="TeamCity" src={window.location.origin + '/products/TeamCity.png'} style={{
+                "width":"120px",
+                "padding":"5px 0px 0px 20px",
+                "position": "relative",
+                "min-width": "unset!important",
+                "min-height": "102px",
+                "margin-left": "30px",
+    "margin-right": "auto"
+              }}/>}
+            >
+            {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
+              <Paragraph style={{
+                "font-weight":"630",
+                "font-size":"17px",
+                "margin-left": "30px",
+    "margin-right": "auto"
+              }}>
+                TeamCity
+              </Paragraph>
+
+            </Card>
+          </Link>
+          
+        </Col>
+
+
+
       </Row>
         
     </>

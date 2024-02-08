@@ -3,5 +3,15 @@
     font-weight: 600;
     color: #0672cb !important;
     font-size: 16px;
-    white-space: "nowrap";
+    white-space: nowrap;
+}
+
+.tools-grid{
+    width:120px;
+    padding:5px 0px 0px 20px;
+    position: relative;
+    min-width: unset!important;
+    min-height: unset;
+    transform: unset;
+    justify-content: center
 }
