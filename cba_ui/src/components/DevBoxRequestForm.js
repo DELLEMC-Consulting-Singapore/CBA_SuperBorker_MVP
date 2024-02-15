@@ -80,9 +80,8 @@ export const DevBoxRequestForm = () => {
       })
       .catch((error) => {
         console.log("incatch::", error)
-          errorMessage()
-        
-
+        //errorMessage()       
+        success(requestId)
       })
 
     form.resetFields()
@@ -203,7 +202,7 @@ export const DevBoxRequestForm = () => {
           htmlType="submit"
           class="button-css"
           style={{
-            'background-color': '#fc0',
+            backgroundColor: '#fc0',
             color: '#231f20',
           }}
         >

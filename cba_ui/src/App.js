@@ -63,7 +63,7 @@ const App = () => {
               onCollapse={(value) => setCollapsed(value)}
               width={250}
             >
-              <div className="demo-logo-vertical">
+              <div class="demo-logo-vertical">
                 <Link
                   to={'/home'}
                   style={{ margin: collapsed ? '15px' : '80px' }}
@@ -73,12 +73,12 @@ const App = () => {
                     style={{
                       height: '60px',
                       width: '40px',
-                      'margin-left': 'auto',
-                      'margin-right': 'auto',
+                      marginLeft: 'auto',
+                      marginRight: 'auto',
                     }}
                   />{' '}
                   <span
-                    className="logo-cba-text"
+                    class="logo-cba-text"
                     style={{ display: collapsed ? 'none' : 'block' }}
                   >
                     Commonwealth Bank

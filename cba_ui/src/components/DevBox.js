@@ -54,7 +54,7 @@ export const DevBox = () => {
         }
         actions={[
           <Link to={'/devbox/request-vm'}>
-            <a className="anchor-tag">
+            <a class="anchor-tag">
               Explore
               <i
                 class="dds__icon--arrow-right"
