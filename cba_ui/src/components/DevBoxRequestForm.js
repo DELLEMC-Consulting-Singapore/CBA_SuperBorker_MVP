@@ -1,9 +1,17 @@
 import React from 'react'
 import { Button, Form, Input, InputNumber, Modal } from 'antd'
+import axios from 'axios'
 
 function success(requestId) {
   Modal.success({
     content: `Request ${requestId} has been opened successfully`,
+  });
+}
+
+
+function errorMessage(errorMsg) {
+  Modal.error({
+    content: `${errorMsg.message}. Please try after sometime`,
   });
 }
 
@@ -61,7 +69,23 @@ export const DevBoxRequestForm = () => {
     let requestId = `REQ${getRandomInt()}`
     values['payload']['requestId'] = requestId
     console.log(values)  
-    success(requestId)
+
+    axios
+      .post(`http://10.118.168.237:5000/api/transaction`, values)
+      .then((response) => {
+        
+        if (response.status === 201) {
+          success(requestId)
+        } else {
+          
+        }
+      })
+      .catch((error) => {
+        console.log("incatch::", error)
+        errorMessage(error)
+
+      })
+
     form.resetFields()
   }
 
@@ -79,46 +103,74 @@ export const DevBoxRequestForm = () => {
       <Form.Item
         name={['payload', 'os']}
         label="Operating System"
+        initialValue="Windows Server 2019"
         rules={[
           {
             required: true,
           },
         ]}
       >
-        <Input />
+        <Input disabled={true}/>
       </Form.Item>
       <Form.Item
         name={['payload', 'cpu']}
         label="CPU"
+        initialValue={4}
         rules={[
           {
             required: true,
           },
         ]}
       >
-        <Input />
+        <Input disabled={true}/>
       </Form.Item>
       <Form.Item
         name={['payload', 'memory']}
         label="Memory (In GB)"
+        initialValue={16}
         rules={[
           {
             required: true,
           },
         ]}
       >
-        <Input />
+        <Input disabled={true} />
       </Form.Item>
       <Form.Item
-        name={['payload', 'disk_drive']}
-        label="Disk Drive (In GB)"
+        name={['payload', 'boot_disk']}
+        label="Boot Disk (In GB)"
+        initialValue={90}
         rules={[
           {
             required: true,
           },
         ]}
       >
-        <Input />
+        <Input disabled={true}/>
+      </Form.Item>
+      <Form.Item
+        name={['payload', 'disk_drive_1']}
+        label="Disk Drive 1 (In GB)"
+        initialValue={10}
+        rules={[
+          {
+            required: true,
+          },
+        ]}
+      >
+        <Input disabled={true}/>
+      </Form.Item>
+      <Form.Item
+        name={['payload', 'disk_drive_2']}
+        label="Disk Drive 2 (In GB)"
+        initialValue={10}
+        rules={[
+          {
+            required: true,
+          },
+        ]}
+      >
+        <Input disabled={true}/>
       </Form.Item>
       <Form.Item
         name={['payload', 'application_stack']}

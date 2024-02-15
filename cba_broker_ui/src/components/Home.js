@@ -144,7 +144,7 @@ const Home = () => {
               style={{ width: 190, justifyContent:"center", border:"2px solid #f0f0f0",  height:175 }}
               cover={<img alt="Qualys" src={window.location.origin + '/products/Qualys.png'} style={{
                 "width":"120px",
-                "padding":"5px 0px 0px 20px",
+                "padding":"15px 1px 0px 25px",
                 "position": "relative",
                 "min-width": "unset!important",
                 "min-height": "102px",
@@ -270,7 +270,7 @@ const Home = () => {
           <Card
               hoverable
               style={{ width: 190, justifyContent:"center", border:"2px solid #f0f0f0",  height:175 }}
-              cover={<img alt="AWS" src={window.location.origin + '/products/AWS.png'} style={{
+              cover={<img alt="AWS" src={window.location.origin + '/products/AWS.jpg'} style={{
                 "width":"120px",
                 "padding":"10px 0px 0px 20px",
                 "position": "relative",
@@ -285,7 +285,7 @@ const Home = () => {
               <Paragraph style={{
                 "font-weight":"630",
                 "font-size":"17px",
-                "margin-left": "30px",
+                "margin-left": "50px",
     "margin-right": "auto"
               }}>
                 AWS
@@ -303,7 +303,7 @@ const Home = () => {
               <Card
               hoverable
               style={{ width: 190, justifyContent:"center", border:"2px solid #f0f0f0",  height:175 }}
-              cover={<img alt="ANZ" src={window.location.origin + '/products/ANZ.png'} style={{
+              cover={<img alt="Azure" src={window.location.origin + '/products/ANZ.png'} style={{
                 "width":"120px",
                 "padding":"5px 0px 0px 20px",
                 "position": "relative",
@@ -320,7 +320,7 @@ const Home = () => {
                 "margin-left": "50px",
     "margin-right": "auto"
               }}>
-                ANZ
+                Azure
               </Paragraph>
 
             </Card>

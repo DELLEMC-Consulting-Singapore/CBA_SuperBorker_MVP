@@ -106,7 +106,7 @@ const App = () => {
                   }}
                 >
                   <Breadcrumb.Item>
-                    <HomeOutlined /> / DevBox
+                    <HomeOutlined /> 
                   </Breadcrumb.Item>
                 </Breadcrumb>
                 <div
