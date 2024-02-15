@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Form, Input, InputNumber, Modal } from 'antd'
+import { Button, Form, Input, InputNumber, Modal, Select } from 'antd'
 import axios from 'axios'
 
 function success(requestId) {
@@ -9,9 +9,9 @@ function success(requestId) {
 }
 
 
-function errorMessage(errorMsg) {
+function errorMessage() {
   Modal.error({
-    content: `${errorMsg.message}. Please try after sometime`,
+    content: `Internal Server Error. Please try after sometime`,
   });
 }
 
@@ -76,13 +76,12 @@ export const DevBoxRequestForm = () => {
         
         if (response.status === 201) {
           success(requestId)
-        } else {
-          
-        }
+        } 
       })
       .catch((error) => {
         console.log("incatch::", error)
-        errorMessage(error)
+          errorMessage()
+        
 
       })
 
@@ -103,14 +102,22 @@ export const DevBoxRequestForm = () => {
       <Form.Item
         name={['payload', 'os']}
         label="Operating System"
-        initialValue="Windows Server 2019"
         rules={[
           {
             required: true,
           },
         ]}
       >
-        <Input disabled={true}/>
+        <Select  placeholder="Select Operating System" options={[
+        {
+          value: 'Windows Server 2019',
+          label: 'Windows Server 2019',
+        },
+        {
+          value: 'RedHat Linux 8x',
+          label: 'RedHat Linux 8x',
+        },
+      ]}/>
       </Form.Item>
       <Form.Item
         name={['payload', 'cpu']}
