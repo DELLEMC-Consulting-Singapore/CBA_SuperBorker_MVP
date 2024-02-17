@@ -3,15 +3,15 @@ import requests
 
 app = Flask(__name__)
 
-def get_refresh_token(username, password):
-    url = "https://vmpautomation-dev.stg.nonprod.vmware.cba/csp/gateway/am/api/login"
+def get_refresh_token():
+    url = "https://vmpautomation-dev.stg.nonprod.vmware.cba/csp/gateway/am/api/login?access_token="
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     }
     data = {
-        "username": username,
-        "password": password
+        "username": "gutturra",
+        "password": "G$Gbz3TNAzLN-b"
     }
     try:
         response = requests.post(url, json=data, headers=headers, verify=False)
@@ -69,10 +69,8 @@ def deploy_resource(bearer_token):
 
 @app.route('/api/deploy', methods=['POST'])
 def deploy():
-    data = request.json
-    username = data.get('username')
-    password = data.get('password')
-    refresh_token = get_refresh_token(username, password)
+    data = {}
+    refresh_token = get_refresh_token()
     if refresh_token:
         bearer_token = get_bearer_token(refresh_token)
         if bearer_token:
@@ -86,5 +84,7 @@ def deploy():
     else:
         return jsonify({'error': 'Refresh Token not obtained'}), 500
 
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='10.45.197.28', port=8443, debug=True)
+    
