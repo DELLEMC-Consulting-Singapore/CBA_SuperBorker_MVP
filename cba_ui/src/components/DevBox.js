@@ -1,30 +1,24 @@
-import {
-  EditOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
-} from '@ant-design/icons'
-import React, { useState } from 'react'
-import { Avatar, Card, Skeleton, Switch, Typography } from 'antd'
-import { Link } from 'react-router-dom'
+import React from "react";
+import { Card, Typography, Row, Col } from "antd";
+import { Link } from "react-router-dom";
 
-const { Meta } = Card
-const { Paragraph } = Typography
+const { Paragraph } = Typography;
 
 export const DevBox = () => {
   return (
     <>
       <Card
         style={{
-          width: '100%',
-          'min-height': '11rem',
-          padding: '0',
-          'background-color': '#f7f7f7',
+          width: "100%",
+          "min-height": "11rem",
+          padding: "0",
+          "background-color": "#f7f7f7",
         }}
       >
         <div
           style={{
-            display: 'flex',
-            padding: '30px',
+            display: "flex",
+            padding: "30px",
           }}
         >
           <div class="dds__icon--round">
@@ -33,9 +27,9 @@ export const DevBox = () => {
 
           <Paragraph
             style={{
-              'font-weight': 'normal',
-              'font-size': '42px',
-              margin: '10px 0px 0px 50px',
+              "font-weight": "normal",
+              "font-size": "42px",
+              margin: "10px 0px 0px 50px",
             }}
           >
             DevBox
@@ -43,55 +37,121 @@ export const DevBox = () => {
         </div>
       </Card>
 
-      <Card
-        style={{ width: 300, marginTop: 16 }}
-        cover={
-          <img
-            alt="example"
-            src={window.location.origin + '/products/LibShelf.png'}
-            style={{ padding: '25px' }}
-          />
-        }
-        actions={[
-          <Link to={'/devbox/request-vm'}>
-            <a class="anchor-tag">
-              Explore
-              <i
-                class="dds__icon--arrow-right"
-                style={{
-                  cursor: 'pointer',
-                  'font-size': '20px',
-                }}
-              ></i>
-            </a>
-          </Link>,
-        ]}
+      <Row
+        gutter={{
+          xs: 8,
+          sm: 16,
+          md: 24,
+          lg: 32,
+        }}
       >
-        {/* <Meta
-    //   avatar={<Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel" />}
-      title="VM"
-      description="Assigns a pre-provisioned VM with root/admin to the user for 48 hours"
-    /> */}
-        <h5
-          style={{
-            color: '#0e0e0e',
-            'font-size': '20px',
-            'font-weight': '600',
-            margin: 0,
-          }}
+        <Col className="gutter-row" span={6}>
+          <Link to={"/detail/windows-server-2019"}>
+            <Card
+              style={{ width: 300, marginTop: 16 }}
+              cover={
+                <img
+                  alt="example"
+                  src={window.location.origin + "/products/win2016.png"}
+                  className="product-catalog-card-grid-img"
+                />
+              }
+              actions={[
+                <Link to={"/detail/windows-server-2019"}>
+                  <a class="anchor-tag">
+                    Request Service
+                    <i
+                      class="dds__icon--arrow-right"
+                      style={{
+                        cursor: "pointer",
+                        "font-size": "20px",
+                      }}
+                    ></i>
+                  </a>
+                </Link>,
+              ]}
+              bodyStyle={{ height: 180 }}
+            >
+              <h5
+                style={{
+                  color: "#0e0e0e",
+                  "font-size": "20px",
+                  "font-weight": "400",
+                  margin: 0,
+                }}
+              >
+                Windows 2019
+              </h5>
+              <Paragraph
+                style={{
+                  color: "#0e0e0e",
+                  "font-size": "16px",
+                  margin: 0,
+                }}
+              >
+                Provision a single or multiple instances (up to 5) of Windows
+                2019 Full VM(s)
+              </Paragraph>
+            </Card>
+          </Link>
+        </Col>
+        <Col
+          className="gutter-row"
+          span={8}
+          style={{ paddingLeft: 50, paddingRight: 16 }}
         >
-          VM
-        </h5>
-        <Paragraph
-          style={{
-            color: '#0e0e0e',
-            'font-size': '16px',
-            margin: 0,
-          }}
-        >
-          Provisions a VM for CBA developers to use for a span of 7 days
-        </Paragraph>
-      </Card>
+          <Link to={"/detail/linux-8"}>
+            <Card
+              style={{ width: 300, marginTop: 16 }}
+              cover={
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <img
+                    alt="example"
+                    src={window.location.origin + "/products/redhat.png"}
+                    className="product-catalog-card-grid-linux-img"
+                  />
+                  {/* <h2 style={{ margin: -15 }}>RedHat</h2> */}
+                </div>
+              }
+              actions={[
+                <Link to={"/detail/linux-8"}>
+                  <a class="anchor-tag">
+                    Request Service
+                    <i
+                      class="dds__icon--arrow-right"
+                      style={{
+                        cursor: "pointer",
+                        "font-size": "20px",
+                      }}
+                    ></i>
+                  </a>
+                </Link>,
+              ]}
+            >
+              <h5
+                style={{
+                  color: "#0e0e0e",
+                  "font-size": "20px",
+                  "font-weight": "400",
+                  margin: 0,
+                }}
+              >
+                RedHat Linux 8x
+              </h5>
+              <Paragraph
+                style={{
+                  color: "#0e0e0e",
+                  "font-size": "16px",
+                  margin: 0,
+                }}
+              >
+                Provisions a single or multiple instances (up to 5) of the
+                latest, monthly patched, RedHat Linux 8x version VM(s)
+              </Paragraph>
+            </Card>
+          </Link>
+        </Col>
+      </Row>
     </>
-  )
-}
+  );
+};

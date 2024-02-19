@@ -1,13 +1,8 @@
-import React from 'react'
-import { Button, Form, Input, InputNumber, Modal, Select } from 'antd'
-import axios from 'axios'
-
-function success(requestId) {
-  Modal.success({
-    content: `Request ${requestId} has been opened successfully`,
-  });
-}
-
+import React from "react";
+import { Button, Form, Input, Modal, Select } from "antd";
+import axios from "axios";
+import queryString from "query-string";
+import { useNavigate } from "react-router-dom";
 
 function errorMessage() {
   Modal.error({
@@ -32,7 +27,6 @@ function randomNumeric(length) {
 }
 
 function getRandomInt(min = 2000, max = 2999) {
-  
   const minCeiled = Math.ceil(min);
   const maxFloored = Math.floor(max);
   return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
@@ -45,52 +39,72 @@ const layout = {
   wrapperCol: {
     span: 16,
   },
-}
+};
 
 const validateMessages = {
-  required: '${label} is required!',
+  required: "${label} is required!",
   types: {
-    email: '${label} is not a valid email!',
-    number: '${label} is not a valid number!',
+    email: "${label} is not a valid email!",
+    number: "${label} is not a valid number!",
   },
   number: {
-    range: '${label} must be between ${min} and ${max}',
+    range: "${label} must be between ${min} and ${max}",
   },
-}
-
+};
 
 export const DevBoxRequestForm = () => {
   const [form] = Form.useForm();
+  let navigate = useNavigate();
 
-  
-  const onFinish = (values) => {  
-    let transactionId = `${randomNumeric(5)}-${randomString(5)}-${new Date().valueOf()}-${randomString(5)}`
-    values['payload']['transactionId'] = transactionId
-    let requestId = `REQ${getRandomInt()}`
-    values['payload']['requestId'] = requestId
-    console.log(values)  
+  const value = queryString.parse(window.location.search);
+  let os = value.os;
+  if (os == "windows-server-2019") {
+    os = "Windows Server 2019";
+  } else {
+    os = "RedHat Linux 8x";
+  }
+  console.log("os", os); //123
+
+  const onFinish = (values) => {
+    let transactionId = `${randomNumeric(5)}-${randomString(
+      5
+    )}-${new Date().valueOf()}-${randomString(5)}`;
+    values["payload"]["transactionId"] = transactionId;
+    let requestId = `REQ${getRandomInt()}`;
+    values["payload"]["requestId"] = requestId;
+    console.log(values);
 
     axios
       .post(`http://10.118.168.237:5000/api/transaction`, values)
       .then((response) => {
-        
         if (response.status === 201) {
-          success(requestId)
-        } 
+          success(requestId);
+        }
       })
       .catch((error) => {
-        console.log("incatch::", error)
-        //errorMessage()       
-        success(requestId)
-      })
+        console.log("incatch::", error);
+        //errorMessage()
+        success(requestId);
+      });
 
-    form.resetFields()
+    form.resetFields();
+  };
+
+  function success(requestId) {
+    const success = Modal.success({});
+    success.update({
+      title: "",
+      content: `Request ${requestId} has been opened successfully`,
+      onOk: async () => {
+        navigate("/activities", { replace: true });
+      },
+    });
   }
 
   return (
     <Form
       {...layout}
-      form = {form}
+      form={form}
       name="nest-messages"
       onFinish={onFinish}
       style={{
@@ -98,8 +112,8 @@ export const DevBoxRequestForm = () => {
       }}
       validateMessages={validateMessages}
     >
-      <Form.Item
-        name={['payload', 'os']}
+      {/* <Form.Item
+        name={["payload", "os"]}
         label="Operating System"
         rules={[
           {
@@ -107,19 +121,35 @@ export const DevBoxRequestForm = () => {
           },
         ]}
       >
-        <Select  placeholder="Select Operating System" options={[
-        {
-          value: 'Windows Server 2019',
-          label: 'Windows Server 2019',
-        },
-        {
-          value: 'RedHat Linux 8x',
-          label: 'RedHat Linux 8x',
-        },
-      ]}/>
-      </Form.Item>
+        <Select
+          placeholder="Select Operating System"
+          options={[
+            {
+              value: "Windows Server 2019",
+              label: "Windows Server 2019",
+            },
+            {
+              value: "RedHat Linux 8x",
+              label: "RedHat Linux 8x",
+            },
+          ]}
+        />
+      </Form.Item> */}
       <Form.Item
-        name={['payload', 'cpu']}
+        name={["payload", "os"]}
+        label="Operating System"
+        initialValue={os}
+        rules={[
+          {
+            required: true,
+          },
+        ]}
+      >
+        <Input disabled={true} />
+      </Form.Item>
+
+      <Form.Item
+        name={["payload", "cpu"]}
         label="CPU"
         initialValue={4}
         rules={[
@@ -128,10 +158,10 @@ export const DevBoxRequestForm = () => {
           },
         ]}
       >
-        <Input disabled={true}/>
+        <Input disabled={true} />
       </Form.Item>
       <Form.Item
-        name={['payload', 'memory']}
+        name={["payload", "memory"]}
         label="Memory (In GB)"
         initialValue={16}
         rules={[
@@ -143,7 +173,7 @@ export const DevBoxRequestForm = () => {
         <Input disabled={true} />
       </Form.Item>
       <Form.Item
-        name={['payload', 'boot_disk']}
+        name={["payload", "boot_disk"]}
         label="Boot Disk (In GB)"
         initialValue={90}
         rules={[
@@ -152,10 +182,10 @@ export const DevBoxRequestForm = () => {
           },
         ]}
       >
-        <Input disabled={true}/>
+        <Input disabled={true} />
       </Form.Item>
       <Form.Item
-        name={['payload', 'disk_drive_1']}
+        name={["payload", "disk_drive_1"]}
         label="Disk Drive 1 (In GB)"
         initialValue={10}
         rules={[
@@ -164,10 +194,10 @@ export const DevBoxRequestForm = () => {
           },
         ]}
       >
-        <Input disabled={true}/>
+        <Input disabled={true} />
       </Form.Item>
       <Form.Item
-        name={['payload', 'disk_drive_2']}
+        name={["payload", "disk_drive_2"]}
         label="Disk Drive 2 (In GB)"
         initialValue={10}
         rules={[
@@ -176,9 +206,9 @@ export const DevBoxRequestForm = () => {
           },
         ]}
       >
-        <Input disabled={true}/>
+        <Input disabled={true} />
       </Form.Item>
-      <Form.Item
+      {/* <Form.Item
         name={['payload', 'application_stack']}
         label="Application Stack (Only One)"
         rules={[
@@ -188,7 +218,7 @@ export const DevBoxRequestForm = () => {
         ]}
       >
         <Input />
-      </Form.Item>
+      </Form.Item> */}
 
       <Form.Item
         wrapperCol={{
@@ -202,13 +232,13 @@ export const DevBoxRequestForm = () => {
           htmlType="submit"
           class="button-css"
           style={{
-            backgroundColor: '#fc0',
-            color: '#231f20',
+            backgroundColor: "#fc0",
+            color: "#231f20",
           }}
         >
           Submit
         </Button>
       </Form.Item>
     </Form>
-  )
-}
+  );
+};
