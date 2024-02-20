@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   CloseSquareOutlined,
   InteractionOutlined,
   DownloadOutlined,
 } from "@ant-design/icons";
 import { Badge, Dropdown, Space, Table, Tag, Tooltip } from "antd";
+import axios from "axios";
 
-// import React, { useState } from 'react';
-// import { Radio, Space, Table, Tag, Tooltip } from 'antd';
+function sortByKey(d) {
+  return d.sort((a, b) => parseInt(b["key"]) - parseInt(a["key"]));
+}
 
 function getRandomInt(min = 2000, max = 2999) {
   const minCeiled = Math.ceil(min);
@@ -226,252 +228,6 @@ const items = [
   },
 ];
 const Activities = () => {
-  const expandedRowRender1 = (parentData) => {
-    const columns = [
-      {
-        title: "Date",
-        dataIndex: "date",
-        key: "date",
-      },
-      {
-        title: "RequestId",
-        dataIndex: "request_id",
-        key: "request_id",
-      },
-      {
-        title: "TransactionId",
-        dataIndex: "transaction_id",
-        key: "transaction_id",
-        width: 130,
-      },
-      {
-        title: "Service Name",
-        dataIndex: "service_name",
-        key: "service_name",
-      },
-      {
-        title: "Tool Integration",
-        dataIndex: "tool_integration",
-        key: "tool_integration",
-      },
-      {
-        title: "Status",
-        key: "status",
-        render: (d) => {
-          let color = "error"; //tag.length > 5 ? 'geekblue' : 'green';
-          if (d["status"] == "Running") {
-            color = "processing";
-          } else if (d["status"] == "Completed") {
-            color = "success";
-          }
-          return <Badge status={color} text={d["status"]} />;
-        },
-      },
-      {
-        title: "Resume",
-        key: "resume",
-        render: (d) => {
-          //  let color = 'error' //tag.length > 5 ? 'geekblue' : 'green';
-          //  if (d['status'] == 'Running') {
-          //    color = 'processing';
-          //  }else if(d['status']  == 'Completed'){
-          //          color = 'success'
-          //        }
-          return (
-            <a href="#">
-              <span style={{ fontSize: 25 }}>
-                <InteractionOutlined height={"1em"} width={"1em"} />
-              </span>
-            </a>
-          );
-        },
-      },
-      {
-        title: "Revoke",
-        key: "revoke",
-        render: (d) => {
-          // let color = 'error' //tag.length > 5 ? 'geekblue' : 'green';
-          // if (d['status'] == 'Running') {
-          //   color = 'processing';
-          // }else if(d['status']  == 'Completed'){
-          //         color = 'success'
-          //       }
-          return (
-            <a href="#">
-              <span style={{ fontSize: 25 }}>
-                <CloseSquareOutlined />
-              </span>
-            </a>
-          );
-        },
-      },
-      {
-        title: "Error Log",
-        key: "error_log",
-        render: (d) => {
-          let color = "error"; //tag.length > 5 ? 'geekblue' : 'green';
-          if (d["status"] == "Running") {
-            color = "processing";
-          } else if (d["status"] == "Completed") {
-            color = "success";
-          }
-          return (
-            <a href="/logs/logs-INC124567.log" download target="_blank">
-              <span style={{ fontSize: 25 }}>
-                <DownloadOutlined />
-              </span>
-            </a>
-          );
-        },
-      },
-      {
-        title: "Incident",
-        key: "incident",
-        render: (d) => {
-          let color = `INC${getRandomInt1()}`; //tag.length > 5 ? 'geekblue' : 'green';
-          if (d["status"] == "Running") {
-            color = "";
-          } else if (d["status"] == "Completed") {
-            color = "";
-          }
-          return color;
-        },
-      },
-    ];
-    let data = [];
-    if (parentData["key"] == 0) {
-      data = [
-        {
-          key: 0,
-          date: "01-31-2024 22:03",
-          request_id: parentData["request_id"],
-          transaction_id: parentData["transaction_id"],
-          service_name: parentData["service_name"],
-          tool_integration: "Aria Automation",
-          status: "Completed",
-        },
-        {
-          key: 1,
-          date: "01-31-2024 22:03",
-          request_id: parentData["request_id"],
-          transaction_id: parentData["transaction_id"],
-          service_name: parentData["service_name"],
-          date: "01-31-2024 22:03",
-          tool_integration: "Puppet",
-          status: "Running",
-        },
-        {
-          key: 2,
-          date: "01-31-2024 22:03",
-          request_id: parentData["request_id"],
-          transaction_id: parentData["transaction_id"],
-          service_name: parentData["service_name"],
-          date: "01-31-2024 22:03",
-          tool_integration: "Qualys",
-          status: "Running",
-        },
-        {
-          key: 3,
-          date: "01-31-2024 22:03",
-          request_id: parentData["request_id"],
-          transaction_id: parentData["transaction_id"],
-          service_name: parentData["service_name"],
-          date: "01-31-2024 22:03",
-          tool_integration: "ServiceNow",
-          status: "Running",
-        },
-      ];
-    }
-
-    if (parentData["key"] == 1) {
-      data = [
-        {
-          key: 0,
-          date: "01-31-2024 22:03",
-          request_id: parentData["request_id"],
-          transaction_id: parentData["transaction_id"],
-          service_name: parentData["service_name"],
-          tool_integration: "Aria Automation",
-          status: "Completed",
-        },
-        {
-          key: 1,
-          date: "01-31-2024 22:03",
-          request_id: parentData["request_id"],
-          transaction_id: parentData["transaction_id"],
-          service_name: parentData["service_name"],
-          date: "01-31-2024 22:03",
-          tool_integration: "Puppet",
-          status: "Completed",
-        },
-        {
-          key: 2,
-          date: "01-31-2024 22:03",
-          request_id: parentData["request_id"],
-          transaction_id: parentData["transaction_id"],
-          service_name: parentData["service_name"],
-          date: "01-31-2024 22:03",
-          tool_integration: "Qualys",
-          status: "Completed",
-        },
-        {
-          key: 3,
-          date: "01-31-2024 22:03",
-          request_id: parentData["request_id"],
-          transaction_id: parentData["transaction_id"],
-          service_name: parentData["service_name"],
-          date: "01-31-2024 22:03",
-          tool_integration: "ServiceNow",
-          status: "Completed",
-        },
-      ];
-    }
-
-    if (parentData["key"] == 2) {
-      data = [
-        {
-          key: 0,
-          date: "01-31-2024 22:03",
-          request_id: parentData["request_id"],
-          transaction_id: parentData["transaction_id"],
-          service_name: parentData["service_name"],
-          tool_integration: "Aria Automation",
-          status: "Completed",
-        },
-        {
-          key: 1,
-          date: "01-31-2024 22:03",
-          request_id: parentData["request_id"],
-          transaction_id: parentData["transaction_id"],
-          service_name: parentData["service_name"],
-          date: "01-31-2024 22:03",
-          tool_integration: "Puppet",
-          status: "Error",
-        },
-        {
-          key: 2,
-          date: "01-31-2024 22:03",
-          request_id: parentData["request_id"],
-          transaction_id: parentData["transaction_id"],
-          service_name: parentData["service_name"],
-          date: "01-31-2024 22:03",
-          tool_integration: "Qualys",
-          status: "Completed",
-        },
-        {
-          key: 3,
-          date: "01-31-2024 22:03",
-          request_id: parentData["request_id"],
-          transaction_id: parentData["transaction_id"],
-          service_name: parentData["service_name"],
-          date: "01-31-2024 22:03",
-          tool_integration: "ServiceNow",
-          status: "Completed",
-        },
-      ];
-    }
-    return <Table columns={columns} dataSource={data} pagination={false} />;
-  };
   const columns = [
     {
       title: "Date",
@@ -482,7 +238,6 @@ const Activities = () => {
       title: "Request Id",
       dataIndex: "request_id",
       key: "request_id",
-      width: 100,
     },
     {
       title: "Transaction Id",
@@ -494,27 +249,6 @@ const Activities = () => {
       title: "Service Name",
       dataIndex: "service_name",
       key: "service_name",
-      width: 130,
-    },
-    {
-      title: "Service Action",
-      dataIndex: "service_action",
-      key: "service_action",
-      width: 130,
-    },
-    {
-      title: "Payload",
-      dataIndex: "payload",
-      key: "payload",
-      //ellipsis: true,
-      ellipsis: {
-        showTitle: false,
-      },
-      render: (payload) => (
-        <Tooltip placement="topLeft" title={payload}>
-          {payload}
-        </Tooltip>
-      ),
     },
     {
       title: "Status",
@@ -535,13 +269,11 @@ const Activities = () => {
           </span>
         );
       },
-      width: 130,
     },
     {
       title: "Created By",
       dataIndex: "created_by",
       key: "created_by",
-      width: 100,
     },
     //   {
     //     title: 'Action',
@@ -555,75 +287,17 @@ const Activities = () => {
     //   },
   ];
 
-  const data = [
-    {
-      key: 0,
-      request_id: `REQ${getRandomInt()}`,
-      transaction_id: "81729-r5lPk-1706771350353-a7egb",
-      service_name: "DevBox",
-      date_time: "01-31-2024 22:03",
-      service_action: "Create".toUpperCase(),
-      payload: JSON.stringify({
-        os: "linux",
-        cpu: "core",
-        memory: "8",
-        disk_drive: "500",
-        application_stack: "vm",
-      }),
-      request_status: "running",
-      request_status1: "running",
-      created_by: "Admin",
-    },
-    {
-      key: 1,
-      request_id: `REQ${getRandomInt()}`,
-      transaction_id: "81729-r5lPk-1706771350353-a7egz",
-      service_name: "DevBox",
-      date_time: "01-31-2024 22:03",
-      service_action: "Create".toUpperCase(),
-      payload: JSON.stringify({
-        os: "linux",
-        cpu: "core",
-        memory: "8",
-        disk_drive: "500",
-        application_stack: "vm",
-      }),
-      request_status: "completed",
-      request_status1: "completed",
-      created_by: "Admin",
-    },
-    {
-      key: 2,
-      request_id: `REQ${getRandomInt()}`,
-      transaction_id: "81729-r5lPk-1706771350353-a7egx",
-      service_name: "DevBox",
-      date_time: "01-31-2024 22:03",
-      service_action: "Create".toUpperCase(),
-      payload: JSON.stringify({
-        os: "linux",
-        cpu: "core",
-        memory: "8",
-        disk_drive: "500",
-        application_stack: "vm",
-      }),
-      request_status: "failed",
-      request_status1: "failed",
-      created_by: "Admin",
-    },
-  ];
+  let [newData, setData] = useState([]);
+
+  useEffect(() => {
+    axios.get(`http://localhost:3002`).then((response) => {
+      setData(sortByKey(response["data"]));
+    });
+  }, []);
 
   return (
     <>
-      <Table
-        columns={columns}
-        expandable={{
-          expandedRowRender: (render) => {
-            return expandedRowRender1(render);
-          },
-          defaultExpandedRowKeys: [],
-        }}
-        dataSource={data}
-      />
+      <Table columns={columns} dataSource={newData} bordered={true} size="10" />
     </>
   );
 };

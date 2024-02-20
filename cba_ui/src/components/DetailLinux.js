@@ -66,7 +66,7 @@ export const DetailLinux = () => {
             padding: "30px",
           }}
         >
-          <div class="dds__icon--round-detail">
+          <div class="dds__icon--round-detail-linux">
             <img
               alt="example"
               src={window.location.origin + "/products/redhat.png"}

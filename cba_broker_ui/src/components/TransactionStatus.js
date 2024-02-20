@@ -5,7 +5,8 @@ import {
   DownloadOutlined,
 } from "@ant-design/icons";
 import { Badge, Dropdown, Space, Table, Tag, Tooltip } from "antd";
-
+import axios from "axios";
+import Auth from "./Auth";
 // import React, { useState } from 'react';
 // import { Radio, Space, Table, Tag, Tooltip } from 'antd';
 
@@ -25,206 +26,10 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-// const topOptions = [
-//   {
-//     label: 'topLeft',
-//     value: 'topLeft',
-//   },
-//   {
-//     label: 'topCenter',
-//     value: 'topCenter',
-//   },
-//   {
-//     label: 'topRight',
-//     value: 'topRight',
-//   },
-//   {
-//     label: 'none',
-//     value: 'none',
-//   },
-// ];
-// const bottomOptions = [
-//   {
-//     label: 'bottomLeft',
-//     value: 'bottomLeft',
-//   },
-//   {
-//     label: 'bottomCenter',
-//     value: 'bottomCenter',
-//   },
-//   {
-//     label: 'bottomRight',
-//     value: 'bottomRight',
-//   },
-//   {
-//     label: 'none',
-//     value: 'none',
-//   },
-// ];
-// const columns = [
-//   {
-//     title: 'Date & Time',
-//     dataIndex: 'date_time',
-//     key: 'date_time',
-//   },
-//   {
-//     title: 'Request Id',
-//     dataIndex: 'request_id',
-//     key: 'request_id',
-//     width:100
-//   },
-//   {
-//     title: 'Transaction Id',
-//     dataIndex: 'transaction_id',
-//     key: 'transaction_id',
-//     width:280
-//   },
-//   {
-//     title: 'Service Name',
-//     dataIndex: 'service_name',
-//     key: 'service_name',
-//     width:130
-//   },
-//   {
-//     title: 'Service Action',
-//     dataIndex: 'service_action',
-//     key: 'service_action',
-//     width:130
-//   },
-//   {
-//     title: 'Payload',
-//     dataIndex: 'payload',
-//     key: 'payload',
-//     //ellipsis: true,
-//     ellipsis: {
-//         showTitle: false,
-//       },
-//       render: (payload) => (
-//         <Tooltip placement="topLeft" title={payload}>
-//           {payload}
-//         </Tooltip>
-//       )
-//   },
-//   {
-//     title: 'Status',
-//     key: 'request_status',
-//     dataIndex: 'request_status',
-//     render: (tag) => {
-//         let color = 'volcano' //tag.length > 5 ? 'geekblue' : 'green';
-//         if (tag == 'running') {
-//           color = 'geekblue';
-//         }else if(tag == 'completed'){
-//           color = 'green'
-//         }
+function sortByKey(d) {
+  return d.sort((a, b) => parseInt(b["key"]) - parseInt(a["key"]));
+}
 
-//                 console.log(tag)
-//         return (<span><Tag color={color} key={tag}>
-//           {tag.toUpperCase()}
-//         </Tag></span>)
-//     },
-//     width:130
-//   },
-// {
-//     title: 'Created By',
-//     dataIndex: 'created_by',
-//     key: 'created_by',
-//     width:100
-//   },
-// //   {
-// //     title: 'Action',
-// //     key: 'action',
-// //     render: (_, record) => (
-// //       <Space size="middle">
-// //         <a> {record.name}</a>
-// //         <a>Delete</a>
-// //       </Space>
-// //     ),
-// //   },
-// ];
-// const data = [
-//   {
-//     request_id: `REQ${getRandomInt()}`,
-//     transaction_id: '81729-r5lPk-1706771350353-a7egb',
-//     service_name: 'DevBox',
-//     date_time: "01-31-2024 22:03",
-//     service_action: "Create".toUpperCase(),
-//     payload: JSON.stringify({'os':'linux', 'cpu':'core','memory':'8', 'disk_drive':'500', 'application_stack':'vm'}),
-//     request_status:'running',
-//     request_status1:'running',
-//     created_by: "Admin",
-//   },
-//   {
-//     request_id: `REQ${getRandomInt()}`,
-//     transaction_id: '81729-r5lPk-1706771350353-a7egz',
-//     service_name: 'DevBox',
-//     date_time: "01-31-2024 22:03",
-//     service_action: "Create".toUpperCase(),
-//     payload: JSON.stringify({'os':'linux', 'cpu':'core','memory':'8', 'disk_drive':'500', 'application_stack':'vm'}),
-//     request_status:'completed',
-//     request_status1:'completed',
-//     created_by: "Admin",
-//   },
-//   {
-//     request_id: `REQ${getRandomInt()}`,
-//     transaction_id: '81729-r5lPk-1706771350353-a7egx',
-//     service_name: 'DevBox',
-//     date_time: "01-31-2024 22:03",
-//     service_action: "Create".toUpperCase(),
-//     payload: JSON.stringify({'os':'linux', 'cpu':'core','memory':'8', 'disk_drive':'500', 'application_stack':'vm'}),
-//     request_status:'failed',
-//     request_status1:'failed',
-//     created_by: "Admin",
-//   }
-// ];
-// const TransactionStatus = () => {
-//   const [top, setTop] = useState('topLeft');
-//   const [bottom, setBottom] = useState('bottomRight');
-//   return (
-//     <div>
-//       <div>
-//         {/* <Radio.Group
-//           style={{
-//             marginBottom: 10,
-//           }}
-//           options={topOptions}
-//           value={top}
-//           onChange={(e) => {
-//             setTop(e.target.value);
-//           }}
-//         /> */}
-//       </div>
-//       {/* <Radio.Group
-//         style={{
-//           marginBottom: 10,
-//         }}
-//         options={bottomOptions}
-//         value={bottom}
-//         onChange={(e) => {
-//           setBottom(e.target.value);
-//         }}
-//       /> */}
-//       <Table
-//         columns={columns}
-//         pagination={{
-//           position: [bottom],
-//         }}
-//         dataSource={data}
-//       />
-//     </div>
-//   );
-// };
-// export default TransactionStatus;
-
-const items = [
-  {
-    key: "1",
-    label: "Action 1",
-  },
-  {
-    key: "2",
-    label: "Action 2",
-  },
-];
 const TransactionStatus = () => {
   const expandedRowRender1 = (data) => {
     const columns = [
@@ -268,24 +73,35 @@ const TransactionStatus = () => {
         },
       },
       {
-        title: "Resume",
-        key: "resume",
+        title: "No. of Retry",
+        key: "no_of_retry",
+        render: (d) => {
+          if (d["no_of_retry"] != 0) {
+            return d["no_of_retry"];
+          }
+        },
+      },
+      {
+        title: "Retry",
+        key: "Retry",
         render: (d) => {
           //  let color = 'error' //tag.length > 5 ? 'geekblue' : 'green';
           //  if (d['status'] == 'Running') {
           //    color = 'processing';
           //  }else if(d['status']  == 'Completed'){
           //          color = 'success'
-          //        }
-          return (
-            <span style={{ fontSize: 25 }}>
-              <InteractionOutlined
-                height={"1em"}
-                width={"1em"}
-                onClick={() => handleResume(d)}
-              />
-            </span>
-          );
+          //
+          if (d["status"] == "Error") {
+            return (
+              <span style={{ fontSize: 25 }}>
+                <InteractionOutlined
+                  height={"1em"}
+                  width={"1em"}
+                  onClick={() => handleResume(d)}
+                />
+              </span>
+            );
+          }
         },
       },
       {
@@ -298,11 +114,13 @@ const TransactionStatus = () => {
           // }else if(d['status']  == 'Completed'){
           //         color = 'success'
           //       }
-          return (
-            <span style={{ fontSize: 25 }}>
-              <CloseSquareOutlined onClick={() => handleRevoke(d)} />
-            </span>
-          );
+          if (d["status"] == "Error") {
+            return (
+              <span style={{ fontSize: 25 }}>
+                <CloseSquareOutlined onClick={() => handleRevoke(d)} />
+              </span>
+            );
+          }
         },
       },
       {
@@ -315,6 +133,7 @@ const TransactionStatus = () => {
           } else if (d["status"] == "Completed") {
             color = "success";
           }
+
           return (
             <a href="/logs/logs-INC124567.log" download target="_blank">
               <span style={{ fontSize: 25 }}>
@@ -473,7 +292,7 @@ const TransactionStatus = () => {
     return (
       <Table
         columns={columns}
-        dataSource={data["childerns"]}
+        dataSource={data["childrens"]}
         pagination={false}
       />
     );
@@ -562,228 +381,282 @@ const TransactionStatus = () => {
   ];
   let parentData = [];
   parentData["service_name"] = "DevBox";
-  const data = [
-    {
-      key: 0,
-      request_id: `REQ${getRandomInt()}`,
-      transaction_id: "81729-r5lPk-1706771350353-a7egb",
-      service_name: "DevBox",
-      date_time: "01-31-2024 22:03",
-      service_action: "Create".toUpperCase(),
-      payload: JSON.stringify({
-        os: "linux",
-        cpu: "core",
-        memory: "8",
-        disk_drive: "500",
-        application_stack: "vm",
-      }),
-      request_status: "running",
-      request_status1: "running",
-      created_by: "Admin",
-      childerns: [
-        {
-          key: 0,
-          date: "01-31-2024 22:03",
-          request_id: `REQ${getRandomInt()}`,
-          transaction_id: "81729-r5lPk-1706771350353-a7egb",
-          service_name: parentData["service_name"],
-          tool_integration: "Aria Automation",
-          status: "Completed",
-        },
-        {
-          key: 1,
-          date: "01-31-2024 22:03",
-          request_id: `REQ${getRandomInt()}`,
-          transaction_id: "81729-r5lPk-1706771350353-a7egb",
-          service_name: parentData["service_name"],
-          date: "01-31-2024 22:03",
-          tool_integration: "Puppet",
-          status: "Running",
-        },
-        {
-          key: 2,
-          date: "01-31-2024 22:03",
-          request_id: `REQ${getRandomInt()}`,
-          transaction_id: "81729-r5lPk-1706771350353-a7egb",
-          service_name: parentData["service_name"],
-          date: "01-31-2024 22:03",
-          tool_integration: "Qualys",
-          status: "Running",
-        },
-        {
-          key: 3,
-          date: "01-31-2024 22:03",
-          request_id: `REQ${getRandomInt()}`,
-          transaction_id: "81729-r5lPk-1706771350353-a7egb",
-          service_name: parentData["service_name"],
-          date: "01-31-2024 22:03",
-          tool_integration: "ServiceNow",
-          status: "Running",
-        },
-      ],
-    },
-    {
-      key: 1,
-      request_id: `REQ${getRandomInt()}`,
-      transaction_id: "81729-r5lPk-1706771350353-a7egz",
-      service_name: "DevBox",
-      date_time: "01-31-2024 22:03",
-      service_action: "Create".toUpperCase(),
-      payload: JSON.stringify({
-        os: "linux",
-        cpu: "core",
-        memory: "8",
-        disk_drive: "500",
-        application_stack: "vm",
-      }),
-      request_status: "completed",
-      request_status1: "completed",
-      created_by: "Admin",
-      childerns: [
-        {
-          key: 0,
-          date: "01-31-2024 22:03",
-          request_id: `REQ${getRandomInt()}`,
-          transaction_id: "81729-r5lPk-1706771350353-a7egz",
-          service_name: parentData["service_name"],
-          tool_integration: "Aria Automation",
-          status: "Completed",
-        },
-        {
-          key: 1,
-          date: "01-31-2024 22:03",
-          request_id: `REQ${getRandomInt()}`,
-          transaction_id: "81729-r5lPk-1706771350353-a7egz",
-          service_name: parentData["service_name"],
-          date: "01-31-2024 22:03",
-          tool_integration: "Puppet",
-          status: "Error",
-        },
-        {
-          key: 2,
-          date: "01-31-2024 22:03",
-          request_id: `REQ${getRandomInt()}`,
-          transaction_id: "81729-r5lPk-1706771350353-a7egz",
-          service_name: parentData["service_name"],
-          date: "01-31-2024 22:03",
-          tool_integration: "Qualys",
-          status: "Completed",
-        },
-        {
-          key: 3,
-          date: "01-31-2024 22:03",
-          request_id: `REQ${getRandomInt()}`,
-          transaction_id: "81729-r5lPk-1706771350353-a7egz",
-          service_name: parentData["service_name"],
-          date: "01-31-2024 22:03",
-          tool_integration: "ServiceNow",
-          status: "Completed",
-        },
-      ],
-    },
-    {
-      key: 2,
-      request_id: `REQ${getRandomInt()}`,
-      transaction_id: "81729-r5lPk-1706771350353-a7egx",
-      service_name: "DevBox",
-      date_time: "01-31-2024 22:03",
-      service_action: "Create".toUpperCase(),
-      payload: JSON.stringify({
-        os: "linux",
-        cpu: "core",
-        memory: "8",
-        disk_drive: "500",
-        application_stack: "vm",
-      }),
-      request_status: "failed",
-      request_status1: "failed",
-      created_by: "Admin",
-      childerns: [
-        {
-          key: 0,
-          date: "01-31-2024 22:03",
-          request_id: `REQ${getRandomInt()}`,
-          transaction_id: "81729-r5lPk-1706771350353-a7egx",
-          service_name: parentData["service_name"],
-          tool_integration: "Aria Automation",
-          status: "Completed",
-        },
-        {
-          key: 1,
-          date: "01-31-2024 22:03",
-          request_id: `REQ${getRandomInt()}`,
-          transaction_id: "81729-r5lPk-1706771350353-a7egx",
-          service_name: parentData["service_name"],
-          date: "01-31-2024 22:03",
-          tool_integration: "Puppet",
-          status: "Error",
-        },
-        {
-          key: 2,
-          date: "01-31-2024 22:03",
-          request_id: `REQ${getRandomInt()}`,
-          transaction_id: "81729-r5lPk-1706771350353-a7egx",
-          service_name: parentData["service_name"],
-          date: "01-31-2024 22:03",
-          tool_integration: "Qualys",
-          status: "Completed",
-        },
-        {
-          key: 3,
-          date: "01-31-2024 22:03",
-          request_id: `REQ${getRandomInt()}`,
-          transaction_id: "81729-r5lPk-1706771350353-a7egx",
-          service_name: parentData["service_name"],
-          date: "01-31-2024 22:03",
-          tool_integration: "ServiceNow",
-          status: "Completed",
-        },
-      ],
-    },
-  ];
 
-  let [newData, setData] = useState(data);
+  // const data = [
+  //   {
+  //     key: 0,
+  //     request_id: `REQ${getRandomInt()}`,
+  //     transaction_id: "81729-r5lPk-1706771350353-a7egb",
+  //     service_name: "DevBox",
+  //     date_time: "01-31-2024 22:03",
+  //     service_action: "Create".toUpperCase(),
+  //     payload: JSON.stringify({
+  //       os: "linux",
+  //       cpu: "core",
+  //       memory: "8",
+  //       disk_drive: "500",
+  //       application_stack: "vm",
+  //     }),
+  //     request_status: "running",
+  //     request_status1: "running",
+  //     created_by: "Admin",
+  //     childerns: [
+  //       {
+  //         key: 0,
+  //         date: "01-31-2024 22:03",
+  //         request_id: `REQ${getRandomInt()}`,
+  //         transaction_id: "81729-r5lPk-1706771350353-a7egb",
+  //         service_name: parentData["service_name"],
+  //         tool_integration: "Aria Automation",
+  //         status: "Completed",
+  //       },
+  //       {
+  //         key: 1,
+  //         date: "01-31-2024 22:03",
+  //         request_id: `REQ${getRandomInt()}`,
+  //         transaction_id: "81729-r5lPk-1706771350353-a7egb",
+  //         service_name: parentData["service_name"],
+  //         date: "01-31-2024 22:03",
+  //         tool_integration: "Puppet",
+  //         status: "Running",
+  //       },
+  //       {
+  //         key: 2,
+  //         date: "01-31-2024 22:03",
+  //         request_id: `REQ${getRandomInt()}`,
+  //         transaction_id: "81729-r5lPk-1706771350353-a7egb",
+  //         service_name: parentData["service_name"],
+  //         date: "01-31-2024 22:03",
+  //         tool_integration: "Qualys",
+  //         status: "Running",
+  //       },
+  //       {
+  //         key: 3,
+  //         date: "01-31-2024 22:03",
+  //         request_id: `REQ${getRandomInt()}`,
+  //         transaction_id: "81729-r5lPk-1706771350353-a7egb",
+  //         service_name: parentData["service_name"],
+  //         date: "01-31-2024 22:03",
+  //         tool_integration: "ServiceNow",
+  //         status: "Running",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     key: 1,
+  //     request_id: `REQ${getRandomInt()}`,
+  //     transaction_id: "81729-r5lPk-1706771350353-a7egz",
+  //     service_name: "DevBox",
+  //     date_time: "01-31-2024 22:03",
+  //     service_action: "Create".toUpperCase(),
+  //     payload: JSON.stringify({
+  //       os: "linux",
+  //       cpu: "core",
+  //       memory: "8",
+  //       disk_drive: "500",
+  //       application_stack: "vm",
+  //     }),
+  //     request_status: "completed",
+  //     request_status1: "completed",
+  //     created_by: "Admin",
+  //     childerns: [
+  //       {
+  //         key: 0,
+  //         date: "01-31-2024 22:03",
+  //         request_id: `REQ${getRandomInt()}`,
+  //         transaction_id: "81729-r5lPk-1706771350353-a7egz",
+  //         service_name: parentData["service_name"],
+  //         tool_integration: "Aria Automation",
+  //         status: "Completed",
+  //       },
+  //       {
+  //         key: 1,
+  //         date: "01-31-2024 22:03",
+  //         request_id: `REQ${getRandomInt()}`,
+  //         transaction_id: "81729-r5lPk-1706771350353-a7egz",
+  //         service_name: parentData["service_name"],
+  //         date: "01-31-2024 22:03",
+  //         tool_integration: "Puppet",
+  //         status: "Error",
+  //       },
+  //       {
+  //         key: 2,
+  //         date: "01-31-2024 22:03",
+  //         request_id: `REQ${getRandomInt()}`,
+  //         transaction_id: "81729-r5lPk-1706771350353-a7egz",
+  //         service_name: parentData["service_name"],
+  //         date: "01-31-2024 22:03",
+  //         tool_integration: "Qualys",
+  //         status: "Completed",
+  //       },
+  //       {
+  //         key: 3,
+  //         date: "01-31-2024 22:03",
+  //         request_id: `REQ${getRandomInt()}`,
+  //         transaction_id: "81729-r5lPk-1706771350353-a7egz",
+  //         service_name: parentData["service_name"],
+  //         date: "01-31-2024 22:03",
+  //         tool_integration: "ServiceNow",
+  //         status: "Completed",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     key: 2,
+  //     request_id: `REQ${getRandomInt()}`,
+  //     transaction_id: "81729-r5lPk-1706771350353-a7egx",
+  //     service_name: "DevBox",
+  //     date_time: "01-31-2024 22:03",
+  //     service_action: "Create".toUpperCase(),
+  //     payload: JSON.stringify({
+  //       os: "linux",
+  //       cpu: "core",
+  //       memory: "8",
+  //       disk_drive: "500",
+  //       application_stack: "vm",
+  //     }),
+  //     request_status: "failed",
+  //     request_status1: "failed",
+  //     created_by: "Admin",
+  //     childerns: [
+  //       {
+  //         key: 0,
+  //         date: "01-31-2024 22:03",
+  //         request_id: `REQ${getRandomInt()}`,
+  //         transaction_id: "81729-r5lPk-1706771350353-a7egx",
+  //         service_name: parentData["service_name"],
+  //         tool_integration: "Aria Automation",
+  //         status: "Completed",
+  //       },
+  //       {
+  //         key: 1,
+  //         date: "01-31-2024 22:03",
+  //         request_id: `REQ${getRandomInt()}`,
+  //         transaction_id: "81729-r5lPk-1706771350353-a7egx",
+  //         service_name: parentData["service_name"],
+  //         date: "01-31-2024 22:03",
+  //         tool_integration: "Puppet",
+  //         status: "Error",
+  //       },
+  //       {
+  //         key: 2,
+  //         date: "01-31-2024 22:03",
+  //         request_id: `REQ${getRandomInt()}`,
+  //         transaction_id: "81729-r5lPk-1706771350353-a7egx",
+  //         service_name: parentData["service_name"],
+  //         date: "01-31-2024 22:03",
+  //         tool_integration: "Qualys",
+  //         status: "Completed",
+  //       },
+  //       {
+  //         key: 3,
+  //         date: "01-31-2024 22:03",
+  //         request_id: `REQ${getRandomInt()}`,
+  //         transaction_id: "81729-r5lPk-1706771350353-a7egx",
+  //         service_name: parentData["service_name"],
+  //         date: "01-31-2024 22:03",
+  //         tool_integration: "ServiceNow",
+  //         status: "Completed",
+  //       },
+  //     ],
+  //   },
+  // ];
 
+  let [newData, setData] = useState([]);
+
+  useEffect(() => {
+    let username = Auth.getUserProfile1();
+    console.log(username);
+    axios.get(`http://localhost:3002`).then((response) => {
+      let responseData = sortByKey(response["data"]);
+      let newdata = responseData.map((r) => {
+        if (username == "puppetuser" || username == "puppet") {
+          let puppet = r["childrens"].filter((c) => {
+            if (c["tool_integration"] == "Puppet") {
+              return c;
+            }
+          });
+          console.log(puppet);
+          r["childrens"] = [...puppet];
+        }
+
+        return r;
+      });
+      console.log("NewData", newdata);
+      setData(sortByKey(newdata));
+    });
+  }, []);
+
+  function sendData(transactions) {
+    let sendData = JSON.stringify(transactions);
+    axios
+      .put(`http://localhost:3002`, { data: sendData })
+      .then((response) => {
+        // if (response.status === 201) {
+        //   success(requestId);
+        //   insertLocalStorage(values);
+        // }
+      })
+      .catch((error) => {
+        // console.log("incatch::", error);
+        // //errorMessage()
+        // success(requestId);
+        // insertLocalStorage(values);
+      });
+  }
   let handleResume = (resumeData) => {
     let i = 0;
+    let no_of_error = 0;
+    let index = 0;
     newData.map((d) => {
-      d["childerns"].map((childerns) => {
+      d["childrens"].map((childerns) => {
         if (childerns["transaction_id"] == resumeData["transaction_id"]) {
-          if (resumeData["status"] == "Error") {
-            console.log(newData[i]["childerns"][resumeData["key"]]["status"]);
-            newData[i]["childerns"][resumeData["key"]]["status"] = "Running";
-            //console.log(newData["childerns"][resumeData["key"]]["status"]);
-            //newData["childerns"][resumeData["key"]]["status"] = "Running";
-            //setData(newData);
-            setData([...newData]);
+          if (childerns["status"] == "Error") {
+            if (childerns["key"] == resumeData["key"]) {
+              newData[i]["childrens"][resumeData["key"]]["status"] = "Running";
+              newData[i]["childrens"][resumeData["key"]]["no_of_retry"] =
+                parseInt(
+                  newData[i]["childrens"][resumeData["key"]]["no_of_retry"]
+                ) + 1;
+              setData([...newData]);
+              index = i;
+            }
+            no_of_error += 1;
           }
         }
       });
       i++;
     });
+    if (no_of_error == 1) {
+      newData[index]["request_status"] = "running";
+      newData[index]["request_status1"] = "running";
+    }
+    sendData(newData[index]);
   };
 
   let handleRevoke = (resumeData) => {
     let j = 0;
+    let index = 0;
     if (resumeData["status"] == "Error") {
       newData.map((d) => {
         if (d["transaction_id"] == resumeData["transaction_id"]) {
-          d["childerns"].map((childerns) => {
+          d["childrens"].map((childerns) => {
             //if (resumeData["status"] == "Error") {
-            console.log(childerns["status"]);
             //childerns["status"] = "Revoked";
-            newData[j]["childerns"][childerns["key"]]["status"] = "Revoked";
+            newData[j]["childrens"][childerns["key"]]["status"] = "Revoked";
             newData[j]["request_status"] = "Revoked";
             newData[j]["request_status1"] = "Revoked";
+
             //}
           });
+          index = j;
         }
 
         j++;
       });
       setData([...newData]);
-      console.log("Revoked newData::", newData);
     }
+    sendData(newData[index]);
   };
 
   return (
@@ -797,6 +670,8 @@ const TransactionStatus = () => {
           defaultExpandedRowKeys: [],
         }}
         dataSource={newData}
+        bordered={true}
+        size="10"
       />
     </>
   );

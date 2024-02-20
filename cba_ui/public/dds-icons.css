@@ -1883,6 +1883,15 @@
   width: 7.3125rem;
 }
 
+.dds__icon--round-detail-linux {
+  align-items: center;
+  border-radius: 50%;
+  display: flex;
+  height: 7.3125rem;
+  justify-content: center;
+  width: 9.3125rem;
+}
+
 .dds__icon--round-color {
   color: #fff;
   font-size: 3.625rem;

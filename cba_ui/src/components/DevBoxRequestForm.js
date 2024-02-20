@@ -3,7 +3,8 @@ import { Button, Form, Input, Modal, Select } from "antd";
 import axios from "axios";
 import queryString from "query-string";
 import { useNavigate } from "react-router-dom";
-
+import Auth from "./Auth";
+import moment from "moment";
 function errorMessage() {
   Modal.error({
     content: `Internal Server Error. Please try after sometime`,
@@ -63,29 +64,199 @@ export const DevBoxRequestForm = () => {
   } else {
     os = "RedHat Linux 8x";
   }
-  console.log("os", os); //123
 
+  // let newD = [];
+  // let status = ["completed", "failed", "running"];
+  // let toolStatuses = ["Completed", "Error", "Running"];
+  // let newOS = ["Windows Server 2019", "RedHat Linux 8x"];
+  // for (let k = 0; k < 15; k++) {
+  //   let RID = `REQ${getRandomInt()}`;
+  //   let transactionId = `${randomNumeric(4)}-${randomString(
+  //     4
+  //   )}-${new Date().valueOf()}-${randomString(4)}`;
+  //   let newStatus = status[Math.floor(Math.random() * status.length)];
+  //   let toolStatus;
+  //   if (newStatus == "completed") {
+  //     toolStatus = "Completed";
+  //   } else {
+  //     toolStatus =
+  //       toolStatuses[Math.floor(Math.random() * toolStatuses.length)];
+  //   }
+
+  //   newD.push({
+  //     key: k,
+  //     request_id: RID,
+  //     transaction_id: transactionId,
+  //     service_name: "DevBox",
+  //     date_time: "01-31-2024 22:03",
+  //     service_action: "Create".toUpperCase(),
+  //     payload: JSON.stringify({
+  //       os: newOS[Math.floor(Math.random() * newOS.length)],
+  //       cpu: "core",
+  //       memory: "8",
+  //       disk_drive: "500",
+  //       application_stack: "vm",
+  //     }),
+  //     request_status: newStatus,
+  //     request_status1: newStatus,
+  //     created_by: "Admin",
+  //     childerns: [
+  //       {
+  //         key: 0,
+  //         date: "01-31-2024 22:03",
+  //         request_id: RID,
+  //         transaction_id: transactionId,
+  //         service_name: "DevBox",
+  //         tool_integration: "Aria Automation",
+  //         status: toolStatus,
+  //       },
+  //       {
+  //         key: 1,
+  //         date: "01-31-2024 22:03",
+  //         request_id: RID,
+  //         transaction_id: transactionId,
+  //         service_name: "DevBox",
+  //         date: "01-31-2024 22:03",
+  //         tool_integration: "Puppet",
+  //         status: toolStatus,
+  //       },
+  //       {
+  //         key: 2,
+  //         date: "01-31-2024 22:03",
+  //         request_id: RID,
+  //         transaction_id: transactionId,
+  //         service_name: "DevBox",
+  //         date: "01-31-2024 22:03",
+  //         tool_integration: "Qualys",
+  //         status: toolStatus,
+  //       },
+  //       {
+  //         key: 3,
+  //         date: "01-31-2024 22:03",
+  //         request_id: RID,
+  //         transaction_id: transactionId,
+  //         service_name: "DevBox",
+  //         date: "01-31-2024 22:03",
+  //         tool_integration: "ServiceNow",
+  //         status: toolStatus,
+  //       },
+  //     ],
+  //   });
+  // }
+
+  // console.log(newD);
+
+  // console.log(newD);
+  let insertLocalStorage = (payload) => {
+    // Auth.putTransactions(newPayload);
+    // axios
+    //   .get(`http://localhost:3002`)
+    //   .then((response1) =>
+    {
+      let transactions = null;
+      transactions = transactions == null ? [] : transactions;
+      let newPayload = payload["payload"];
+      //newPayload["key"] = transactions.length + 1;
+      newPayload["date_time"] = moment(new Date()).format("MM-DD-YYYY H:m");
+      newPayload["request_status"] = "running";
+      newPayload["request_status1"] = "running";
+      newPayload["created_by"] = "Admin";
+      newPayload["request_id"] = newPayload["requestId"];
+      newPayload["transaction_id"] = newPayload["transactionId"];
+      newPayload["payload"] = JSON.stringify(payload["payload"]);
+      newPayload["service_name"] = "DevBox";
+      newPayload["service_action"] = "CREATE";
+      newPayload["childrens"] = [
+        {
+          key: 0,
+          date: newPayload["date_time"],
+          request_id: newPayload["requestId"],
+          transaction_id: newPayload["transactionId"],
+          service_name: "DevBox",
+          tool_integration: "Aria Automation",
+          status: "Running",
+        },
+        {
+          key: 1,
+          date: newPayload["date_time"],
+          request_id: newPayload["requestId"],
+          transaction_id: newPayload["transactionId"],
+          service_name: "DevBox",
+          tool_integration: "Puppet",
+          status: "Running",
+        },
+        {
+          key: 2,
+          date: newPayload["date_time"],
+          request_id: newPayload["requestId"],
+          transaction_id: newPayload["transactionId"],
+          service_name: "DevBox",
+          tool_integration: "Qualys",
+          status: "Running",
+        },
+        {
+          key: 3,
+          date: newPayload["date_time"],
+          request_id: newPayload["requestId"],
+          transaction_id: newPayload["transactionId"],
+          service_name: "DevBox",
+          tool_integration: "ServiceNow",
+          status: "Running",
+        },
+      ];
+      console.log(newPayload);
+      transactions.push(newPayload);
+      console.log(transactions);
+      let sendData = JSON.stringify(transactions);
+      axios
+        .post(`http://localhost:3002`, { data: sendData })
+        .then((response) => {
+          // if (response.status === 201) {
+          //   success(requestId);
+          //   insertLocalStorage(values);
+          // }
+        })
+        .catch((error) => {
+          // console.log("incatch::", error);
+          // //errorMessage()
+          // success(requestId);
+          // insertLocalStorage(values);
+        });
+    }
+    // )
+    // .catch((error) => {
+    //   // console.log("incatch::", error);
+    //   // //errorMessage()
+    //   // success(requestId);
+    //   // insertLocalStorage(values);
+    // });
+  };
   const onFinish = (values) => {
-    let transactionId = `${randomNumeric(5)}-${randomString(
-      5
-    )}-${new Date().valueOf()}-${randomString(5)}`;
+    let transactionId = `${randomNumeric(4)}-${randomString(
+      4
+    )}-${new Date().valueOf()}-${randomString(4)}`;
     values["payload"]["transactionId"] = transactionId;
     let requestId = `REQ${getRandomInt()}`;
     values["payload"]["requestId"] = requestId;
     console.log(values);
 
-    axios
-      .post(`http://10.118.168.237:5000/api/transaction`, values)
-      .then((response) => {
-        if (response.status === 201) {
-          success(requestId);
-        }
-      })
-      .catch((error) => {
-        console.log("incatch::", error);
-        //errorMessage()
-        success(requestId);
-      });
+    // axios
+    //   .post(`http://10.118.168.237:5000/api/transaction`, values)
+    //   .then((response) => {
+    //     if (response.status === 201) {
+    //       success(requestId);
+    //       insertLocalStorage(values);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log("incatch::", error);
+    //     //errorMessage()
+    //     success(requestId);
+    //     insertLocalStorage(values);
+    //   });
+
+    insertLocalStorage(values);
+    success(requestId);
 
     form.resetFields();
   };
