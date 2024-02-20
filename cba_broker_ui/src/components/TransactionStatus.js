@@ -567,7 +567,7 @@ const TransactionStatus = () => {
   useEffect(() => {
     let username = Auth.getUserProfile1();
     console.log(username);
-    axios.get(`http://localhost:3002`).then((response) => {
+    axios.get(`http://10.45.197.10:5000`).then((response) => {
       let responseData = sortByKey(response["data"]);
       let newdata = responseData.map((r) => {
         if (username == "puppetuser" || username == "puppet") {
@@ -590,7 +590,7 @@ const TransactionStatus = () => {
   function sendData(transactions) {
     let sendData = JSON.stringify(transactions);
     axios
-      .put(`http://localhost:3002`, { data: sendData })
+      .put(`http://10.45.197.10:5000`, { data: sendData })
       .then((response) => {
         // if (response.status === 201) {
         //   success(requestId);

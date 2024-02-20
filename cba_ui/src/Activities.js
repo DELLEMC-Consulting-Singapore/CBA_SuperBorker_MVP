@@ -290,7 +290,7 @@ const Activities = () => {
   let [newData, setData] = useState([]);
 
   useEffect(() => {
-    axios.get(`http://localhost:3002`).then((response) => {
+    axios.get(`http://10.45.197.10:5000`).then((response) => {
       setData(sortByKey(response["data"]));
     });
   }, []);
