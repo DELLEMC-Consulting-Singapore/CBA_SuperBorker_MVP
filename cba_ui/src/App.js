@@ -29,6 +29,7 @@ import Login from "./components/Login";
 import { Detail, DetailWindows } from "./components/DetailWindows";
 import { DetailLinux } from "./components/DetailLinux";
 import Activities from "./Activities";
+import { KnowledgeBase } from "./components/KnowledgeBase";
 
 const { Content, Footer, Sider } = Layout;
 
@@ -172,6 +173,15 @@ const App = () => {
                       element={
                         <Protected isLoggedIn={Auth.isAuthenticated()}>
                           <Activities />
+                        </Protected>
+                      }
+                    />
+
+                    <Route
+                      path="/knowledge-base"
+                      element={
+                        <Protected isLoggedIn={Auth.isAuthenticated()}>
+                          <KnowledgeBase />
                         </Protected>
                       }
                     />

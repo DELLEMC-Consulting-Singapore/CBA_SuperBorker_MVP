@@ -73,6 +73,8 @@ export const MenuBar = () => {
       history && history("/");
     } else if (e.key == 16) {
       history("/activities");
+    } else if (e.key == 14) {
+      history("/knowledge-base");
     } else {
       history("#");
     }

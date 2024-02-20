@@ -1,13 +1,53 @@
 import React from "react";
-import { Typography, Card, Row, Col, Progress, Space } from "antd";
+import {
+  Typography,
+  Card,
+  Row,
+  Col,
+  Progress,
+  Space,
+  notification,
+  Button,
+  Modal,
+} from "antd";
 import { Link } from "react-router-dom";
 import { CheckCircleFilled, CloseCircleFilled } from "@ant-design/icons";
 const { Meta } = Card;
 const { Paragraph } = Typography;
 
+const config = {
+  title: "",
+  content: (
+    <>
+      CBA's Ansible infrastructure configuration management platform is not
+      available due to the emergency change activity. Respective teams are
+      actively working to bring up the Ansible Tower interface. If you need
+      details, please refer to the incident INC289112 for more details. Or, you
+      can send an email to&nbsp;
+      <span>
+        <a href="mailto:ansible_automation@cba.com.au">
+          ansible_automation@cba.com.au
+        </a>
+      </span>
+    </>
+  ),
+};
+
 const Home = () => {
+  // const [api, contextHolder] = notification.useNotification();
+  // const openNotificationWithIcon = (type) => {
+  //   api[type]({
+  //     message: "",
+  //     description:
+  //       "CBA's Ansible infrastructure configuration management platform is not available due to the emergency change activity. Respective teams are actively working to bring up the Ansible Tower interface. If you need details, please refer to the incident INC289112 for more details. Or, you can send an email to ansible_automation@cba.com.au</a>",
+  //   });
+  // };
+
+  const [modal, contextHolder] = Modal.useModal();
+
   return (
     <>
+      {contextHolder}
       <Typography.Title
         level={1}
         style={{
@@ -299,7 +339,11 @@ const Home = () => {
         </Col>
 
         <Col span={4}>
-          <Link to={"/"}>
+          <Link
+            onClick={async () => {
+              modal.error(config);
+            }}
+          >
             <Card
               hoverable
               style={{

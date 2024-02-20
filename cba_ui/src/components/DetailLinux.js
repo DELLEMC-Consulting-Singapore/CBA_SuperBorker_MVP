@@ -91,11 +91,10 @@ export const DetailLinux = () => {
                   margin: "10px 0px 0px 50px",
                 }}
               >
-                Provision a single or multiple instances (up to 5) of RedHat
-                Linux 8x VM(s)
+                Coming Soon
               </Paragraph>
             </div>
-            <div style={{ padding: "30px" }}>
+            <div style={{ position: "absolute", right: "80px", top: "50px" }}>
               <Link to="/devbox/request-vm?os=red-hat-8x">
                 <Button
                   type="primary"

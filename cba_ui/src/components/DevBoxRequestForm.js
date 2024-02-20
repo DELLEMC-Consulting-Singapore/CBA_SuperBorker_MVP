@@ -209,7 +209,7 @@ export const DevBoxRequestForm = () => {
       console.log(transactions);
       let sendData = JSON.stringify(transactions);
       axios
-        .post(`http://10.45.197.10:5000`, { data: sendData })
+        .post(`http://localhost:3002`, { data: sendData })
         .then((response) => {
           // if (response.status === 201) {
           //   success(requestId);
@@ -241,7 +241,7 @@ export const DevBoxRequestForm = () => {
     console.log(values);
 
     // axios
-    //   .post(`http://10.45.197.10:5000/api/transaction`, values)
+    //   .post(`http://10.118.168.237:5000/api/transaction`, values)
     //   .then((response) => {
     //     if (response.status === 201) {
     //       success(requestId);

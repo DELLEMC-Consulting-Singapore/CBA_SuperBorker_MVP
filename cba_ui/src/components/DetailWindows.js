@@ -91,11 +91,10 @@ export const DetailWindows = () => {
                   margin: "10px 0px 0px 50px",
                 }}
               >
-                Provision a single or multiple instances (up to 5) of Windows
-                2019 Full VM(s)
+                Get a Windows 2019 for a span of 7 days for Development use
               </Paragraph>
             </div>
-            <div style={{ padding: "30px" }}>
+            <div style={{ position: "absolute", right: "80px", top: "50px" }}>
               <Link to="/devbox/request-vm?os=windows-server-2019">
                 <Button
                   type="primary"

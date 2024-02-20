@@ -18,11 +18,11 @@ export const ServiceDetailLinux = () => {
         >
           <Col span={16}>
             <p>
-              The Oracle Linux operating system is engineered for open cloud
+              The RedHat Linux operating system is engineered for open cloud
               infrastructure. It delivers leading performance, scalability,
               reliability and security for enterprise SaaS and PaaS workloads as
               well as traditional enterprise applications. Current Dell IT
-              Supported Version of Oracle Linux Server. Please see the
+              Supported Version of RedHat Linux Server. Please see the
               highlights sections for latest features of this version.
               <br />
               <br />
@@ -40,14 +40,14 @@ export const ServiceDetailLinux = () => {
             <div _ngcontent-nbg-c284="" class="version">
               <p _ngcontent-nbg-c284="">
                 {" "}
-                Version: <strong _ngcontent-nbg-c284="">RedHat 8x</strong>
+                Version: <strong _ngcontent-nbg-c284="">RedHat Linux 8x</strong>
               </p>
             </div>
             <div _ngcontent-qwl-c284="" class="highlights">
               <p _ngcontent-qwl-c284="">This service features:</p>
               <ul _ngcontent-uce-c300="">
                 <li _ngcontent-uce-c300="">
-                  Oracle Linux 8 Software Distribution and Management
+                  RedHat Linux 8 Software Distribution and Management
                 </li>
                 <li _ngcontent-uce-c300="">
                   Installation, Boot, and Image Creation
@@ -65,7 +65,7 @@ export const ServiceDetailLinux = () => {
                 </li>
                 <li _ngcontent-uce-c300="">Security</li>
                 <li _ngcontent-uce-c300="">
-                  New systemd Behavior in Oracle Linux 8
+                  New systemd Behavior in RedHat Linux 8
                 </li>
                 <li _ngcontent-uce-c300="">Virtualization</li>
                 <li _ngcontent-uce-c300="">Web Services</li>

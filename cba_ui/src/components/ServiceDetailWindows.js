@@ -18,11 +18,11 @@ export const ServiceDetailWindows = () => {
         >
           <Col span={16}>
             <p>
-              Windows Server 2019 is the cloud-ready operating system that
-              supports your current workloads while introducing new technologies
-              that make it easy to transition to cloud computing when you are
-              ready. Currently Dell IT-supported if Windows Server 2019 is
-              deemed to be incompatible.
+              Windows Server 2019 is the VM being provisioned for the Developer
+              usage that supports your application development testing and
+              validations while introducing new technologies that make it easy
+              to transition later and it's been supported for any issues related
+              to OS or VM instance.
               <br />
               <br />
               1. For VM Support - Go to <a href=""> MYIT </a> - -&gt; Create

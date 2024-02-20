@@ -70,7 +70,7 @@ export const DevBox = () => {
                   </a>
                 </Link>,
               ]}
-              bodyStyle={{ height: 180 }}
+              bodyStyle={{ height: 120 }}
             >
               <h5
                 style={{
@@ -89,8 +89,7 @@ export const DevBox = () => {
                   margin: 0,
                 }}
               >
-                Provision a single or multiple instances (up to 5) of Windows
-                2019 Full VM(s)
+                Get a Windows 2019 for a span of 7 days for Development use
               </Paragraph>
             </Card>
           </Link>
@@ -127,6 +126,7 @@ export const DevBox = () => {
                   </a>
                 </Link>,
               ]}
+              bodyStyle={{ height: 120 }}
             >
               <h5
                 style={{
@@ -145,8 +145,7 @@ export const DevBox = () => {
                   margin: 0,
                 }}
               >
-                Provisions a single or multiple instances (up to 5) of the
-                latest, monthly patched, RedHat Linux 8x version VM(s)
+                Coming Soon
               </Paragraph>
             </Card>
           </Link>
