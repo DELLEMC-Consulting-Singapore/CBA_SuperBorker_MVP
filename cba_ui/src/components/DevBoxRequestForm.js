@@ -166,6 +166,9 @@ export const DevBoxRequestForm = () => {
       newPayload["payload"] = JSON.stringify(payload["payload"]);
       newPayload["service_name"] = "DevBox";
       newPayload["service_action"] = "CREATE";
+      newPayload["deployment_id"] = payload["deployment_id"];
+      newPayload["deployment_name"] = payload["deployment_name"];
+      newPayload["response"] = payload["response"];
       newPayload["childrens"] = [
         {
           key: 0,
@@ -175,6 +178,8 @@ export const DevBoxRequestForm = () => {
           service_name: "DevBox",
           tool_integration: "Aria Automation",
           status: "Running",
+          deployment_id: payload["deployment_id"],
+          deployment_name: payload["deployment_name"],
         },
         {
           key: 1,
@@ -184,6 +189,8 @@ export const DevBoxRequestForm = () => {
           service_name: "DevBox",
           tool_integration: "Puppet",
           status: "Running",
+          deployment_id: payload["deployment_id"],
+          deployment_name: payload["deployment_name"],
         },
         {
           key: 2,
@@ -193,6 +200,8 @@ export const DevBoxRequestForm = () => {
           service_name: "DevBox",
           tool_integration: "Qualys",
           status: "Running",
+          deployment_id: payload["deployment_id"],
+          deployment_name: payload["deployment_name"],
         },
         {
           key: 3,
@@ -202,6 +211,8 @@ export const DevBoxRequestForm = () => {
           service_name: "DevBox",
           tool_integration: "ServiceNow",
           status: "Running",
+          deployment_id: payload["deployment_id"],
+          deployment_name: payload["deployment_name"],
         },
       ];
       console.log(newPayload);
@@ -209,19 +220,9 @@ export const DevBoxRequestForm = () => {
       console.log(transactions);
       let sendData = JSON.stringify(transactions);
       axios
-        .post(`http://localhost:3002`, { data: sendData })
-        .then((response) => {
-          // if (response.status === 201) {
-          //   success(requestId);
-          //   insertLocalStorage(values);
-          // }
-        })
-        .catch((error) => {
-          // console.log("incatch::", error);
-          // //errorMessage()
-          // success(requestId);
-          // insertLocalStorage(values);
-        });
+        .post(`http://10.45.197.10:5000`, { data: sendData })
+        .then((response) => {})
+        .catch((error) => {});
     }
     // )
     // .catch((error) => {
@@ -238,24 +239,27 @@ export const DevBoxRequestForm = () => {
     values["payload"]["transactionId"] = transactionId;
     let requestId = `REQ${getRandomInt()}`;
     values["payload"]["requestId"] = requestId;
-    console.log(values);
+    axios
+      .post(`http://10.45.197.28:8443/api/deploy`, values)
+      .then((response) => {
+        if (response.status === 200) {
+          let responseData = response["data"];
+          success(requestId);
+          values["payload"]["deployment_id"] = responseData["deployment_id"];
+          values["payload"]["deployment_name"] =
+            responseData["deployment_name"];
+          values["payload"]["response"] = JSON.stringify(responseData);
+          insertLocalStorage(values);
+        }
+      })
+      .catch((error) => {
+        console.log("incatch::", error);
+        //errorMessage()
+        success(requestId);
+        values["payload"]["response"] = JSON.stringify(error);
+        insertLocalStorage(values);
+      });
 
-    // axios
-    //   .post(`http://10.118.168.237:5000/api/transaction`, values)
-    //   .then((response) => {
-    //     if (response.status === 201) {
-    //       success(requestId);
-    //       insertLocalStorage(values);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log("incatch::", error);
-    //     //errorMessage()
-    //     success(requestId);
-    //     insertLocalStorage(values);
-    //   });
-
-    insertLocalStorage(values);
     success(requestId);
 
     form.resetFields();
