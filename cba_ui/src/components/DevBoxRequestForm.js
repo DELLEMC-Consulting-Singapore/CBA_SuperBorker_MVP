@@ -1,5 +1,5 @@
-import React from "react";
-import { Button, Form, Input, Modal, Select } from "antd";
+import React, { useState } from "react";
+import { Button, Form, Input, Modal, Select, Spin } from "antd";
 import axios from "axios";
 import queryString from "query-string";
 import { useNavigate } from "react-router-dom";
@@ -57,6 +57,8 @@ export const DevBoxRequestForm = () => {
   const [form] = Form.useForm();
   let navigate = useNavigate();
 
+  const [spinning, setSpinning] = useState(false);
+
   const value = queryString.parse(window.location.search);
   let os = value.os;
   if (os == "windows-server-2019") {
@@ -65,88 +67,6 @@ export const DevBoxRequestForm = () => {
     os = "RedHat Linux 8x";
   }
 
-  // let newD = [];
-  // let status = ["completed", "failed", "running"];
-  // let toolStatuses = ["Completed", "Error", "Running"];
-  // let newOS = ["Windows Server 2019", "RedHat Linux 8x"];
-  // for (let k = 0; k < 15; k++) {
-  //   let RID = `REQ${getRandomInt()}`;
-  //   let transactionId = `${randomNumeric(4)}-${randomString(
-  //     4
-  //   )}-${new Date().valueOf()}-${randomString(4)}`;
-  //   let newStatus = status[Math.floor(Math.random() * status.length)];
-  //   let toolStatus;
-  //   if (newStatus == "completed") {
-  //     toolStatus = "Completed";
-  //   } else {
-  //     toolStatus =
-  //       toolStatuses[Math.floor(Math.random() * toolStatuses.length)];
-  //   }
-
-  //   newD.push({
-  //     key: k,
-  //     request_id: RID,
-  //     transaction_id: transactionId,
-  //     service_name: "DevBox",
-  //     date_time: "01-31-2024 22:03",
-  //     service_action: "Create".toUpperCase(),
-  //     payload: JSON.stringify({
-  //       os: newOS[Math.floor(Math.random() * newOS.length)],
-  //       cpu: "core",
-  //       memory: "8",
-  //       disk_drive: "500",
-  //       application_stack: "vm",
-  //     }),
-  //     request_status: newStatus,
-  //     request_status1: newStatus,
-  //     created_by: "Admin",
-  //     childerns: [
-  //       {
-  //         key: 0,
-  //         date: "01-31-2024 22:03",
-  //         request_id: RID,
-  //         transaction_id: transactionId,
-  //         service_name: "DevBox",
-  //         tool_integration: "Aria Automation",
-  //         status: toolStatus,
-  //       },
-  //       {
-  //         key: 1,
-  //         date: "01-31-2024 22:03",
-  //         request_id: RID,
-  //         transaction_id: transactionId,
-  //         service_name: "DevBox",
-  //         date: "01-31-2024 22:03",
-  //         tool_integration: "Puppet",
-  //         status: toolStatus,
-  //       },
-  //       {
-  //         key: 2,
-  //         date: "01-31-2024 22:03",
-  //         request_id: RID,
-  //         transaction_id: transactionId,
-  //         service_name: "DevBox",
-  //         date: "01-31-2024 22:03",
-  //         tool_integration: "Qualys",
-  //         status: toolStatus,
-  //       },
-  //       {
-  //         key: 3,
-  //         date: "01-31-2024 22:03",
-  //         request_id: RID,
-  //         transaction_id: transactionId,
-  //         service_name: "DevBox",
-  //         date: "01-31-2024 22:03",
-  //         tool_integration: "ServiceNow",
-  //         status: toolStatus,
-  //       },
-  //     ],
-  //   });
-  // }
-
-  // console.log(newD);
-
-  // console.log(newD);
   let insertLocalStorage = (payload) => {
     // Auth.putTransactions(newPayload);
     // axios
@@ -220,9 +140,13 @@ export const DevBoxRequestForm = () => {
       console.log(transactions);
       let sendData = JSON.stringify(transactions);
       axios
-        .post(`http://10.45.197.10:5000`, { data: sendData })
-        .then((response) => {})
-        .catch((error) => {});
+        .post(`http://10.45.197.10:5000/api/transactions`, { data: sendData })
+        .then((response) => {
+          setSpinning(false);
+        })
+        .catch((error) => {
+          setSpinning(false);
+        });
     }
     // )
     // .catch((error) => {
@@ -233,6 +157,7 @@ export const DevBoxRequestForm = () => {
     // });
   };
   const onFinish = (values) => {
+    setSpinning(true);
     let transactionId = `${randomNumeric(4)}-${randomString(
       4
     )}-${new Date().valueOf()}-${randomString(4)}`;
@@ -240,7 +165,7 @@ export const DevBoxRequestForm = () => {
     let requestId = `REQ${getRandomInt()}`;
     values["payload"]["requestId"] = requestId;
     axios
-      .post(`http://10.45.197.28:8443/api/deploy`, values)
+      .post(`http://10.45.197.10:5000/api/deploy`, values)
       .then((response) => {
         if (response.status === 200) {
           let responseData = response["data"];
@@ -259,9 +184,6 @@ export const DevBoxRequestForm = () => {
         values["payload"]["response"] = JSON.stringify(error);
         insertLocalStorage(values);
       });
-
-    success(requestId);
-
     form.resetFields();
   };
 
@@ -414,6 +336,7 @@ export const DevBoxRequestForm = () => {
           Submit
         </Button>
       </Form.Item>
+      <Spin spinning={spinning} fullscreen />
     </Form>
   );
 };
