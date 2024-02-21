@@ -567,7 +567,7 @@ const TransactionStatus = () => {
   useEffect(() => {
     let username = Auth.getUserProfile1();
     console.log(username);
-    axios.get(`http://10.45.197.10:5000`).then((response) => {
+    axios.get(`http://10.45.197.10:5000/api/transactions`).then((response) => {
       let responseData = sortByKey(response["data"]);
       let newdata = responseData.map((r) => {
         if (username == "puppetuser" || username == "puppet") {
@@ -590,7 +590,7 @@ const TransactionStatus = () => {
   function sendData(transactions) {
     let sendData = JSON.stringify(transactions);
     axios
-      .put(`http://localhost:3002`, { data: sendData })
+      .post(`http://10.45.197.10:5000/api/transactions_post`, { data: sendData })
       .then((response) => {
         // if (response.status === 201) {
         //   success(requestId);
@@ -609,7 +609,8 @@ const TransactionStatus = () => {
     let no_of_error = 0;
     let index = 0;
     newData.map((d) => {
-      d["childrens"].map((childerns) => {
+if(d["childrens"] !== undefined && d["childrens"].length>0){
+      d["childrens"].map((childerns) => { console.log(childerns)
         if (childerns["transaction_id"] == resumeData["transaction_id"]) {
           if (childerns["status"] == "Error") {
             if (childerns["key"] == resumeData["key"]) {
@@ -624,13 +625,14 @@ const TransactionStatus = () => {
             no_of_error += 1;
           }
         }
-      });
+      });}
       i++;
     });
     if (no_of_error == 1) {
       newData[index]["request_status"] = "running";
       newData[index]["request_status1"] = "running";
     }
+    console.log("new data", newData[index])
     sendData(newData[index]);
   };
 
