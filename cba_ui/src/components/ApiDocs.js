@@ -502,6 +502,21 @@ export const ApiDocs = () => {
                         <div class="line number6 index5 alt1">6</div>
                         <div class="line number7 index6 alt2">7</div>
                         <div class="line number8 index7 alt1">8</div>
+                        <div class="line number8 index7 alt1">9</div>
+                        <div class="line number8 index7 alt1">10</div>
+                        <div class="line number8 index7 alt1">11</div>
+                        <div class="line number8 index7 alt1">12</div>
+                        <div class="line number8 index7 alt1">13</div>
+                        <div class="line number8 index7 alt1">14</div>
+                        <div class="line number8 index7 alt1">15</div>
+                        <div class="line number8 index7 alt1">16</div>
+                        <div class="line number8 index7 alt1">17</div>
+                        <div class="line number8 index7 alt1">18</div>
+                        <div class="line number8 index7 alt1">19</div>
+                        <div class="line number8 index7 alt1">20</div>
+                        <div class="line number8 index7 alt1">21</div>
+                        <div class="line number8 index7 alt1">22</div>
+                        <div class="line number8 index7 alt1">23</div>
                       </td>
                       <td class="code">
                         <div
@@ -633,13 +648,13 @@ export const ApiDocs = () => {
                               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"extraDiskCount":
                               1,
                               <br />
-                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                               "extraDiskFormat": "NTFS",
                               <br />
                               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"disk2Letter":
                               "F",
                               <br />
-                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                               "disk2SizeGB": 1,
                               <br />
                               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"disk3Letter":

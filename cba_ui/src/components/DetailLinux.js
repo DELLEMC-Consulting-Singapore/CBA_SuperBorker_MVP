@@ -1,5 +1,13 @@
 import React from "react";
-import { Card, Typography, Button, Tabs, theme, ConfigProvider } from "antd";
+import {
+  Card,
+  Typography,
+  Button,
+  Tabs,
+  theme,
+  ConfigProvider,
+  Tag,
+} from "antd";
 import { Link } from "react-router-dom";
 import { ApiDocs } from "./ApiDocs";
 import { Support } from "./Support";
@@ -91,7 +99,9 @@ export const DetailLinux = () => {
                   margin: "10px 0px 0px 50px",
                 }}
               >
-                Coming Soon
+                <Tag color="success" key="Coming Soon">
+                  Coming Soon
+                </Tag>
               </Paragraph>
             </div>
             <div style={{ position: "absolute", right: "80px", top: "50px" }}>

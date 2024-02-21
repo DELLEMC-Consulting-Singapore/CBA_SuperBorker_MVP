@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Typography, Row, Col } from "antd";
+import { Card, Typography, Row, Col, Tag } from "antd";
 import { Link } from "react-router-dom";
 
 const { Paragraph } = Typography;
@@ -145,7 +145,9 @@ export const DevBox = () => {
                   margin: 0,
                 }}
               >
-                Coming Soon
+                <Tag color="success" key="Coming Soon">
+                  Coming Soon
+                </Tag>
               </Paragraph>
             </Card>
           </Link>

@@ -73,7 +73,7 @@ const TransactionStatus = () => {
         },
       },
       {
-        title: "No. of Retry",
+        title: "No. of Retries",
         key: "no_of_retry",
         render: (d) => {
           if (d["no_of_retry"] != 0) {
@@ -124,7 +124,7 @@ const TransactionStatus = () => {
         },
       },
       {
-        title: "Error Log",
+        title: "Log Details",
         key: "error_log",
         render: (d) => {
           let color = "error"; //tag.length > 5 ? 'geekblue' : 'green';
@@ -590,7 +590,7 @@ const TransactionStatus = () => {
   function sendData(transactions) {
     let sendData = JSON.stringify(transactions);
     axios
-      .put(`http://10.45.197.10:5000`, { data: sendData })
+      .put(`http://localhost:3002`, { data: sendData })
       .then((response) => {
         // if (response.status === 201) {
         //   success(requestId);
