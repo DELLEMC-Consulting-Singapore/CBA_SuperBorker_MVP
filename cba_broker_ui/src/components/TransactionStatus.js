@@ -57,7 +57,7 @@ const TransactionStatus = () => {
   let getStatusByDeploymentId = () => {
     return new Promise((resolve, reject) => {
       axios
-        .get(`http://localhost:3002/api/deploy_status`)
+        .get(`http://10.45.197.10:5000/api/deploy_status`)
         .then((res) => {
           resolve(res["data"]);
         })
@@ -67,7 +67,7 @@ const TransactionStatus = () => {
   let getStatusByDeploymentStatusHistory = () => {
     return new Promise((resolve, reject) => {
       axios
-        .get(`http://localhost:3002/api/deploy_history_status`)
+        .get(`http://10.45.197.10:5000/api/deploy_history_status`)
         .then((res) => {
           resolve(res["data"]);
         })
@@ -164,7 +164,7 @@ const TransactionStatus = () => {
 
   function getNewTransaction() {
     let username = Auth.getUserProfile1();
-    axios.get(`http://localhost:3002`).then((response) => {
+    axios.get(`http://10.45.197.10:5000/api/transactions`).then((response) => {
       let responseData = sortByKey(response["data"]);
       let newdata = responseData.map((r) => {
         if (username == "puppetuser" || username == "puppet") {
@@ -463,10 +463,8 @@ const TransactionStatus = () => {
 
   async function sendData(transactions) {
     let sendData = JSON.stringify(transactions);
-    // axios
-    // .post(`http://10.45.197.10:5000/api/transactions_post`, {
     await axios
-      .put(`http://localhost:3002/`, {
+      .post(`http://10.45.197.10:5000/api/transactions_post`, {
         data: sendData,
       })
       .then((response) => {})
