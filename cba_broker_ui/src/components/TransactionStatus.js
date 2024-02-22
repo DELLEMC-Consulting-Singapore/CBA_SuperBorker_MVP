@@ -54,20 +54,24 @@ const TransactionStatus = () => {
   const [spinning, setSpinning] = useState(false);
   let [newData, setData] = useState([]);
 
-  let getStatusByDeploymentId = () => {
+  let getStatusByDeploymentId = (deployment_id) => {
     return new Promise((resolve, reject) => {
       axios
-        .get(`http://10.45.197.10:5000/api/deploy_status`)
+        .get(
+          `http://10.45.197.10:5000/api/deploy_status?deploymentId=${deployment_id}`
+        )
         .then((res) => {
           resolve(res["data"]);
         })
         .catch((err) => reject(err));
     });
   };
-  let getStatusByDeploymentStatusHistory = () => {
+  let getStatusByDeploymentStatusHistory = (deployment_id) => {
     return new Promise((resolve, reject) => {
       axios
-        .get(`http://10.45.197.10:5000/api/deploy_history_status`)
+        .get(
+          `http://10.45.197.10:5000/api/deploy_history_status?deploymentId=${deployment_id}`
+        )
         .then((res) => {
           resolve(res["data"]);
         })
@@ -77,7 +81,7 @@ const TransactionStatus = () => {
 
   let refreshData = async (r) => {
     setSpinning(true);
-    let deployStatus = await getStatusByDeploymentId();
+    let deployStatus = await getStatusByDeploymentId(r["deployment_id"]);
     r["deploy_status"] = deployStatus;
     if (deployStatus == "CREATE_FAILED") {
       r["request_status"] = "failed";
@@ -86,7 +90,9 @@ const TransactionStatus = () => {
       r["request_status"] = "completed";
       r["request_status1"] = "completed";
     }
-    let deployHistory = await getStatusByDeploymentStatusHistory();
+    let deployHistory = await getStatusByDeploymentStatusHistory(
+      r["deployment_id"]
+    );
     r["deploy_status_history"] = deployHistory;
     let resourceType = [
       { resourceType: "Cloud.Puppet", error: 0, completed: 0, running: 0 },
