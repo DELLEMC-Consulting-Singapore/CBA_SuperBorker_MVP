@@ -77,18 +77,17 @@ export const DevBoxRequestForm = () => {
       transactions = transactions == null ? [] : transactions;
       let newPayload = payload["payload"];
       //newPayload["key"] = transactions.length + 1;
-      newPayload["date_time"] = moment(new Date()).format("MM-DD-YYYY H:m");
+      newPayload["date_time"] = moment(new Date()).format("MM-DD-YYYY HH:mm");
       newPayload["request_status"] = "running";
       newPayload["request_status1"] = "running";
       newPayload["created_by"] = "Admin";
       newPayload["request_id"] = newPayload["requestId"];
       newPayload["transaction_id"] = newPayload["transactionId"];
-      newPayload["payload"] = JSON.stringify(payload["payload"]);
+      newPayload["payload"] = JSON.stringify(newPayload["payload"]);
       newPayload["service_name"] = "DevBox";
       newPayload["service_action"] = "CREATE";
-      newPayload["deployment_id"] = payload["deployment_id"];
-      newPayload["deployment_name"] = payload["deployment_name"];
-      newPayload["response"] = payload["response"];
+      newPayload["deployment_id"] = newPayload["deployment_id"];
+      newPayload["deployment_name"] = newPayload["deployment_name"];
       newPayload["childrens"] = [
         {
           key: 0,
@@ -98,8 +97,8 @@ export const DevBoxRequestForm = () => {
           service_name: "DevBox",
           tool_integration: "Aria Automation",
           status: "Running",
-          deployment_id: payload["deployment_id"],
-          deployment_name: payload["deployment_name"],
+          deployment_id: newPayload["deployment_id"],
+          deployment_name: newPayload["deployment_name"],
         },
         {
           key: 1,
@@ -109,35 +108,33 @@ export const DevBoxRequestForm = () => {
           service_name: "DevBox",
           tool_integration: "Puppet",
           status: "Running",
-          deployment_id: payload["deployment_id"],
-          deployment_name: payload["deployment_name"],
+          deployment_id: newPayload["deployment_id"],
+          deployment_name: newPayload["deployment_name"],
         },
-        {
-          key: 2,
-          date: newPayload["date_time"],
-          request_id: newPayload["requestId"],
-          transaction_id: newPayload["transactionId"],
-          service_name: "DevBox",
-          tool_integration: "Qualys",
-          status: "Running",
-          deployment_id: payload["deployment_id"],
-          deployment_name: payload["deployment_name"],
-        },
-        {
-          key: 3,
-          date: newPayload["date_time"],
-          request_id: newPayload["requestId"],
-          transaction_id: newPayload["transactionId"],
-          service_name: "DevBox",
-          tool_integration: "ServiceNow",
-          status: "Running",
-          deployment_id: payload["deployment_id"],
-          deployment_name: payload["deployment_name"],
-        },
+        // {
+        //   key: 2,
+        //   date: newPayload["date_time"],
+        //   request_id: newPayload["requestId"],
+        //   transaction_id: newPayload["transactionId"],
+        //   service_name: "DevBox",
+        //   tool_integration: "Qualys",
+        //   status: "Running",
+        //   deployment_id: newPayload["deployment_id"],
+        //   deployment_name: newPayload["deployment_name"],
+        // },
+        // {
+        //   key: 3,
+        //   date: newPayload["date_time"],
+        //   request_id: newPayload["requestId"],
+        //   transaction_id: newPayload["transactionId"],
+        //   service_name: "DevBox",
+        //   tool_integration: "ServiceNow",
+        //   status: "Running",
+        //   deployment_id: newPayload["deployment_id"],
+        //   deployment_name: newPayload["deployment_name"],
+        // },
       ];
-      console.log(newPayload);
       transactions.push(newPayload);
-      console.log(transactions);
       let sendData = JSON.stringify(transactions);
       axios
         .post(`http://10.45.197.10:5000/api/transactions`, { data: sendData })
@@ -148,13 +145,6 @@ export const DevBoxRequestForm = () => {
           setSpinning(false);
         });
     }
-    // )
-    // .catch((error) => {
-    //   // console.log("incatch::", error);
-    //   // //errorMessage()
-    //   // success(requestId);
-    //   // insertLocalStorage(values);
-    // });
   };
   const onFinish = (values) => {
     setSpinning(true);
@@ -181,7 +171,7 @@ export const DevBoxRequestForm = () => {
         console.log("incatch::", error);
         //errorMessage()
         success(requestId);
-        values["payload"]["response"] = JSON.stringify(error);
+        //values["payload"]["response"] = JSON.stringify(error);
         insertLocalStorage(values);
       });
     form.resetFields();
