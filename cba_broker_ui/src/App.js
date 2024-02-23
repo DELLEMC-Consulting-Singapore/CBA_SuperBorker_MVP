@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Link,
   useNavigate,
-} from 'react-router-dom'
-import { Breadcrumb, Layout, Menu, theme, ConfigProvider } from 'antd'
-import { TopHeader } from './components/Header'
-import { MenuBar } from './components/Menu'
-import Reporting from './components/Reporting'
-import Home from './components/Home'
-import Protected from './Protected'
-import Auth from './components/Auth'
+} from "react-router-dom";
+import { Breadcrumb, Layout, Menu, theme, ConfigProvider } from "antd";
+import { TopHeader } from "./components/Header";
+import { MenuBar } from "./components/Menu";
+import Reporting from "./components/Reporting";
+import Home from "./components/Home";
+import Protected from "./Protected";
+import Auth from "./components/Auth";
 
 import {
   DesktopOutlined,
@@ -22,56 +22,70 @@ import {
   BellOutlined,
   HomeOutlined,
   AppstoreOutlined,
-} from '@ant-design/icons'
-import { DevBox } from './components/DevBox'
-import { DevBoxRequestForm } from './components/DevBoxRequestForm'
-import Login from './components/Login'
-import TransactionStatus from './components/TransactionStatus'
-import AriaAutomation from './components/AriaAutomation'
-import Puppet from './components/Puppet'
-import Qualys from './components/Qualys'
-import ServiceNow from './components/ServiceNow'
-
-const { Content, Footer, Sider } = Layout
+} from "@ant-design/icons";
+import { DevBox } from "./components/DevBox";
+import { DevBoxRequestForm } from "./components/DevBoxRequestForm";
+import Login from "./components/Login";
+import TransactionStatus from "./components/TransactionStatus";
+import AriaAutomation from "./components/AriaAutomation";
+import Puppet from "./components/Puppet";
+import Qualys from "./components/Qualys";
+import ServiceNow from "./components/ServiceNow";
+import { KnowledgeBase } from "./components/KnowledgeBase";
+const { Content, Footer, Sider } = Layout;
 
 const App = () => {
-  const history = useNavigate()
-  const [collapsed, setCollapsed] = useState(false)
+  const history = useNavigate();
+  const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken()
+  } = theme.useToken();
 
-  const [authAuthenticated, setAuthAuthenticated] = useState(false)
-  console.log('Auth.isAuthenticated', Auth.isAuthenticated())
+  const [authAuthenticated, setAuthAuthenticated] = useState(false);
+  console.log("Auth.isAuthenticated", Auth.isAuthenticated());
   const getAuthAuthenticatedStatus = (status) => {
-    setAuthAuthenticated(status)
-  }
+    setAuthAuthenticated(status);
+  };
 
   const layout = {
-    labelCol: { xs: { span: 24 }, sm: { span: 12 }, md: { span: 8 }, lg: { span: 8 } },
-    wrapperCol: { xs: { span: 24 }, sm: { span: 12 }, md: { span: 12 }, lg: { span: 12 } }
-}
-const tailLayout = {
-    wrapperCol: { xs: { span: 24 }, sm: { span: 12, offset: 12 }, md: { span: 12, offset: 8 }, lg: { span: 12, offset: 8 } }
-};
-
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 12 },
+      md: { span: 8 },
+      lg: { span: 8 },
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 12 },
+      md: { span: 12 },
+      lg: { span: 12 },
+    },
+  };
+  const tailLayout = {
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 12, offset: 12 },
+      md: { span: 12, offset: 8 },
+      lg: { span: 12, offset: 8 },
+    },
+  };
 
   return (
     <ConfigProvider
       theme={{
         token: {
-          fontFamily: 'Roboto',
+          fontFamily: "Roboto",
         },
       }}
     >
       <Layout
         style={{
-          minHeight: '100vh',
+          minHeight: "100vh",
         }}
       >
         {Auth.isAuthenticated() == true ? (
           <>
-            {console.log('INSIDE')}
+            {console.log("INSIDE")}
             <Sider
               collapsible
               collapsed={collapsed}
@@ -80,21 +94,21 @@ const tailLayout = {
             >
               <div className="demo-logo-vertical">
                 <Link
-                  to={'/home'}
-                  style={{ margin: collapsed ? '15px' : '80px' }}
+                  to={"/home"}
+                  style={{ margin: collapsed ? "15px" : "80px" }}
                 >
                   <img
-                    src={window.location.origin + '/logo2.svg'}
+                    src={window.location.origin + "/logo2.svg"}
                     style={{
-                      height: '60px',
-                      width: '40px',
-                      'margin-left': 'auto',
-                      'margin-right': 'auto',
+                      height: "60px",
+                      width: "40px",
+                      "margin-left": "auto",
+                      "margin-right": "auto",
                     }}
-                  />{' '}
+                  />{" "}
                   <span
                     className="logo-cba-text"
-                    style={{ display: collapsed ? 'none' : 'block' }}
+                    style={{ display: collapsed ? "none" : "block" }}
                   >
                     Commonwealth Bank
                   </span>
@@ -107,16 +121,16 @@ const tailLayout = {
               <TopHeader />
               <Content
                 style={{
-                  margin: '0 16px',
+                  margin: "0 16px",
                 }}
               >
                 <Breadcrumb
                   style={{
-                    margin: '16px 0',
+                    margin: "16px 0",
                   }}
                 >
                   <Breadcrumb.Item>
-                    <HomeOutlined /> 
+                    <HomeOutlined />
                   </Breadcrumb.Item>
                 </Breadcrumb>
                 <div
@@ -140,7 +154,7 @@ const tailLayout = {
                       path="/home"
                       element={
                         <Protected isLoggedIn={Auth.isAuthenticated()}>
-                          <Home />
+                          <Home collapsed={collapsed} />
                         </Protected>
                       }
                     />
@@ -160,7 +174,7 @@ const tailLayout = {
                         </Protected>
                       }
                     />
-                    
+
                     <Route
                       path="/transaction-status"
                       element={
@@ -170,8 +184,7 @@ const tailLayout = {
                       }
                     />
 
-                    
-<Route
+                    <Route
                       path="/aria-automation-transaction-status"
                       element={
                         <Protected isLoggedIn={Auth.isAuthenticated()}>
@@ -180,8 +193,7 @@ const tailLayout = {
                       }
                     />
 
-                    
-<Route
+                    <Route
                       path="/puppet-transaction-status"
                       element={
                         <Protected isLoggedIn={Auth.isAuthenticated()}>
@@ -190,8 +202,15 @@ const tailLayout = {
                       }
                     />
 
-                    
-<Route
+                    <Route
+                      path="/knowledge-base"
+                      element={
+                        <Protected isLoggedIn={Auth.isAuthenticated()}>
+                          <KnowledgeBase />
+                        </Protected>
+                      }
+                    />
+                    <Route
                       path="/qualys-transaction-status"
                       element={
                         <Protected isLoggedIn={Auth.isAuthenticated()}>
@@ -200,13 +219,13 @@ const tailLayout = {
                       }
                     />
                     <Route
-                                          path="/servicenow-transaction-status"
-                                          element={
-                                            <Protected isLoggedIn={Auth.isAuthenticated()}>
-                                              <ServiceNow />
-                                            </Protected>
-                                          }
-                                        />
+                      path="/servicenow-transaction-status"
+                      element={
+                        <Protected isLoggedIn={Auth.isAuthenticated()}>
+                          <ServiceNow />
+                        </Protected>
+                      }
+                    />
 
                     {/* <Route path='/login' element={<Login />}></Route> */}
                   </Routes>
@@ -214,7 +233,7 @@ const tailLayout = {
               </Content>
               <Footer
                 style={{
-                  textAlign: 'center',
+                  textAlign: "center",
                 }}
               >
                 Design ©{new Date().getFullYear()} Created by Dell Technologies
@@ -224,7 +243,7 @@ const tailLayout = {
         ) : (
           <Routes>
             <Route
-              path={'*'}
+              path={"*"}
               element={
                 <Login isAuthAuthenticated={getAuthAuthenticatedStatus} />
               }
@@ -233,6 +252,6 @@ const tailLayout = {
         )}
       </Layout>
     </ConfigProvider>
-  )
-}
-export default App
+  );
+};
+export default App;

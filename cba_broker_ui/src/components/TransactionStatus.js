@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
-  CloseSquareOutlined,
-  InteractionOutlined,
-  DownloadOutlined,
+  ExceptionOutlined,
+  FileDoneOutlined,
+  FileSyncOutlined,
   WarningOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
@@ -17,6 +17,8 @@ import {
   Typography,
   Divider,
   Spin,
+  Button,
+  Flex,
 } from "antd";
 import axios from "axios";
 import Auth from "./Auth";
@@ -49,8 +51,11 @@ const TransactionStatus = () => {
   const [isModalOpen1, setIsModalOpen1] = useState(false);
   const [ariaStatusInfo, setAriaStatusInfo] = useState({});
   const [statusHistory, setStatusHistory] = useState([]);
+  const [puppetStatusHistory, setPuppetStatusHistory] = useState([]);
+  const [ariaStatusHistory, setAriaStatusHistory] = useState([]);
   const [deploymentStatus, setDeploymentStatus] = useState("");
   const [revokeData, setRevokeData] = useState({});
+  const [retryData, setRetryData] = useState({});
   const [spinning, setSpinning] = useState(false);
   let [newData, setData] = useState([]);
 
@@ -121,14 +126,14 @@ const TransactionStatus = () => {
         }
       });
     });
-console.log(resourceType)
+    console.log(resourceType);
     let err = 0;
     let comp = 0;
     let run = 0;
     resourceType.map((resource) => {
       if (resource["resourceType"].includes("Puppet")) {
         if (resource["error"] > 0) {
-          r["childrens"][1]["status"] = "Error";
+          r["childrens"][1]["status"] = "Failed";
         } else if (resource["completed"] > 0 && resource["error"] == 0) {
           r["childrens"][1]["status"] = "Completed";
         } else if (
@@ -140,7 +145,7 @@ console.log(resourceType)
         }
       } else {
         if (resource["error"] > 0 && err == 0) {
-          r["childrens"][0]["status"] = "Error";
+          r["childrens"][0]["status"] = "Failed";
           err++;
         } else if (
           resource["completed"] > 0 &&
@@ -163,7 +168,11 @@ console.log(resourceType)
         }
       }
     });
-    if(resourceType[0]["error"]==0 && resourceType[0]["completed"]==0 && resourceType[0]["running"]==0)
+    if (
+      resourceType[0]["error"] == 0 &&
+      resourceType[0]["completed"] == 0 &&
+      resourceType[0]["running"] == 0
+    )
       r["childrens"][0]["status"] = "Running";
 
     r["created_by"] = deployStatus["createdBy"];
@@ -174,6 +183,7 @@ console.log(resourceType)
 
   function getNewTransaction() {
     let username = Auth.getUserProfile1();
+    //axios.get(`http://localhost:3002/`).then((response) => {
     axios.get(`http://10.45.197.10:5000/api/transactions`).then((response) => {
       let responseData = sortByKey(response["data"]);
       let newdata = responseData.map((r) => {
@@ -191,6 +201,7 @@ console.log(resourceType)
       setData(sortByKey(newdata));
     });
   }
+
   useEffect(() => {
     getNewTransaction();
   }, []);
@@ -229,10 +240,20 @@ console.log(resourceType)
         }
       }
     });
-    if (type == "Puppet") {
+    if (type == "all") {
+      setAriaStatusHistory(ariaHistory[ariaHistory.length - 1]);
+      setPuppetStatusHistory(puppetHistory[puppetHistory.length - 1]);
+      setStatusHistory([]);
+    } else if (type == "Puppet") {
       setStatusHistory(puppetHistory[puppetHistory.length - 1]);
+      setPuppetStatusHistory([]);
+      setAriaStatusHistory([]);
+      setRetryData(historyData["childrens"][1]);
     } else {
       setStatusHistory(ariaHistory[ariaHistory.length - 1]);
+      setPuppetStatusHistory([]);
+      setAriaStatusHistory([]);
+      setRetryData(historyData["childrens"][0]);
     }
     setSpinning(false);
   };
@@ -248,7 +269,7 @@ console.log(resourceType)
     setIsModalOpen1(true);
   };
   const handleOk1 = () => {
-    handleRevoke(revokeData);
+    handleRevoke(retryData);
     setIsModalOpen1(false);
   };
   const handleCancel1 = () => {
@@ -272,80 +293,135 @@ console.log(resourceType)
         key: "status",
         render: (d) => {
           let color = "error"; //tag.length > 5 ? 'geekblue' : 'green';
+          let status = d["status"];
           if (d["status"] == "Running") {
             color = "processing";
+            status = d["status"];
           } else if (d["status"] == "Completed") {
             color = "success";
+            status = d["status"];
           }
-          return <Badge status={color} text={d["status"]} />;
-        },
-      },
-      {
-        title: "No. of Retries",
-        key: "no_of_retry",
-        render: (d) => {
-          if (d["no_of_retry"] != 0) {
-            return d["no_of_retry"];
+          if (d["status"] == "Rollback") {
+            color = "geekblue";
+            status = "Rollback Successful";
           }
-        },
-      },
-      {
-        title: "Retry",
-        key: "Retry",
-        render: (d) => {
-          if (d["status"] == "Error") {
-            return (
-              <span style={{ fontSize: 25 }}>
-                <InteractionOutlined
-                  height={"1em"}
-                  width={"1em"}
-                  onClick={() => handleResume(d)}
-                />
-              </span>
-            );
-          }
-        },
-      },
-      {
-        title: "Rollback",
-        key: "revoke",
-        render: (d) => {
-          if (d["status"] == "Error") {
-            return (
-              <span style={{ fontSize: 25 }}>
-                <CloseSquareOutlined onClick={() => showModal1(d)} />
-              </span>
-            );
-          }
-        },
-      },
-      {
-        title: "Log Details",
-        key: "error_log",
-        render: (d) => {
+
           return (
             <a>
-              <span style={{ fontSize: 25 }}>
-                <DownloadOutlined
-                  onClick={() => showModal(d["tool_integration"], data)}
-                />
-              </span>
+              <Tag
+                color={color}
+                key={status}
+                onClick={() => showModal(d["tool_integration"], data)}
+              >
+                {d["status"].toUpperCase()}
+              </Tag>
             </a>
           );
         },
       },
+      // {
+      //   title: "No. of Retries",
+      //   key: "no_of_retry",
+      //   render: (d) => {
+      //     if (d["no_of_retry"] != 0) {
+      //       return d["no_of_retry"];
+      //     }
+      //   },
+      // },
+      // {
+      //   title: "Retry",
+      //   key: "Retry",
+      //   render: (d) => {
+      //     if (d["status"] == "Error") {
+      //       return (
+      //         <span style={{ fontSize: 25 }}>
+      //           <InteractionOutlined
+      //             height={"1em"}
+      //             width={"1em"}
+      //             onClick={() => handleResume(d)}
+      //           />
+      //         </span>
+      //       );
+      //     }
+      //   },
+      // },
+      // {
+      //   title: "Rollback",
+      //   key: "revoke",
+      //   render: (d) => {
+      //     if (d["status"] == "Error") {
+      //       return (
+      //         <span style={{ fontSize: 25 }}>
+      //           <CloseSquareOutlined onClick={() => showModal1(d)} />
+      //         </span>
+      //       );
+      //     }
+      //   },
+      // },
+      {
+        title: "Log Details",
+        key: "error_log",
+        render: (d) => {
+          if (d["status"] == "Failed" || d["status"] == "Rollback") {
+            return (
+              <a>
+                <span
+                  style={{
+                    fontSize: 17,
+                  }}
+                >
+                  <ExceptionOutlined
+                    style={{
+                      color: "#ff4d4f",
+                      background: "#fff2f0",
+                      "border-color": "#ffccc7",
+                    }}
+                    onClick={() => showModal(d["tool_integration"], data)}
+                  />
+                </span>
+              </a>
+            );
+          } else if (d["status"] == "completed") {
+            return (
+              <a>
+                <span style={{ fontSize: 17 }}>
+                  <FileDoneOutlined
+                    style={{
+                      color: "#389e0d",
+                      background: "#f6ffed",
+                      "border-color": "#b7eb8f",
+                    }}
+                    onClick={() => showModal(d["tool_integration"], data)}
+                  />
+                </span>
+              </a>
+            );
+          } else if (d["status"] == "Running") {
+            return (
+              <a>
+                <span style={{ fontSize: 17 }}>
+                  <FileSyncOutlined
+                    onClick={() => showModal(d["tool_integration"], data)}
+                  />
+                </span>
+              </a>
+            );
+          }
+          // return (
+          //   <a>
+          //     <span style={{ fontSize: 25 }}>
+          //       <DownloadOutlined
+          //         onClick={() => showModal(d["tool_integration"], data)}
+          //       />
+          //     </span>
+          //   </a>
+          // );
+        },
+      },
       {
         title: "Incident",
+        dataIndex: "incident",
         key: "incident",
-        render: (d) => {
-          let color = `INC${getRandomInt1()}`; //tag.length > 5 ? 'geekblue' : 'green';
-          if (d["status"] == "Running" || d["status"] == "Revoked") {
-            color = "";
-          } else if (d["status"] == "Completed") {
-            color = "";
-          }
-          return color;
-        },
       },
     ];
     return (
@@ -354,6 +430,7 @@ console.log(resourceType)
         dataSource={data["childrens"]}
         pagination={false}
         bordered={true}
+        size="small"
       />
     );
   };
@@ -362,44 +439,36 @@ console.log(resourceType)
       title: "Date",
       dataIndex: "date_time",
       key: "date_time",
+      width: 120,
     },
     {
       title: "Request Id",
       dataIndex: "request_id",
       key: "request_id",
-      width: 100,
+      width: 70,
     },
     {
       title: "Transaction Id",
       dataIndex: "transaction_id",
       key: "transaction_id",
-      width: 280,
+      width: 200,
+      render: (transactionId, data) => (
+        <Tooltip placement="topLeft" title={data["payload"]}>
+          {transactionId}
+        </Tooltip>
+      ),
     },
     {
       title: "Service Name",
       dataIndex: "service_name",
       key: "service_name",
-      width: 130,
+      width: 100,
     },
     {
       title: "Service Action",
       dataIndex: "service_action",
       key: "service_action",
-      width: 130,
-    },
-    {
-      title: "Payload",
-      dataIndex: "payload",
-      key: "payload",
-      //ellipsis: true,
-      ellipsis: {
-        showTitle: false,
-      },
-      render: (payload) => (
-        <Tooltip placement="topLeft" title={payload}>
-          {payload}
-        </Tooltip>
-      ),
+      width: 100,
     },
     {
       title: "Status",
@@ -412,11 +481,23 @@ console.log(resourceType)
         } else if (tag == "completed") {
           color = "green";
         }
+
+        if (tag == "Rollback") {
+          color = "geekblue";
+          tag = "Rollback Successful";
+        }
+
         return (
           <span>
-            <Tag color={color} key={tag}>
-              {tag.toUpperCase()}
-            </Tag>
+            <a>
+              <Tag
+                color={color}
+                key={tag}
+                onClick={() => showModal("all", data)}
+              >
+                {tag.toUpperCase()}
+              </Tag>
+            </a>
             <a>
               {tag != "completed" && (
                 <ReloadOutlined
@@ -428,13 +509,13 @@ console.log(resourceType)
           </span>
         );
       },
-      width: 140,
+      width: 170,
     },
     {
       title: "Created By",
       dataIndex: "created_by",
       key: "created_by",
-      width: 120,
+      width: 100,
     },
     //   {
     //     title: 'Action',
@@ -487,9 +568,8 @@ console.log(resourceType)
     newData.map((d) => {
       if (d["childrens"] !== undefined && d["childrens"].length > 0) {
         d["childrens"].map((childerns) => {
-          console.log(childerns);
           if (childerns["transaction_id"] == resumeData["transaction_id"]) {
-            if (childerns["status"] == "Error") {
+            if (childerns["status"] == "Failed") {
               if (childerns["key"] == resumeData["key"]) {
                 newData[i]["childrens"][resumeData["key"]]["status"] =
                   "Running";
@@ -511,21 +591,23 @@ console.log(resourceType)
       newData[index]["request_status"] = "running";
       newData[index]["request_status1"] = "running";
     }
-    sendData(newData[index]);
+    console.log(newData[index]);
+    // sendData(newData[index]);
+    handleCancel();
   };
 
   let handleRevoke = (resumeData) => {
     let j = 0;
     let index = 0;
-    if (resumeData["status"] == "Error") {
+    if (resumeData["status"] == "Failed") {
       newData.map((d) => {
         if (d["transaction_id"] == resumeData["transaction_id"]) {
           d["childrens"].map((childerns) => {
             //if (resumeData["status"] == "Error") {
             //childerns["status"] = "Revoked";
-            newData[j]["childrens"][childerns["key"]]["status"] = "Revoked";
-            newData[j]["request_status"] = "Revoked";
-            newData[j]["request_status1"] = "Revoked";
+            newData[j]["childrens"][childerns["key"]]["status"] = "Rollback";
+            newData[j]["request_status"] = "Rollback";
+            newData[j]["request_status1"] = "Rollback";
 
             //}
           });
@@ -536,7 +618,8 @@ console.log(resourceType)
       });
       setData([...newData]);
     }
-    sendData(newData[index]);
+    //sendData(newData[index]);
+    handleCancel();
   };
 
   const columnStatusHistory = [
@@ -611,7 +694,6 @@ console.log(resourceType)
         }}
         dataSource={newData}
         bordered={true}
-        size="10"
       />
 
       <Modal
@@ -619,38 +701,110 @@ console.log(resourceType)
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
+        okText="Retry"
         centered
         width={1050}
+        footer={() => {
+          if (statusHistory.length == 0 || retryData["status"] != "Failed") {
+            return (
+              <>
+                <Button onClick={handleCancel}>Cancel</Button>
+                <Button type="primary" onClick={handleOk}>
+                  Ok
+                </Button>
+              </>
+            );
+          } else if (retryData["status"] == "Failed") {
+            return (
+              <>
+                <Button onClick={handleCancel}>Cancel</Button>
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    handleResume(retryData);
+                  }}
+                  danger
+                >
+                  Retry
+                </Button>
+                <Button type="primary" onClick={() => showModal1(retryData)}>
+                  Rollback
+                </Button>
+              </>
+            );
+          }
+        }}
       >
         {/* <Table dataSource={statusHistory} bordered={true} size="small" /> */}
-
-        <div style={{ width: "40%" }}>
-          <Table
-            columns={showInfo}
-            dataSource={[
-              {
-                key1: (
-                  <span style={{ textAlign: "left" }}>
-                    <b>Status</b>
-                  </span>
-                ),
-                key2: (
-                  <Tag color={deploymentStatus}>{ariaStatusInfo["status"]}</Tag>
-                ),
-              },
-              { key1: "Request ID", key2: <a>{ariaStatusInfo["id"]}</a> },
-              { key1: "Created By", key2: ariaStatusInfo["createdBy"] },
-              {
-                key1: "Created At",
-                key2: moment(ariaStatusInfo["createdAt"]).format(
-                  "MM-DD-YYYY HH:mm"
-                ),
-              },
-            ]}
-            showHeader={false}
-            bordered={true}
-            pagination={false}
-          />
+        <div style={{ display: "flex" }}>
+          <div style={{ width: "50%" }}>
+            <Table
+              style={{ width: "99%" }}
+              columns={showInfo}
+              dataSource={[
+                {
+                  key1: (
+                    <span style={{ textAlign: "left" }}>
+                      <b>Status</b>
+                    </span>
+                  ),
+                  key2: (
+                    <Tag color={deploymentStatus}>
+                      {ariaStatusInfo["status"]}
+                    </Tag>
+                  ),
+                },
+                { key1: "Request ID", key2: <a>{ariaStatusInfo["id"]}</a> },
+                { key1: "Created By", key2: ariaStatusInfo["createdBy"] },
+                {
+                  key1: "Created At",
+                  key2: moment(ariaStatusInfo["createdAt"]).format(
+                    "MM-DD-YYYY HH:mm"
+                  ),
+                },
+                {
+                  key1: "No. of Retries",
+                  key2: (
+                    <Tag
+                      color="#A0522D"
+                      style={{ width: 40, textAlign: "center" }}
+                    >
+                      {retryData["no_of_retry"]}
+                    </Tag>
+                  ),
+                },
+              ]}
+              showHeader={false}
+              bordered={true}
+              pagination={false}
+              size="small"
+            />
+          </div>
+          <div style={{ width: "50%" }}>
+            <Table
+              columns={showInfo}
+              dataSource={[
+                {
+                  key1: (
+                    <span style={{ textAlign: "left" }}>
+                      <b>Incident</b>
+                    </span>
+                  ),
+                  key2: <Tag color="green">{retryData["incident"]}</Tag>,
+                },
+                { key1: "State", key2: "Inprogress" },
+                {
+                  key1: "Comments",
+                  key2: "We are acknowledging the error, checking the Puppet integration with OSB.",
+                },
+                ,
+              ]}
+              showHeader={false}
+              bordered={true}
+              pagination={false}
+              size="small"
+            />
+          </div>
         </div>
         <br />
         <Table
@@ -658,6 +812,30 @@ console.log(resourceType)
           dataSource={statusHistory}
           bordered={true}
           size="small"
+          style={{
+            display: statusHistory.length > 0 ? "block" : "none",
+          }}
+        />
+        <br />
+
+        <Table
+          columns={columnStatusHistory}
+          dataSource={ariaStatusHistory}
+          bordered={true}
+          size="small"
+          style={{
+            display: ariaStatusHistory.length > 0 ? "block" : "none",
+          }}
+        />
+        <br />
+        <Table
+          columns={columnStatusHistory}
+          dataSource={puppetStatusHistory}
+          bordered={true}
+          size="small"
+          style={{
+            display: puppetStatusHistory.length > 0 ? "block" : "none",
+          }}
         />
       </Modal>
 

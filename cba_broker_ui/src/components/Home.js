@@ -9,6 +9,7 @@ import {
   notification,
   Button,
   Modal,
+  Alert,
 } from "antd";
 import { Link } from "react-router-dom";
 import { CheckCircleFilled, CloseCircleFilled } from "@ant-design/icons";
@@ -33,7 +34,8 @@ const config = {
   ),
 };
 
-const Home = () => {
+const Home = (props) => {
+  console.log(props);
   // const [api, contextHolder] = notification.useNotification();
   // const openNotificationWithIcon = (type) => {
   //   api[type]({
@@ -81,467 +83,504 @@ const Home = () => {
         of services & platforms
       </Paragraph>
 
-      {/* <Card
-        style={{
-          width: 300,
-          marginTop: 16,
-        }}
-        hoverable={false}
+      <Card
+        style={
+          props["collapsed"]
+            ? {
+                width: 750,
+                position: "relative",
+                left: "55%",
+                transform: "translate(-60%, 0%)",
+              }
+            : {
+                width: 750,
+                position: "relative",
+                left: "50%",
+                transform: "translate(-60%, 0%)",
+              }
+        }
       >
-        <Skeleton avatar loading={false}>
-          <Meta
-            avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-            title="Cache"
-            description="This is the description"
+        <Row gutter={16}>
+          <Col span={8} style={{ paddingLeft: 20, paddingRight: 0 }}>
+            <Space style={{ "flex-direction": "column-reverse" }}>
+              <h3>% of Running Requests</h3>
+              <Progress
+                type="circle"
+                percent={20}
+                strokeColor="geekblue"
+                status="normal"
+              />
+            </Space>
+          </Col>
+          <Col span={8} style={{ paddingLeft: 25, paddingRight: 0 }}>
+            <Space style={{ "flex-direction": "column-reverse" }}>
+              <h3>% of Completed Requests</h3>
+              <Progress
+                type="circle"
+                percent={72}
+                strokeColor="green"
+                status="normal"
+              />
+            </Space>
+          </Col>
+          <Col span={8} style={{ paddingLeft: 45, paddingRight: 0 }}>
+            <Space style={{ "flex-direction": "column-reverse" }}>
+              <h3>% of Failed Requests</h3>
+              <Progress
+                type="circle"
+                percent={8}
+                strokeColor="red"
+                status="normal"
+              />
+            </Space>
+          </Col>
+        </Row>
+        <Row>
+          <Alert
+            message="Past 24 hours"
+            type="info"
+            style={{ fontSize: 10 }}
+            showIcon
+            banner
           />
-        </Skeleton>
-      </Card> */}
-      <Row
-        gutter={16}
-        style={{
-          "margin-left": "190px",
-          "margin-right": "-40px",
-          "padding-top": "30px",
-          "padding-bottom": "45px",
-        }}
+        </Row>
+      </Card>
+
+      <Card
+        style={{ width: "100%", border: "2px solid #f0f0f0", marginTop: 15 }}
+        bodyStyle={{ padding: 10 }}
       >
-        <Col span={6}>
-          <Space style={{ "flex-direction": "column-reverse" }}>
-            <h3>Running</h3>
-            <Progress
-              type="circle"
-              percent={20}
-              strokeColor="geekblue"
-              status="normal"
-            />
-          </Space>
-        </Col>
-        <Col span={6}>
-          <Space style={{ "flex-direction": "column-reverse" }}>
-            <h3>Completed</h3>
-            <Progress
-              type="circle"
-              percent={72}
-              strokeColor="green"
-              status="normal"
-            />
-          </Space>
-        </Col>
-        <Col span={6}>
-          <Space style={{ "flex-direction": "column-reverse" }}>
-            <h3>Failed</h3>
-            <Progress
-              type="circle"
-              percent={8}
-              strokeColor="red"
-              status="normal"
-            />
-          </Space>
-        </Col>
-      </Row>
-      <Row gutter={250}>
-        <Col span={4}>
-          <Link to={"/"}>
-            <Card
-              hoverable
+        <div style={{ marginLeft: 130 }}>
+          <div>
+            <Typography.Title
+              level={1}
               style={{
-                width: 190,
-                justifyContent: "center",
-                border: "2px solid #f0f0f0",
-                height: 175,
+                textAlign: "center",
+                "font-size": "20px",
+                "font-weight": "600",
+                "font-stretch": "normal",
+                "line-height": "1.05",
+                color: "#565656",
+                "text-align": "center",
+                marginRight: 200,
               }}
-              cover={
-                <div style={{ display: "flex" }}>
-                  <div>
-                    <img
-                      alt="AriaAutomation"
-                      src={
-                        window.location.origin + "/products/AriaAutomation.png"
-                      }
+            >
+              Integrations & Availability
+            </Typography.Title>
+          </div>
+          <div style={{ marginTop: 25 }}>
+            <Row gutter={16}>
+              <Col span={5}>
+                <Link to={"/"}>
+                  <Card
+                    hoverable
+                    style={{
+                      width: 190,
+                      justifyContent: "center",
+                      border: "2px solid #f0f0f0",
+                      height: 175,
+                    }}
+                    cover={
+                      <div style={{ display: "flex" }}>
+                        <div>
+                          <img
+                            alt="AriaAutomation"
+                            src={
+                              window.location.origin +
+                              "/products/AriaAutomation.png"
+                            }
+                            style={{
+                              width: "120px",
+                              padding: "10px 0px 0px 20px",
+                              position: "relative",
+                              "min-width": "unset!important",
+                              "min-height": "unset",
+                              "margin-left": "20px",
+                              "margin-right": "auto",
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <CheckCircleFilled className="tool-check" />
+                        </div>
+                      </div>
+                    }
+                  >
+                    {/* <i class="dds__icon dds__icon--cloud-document dds__icon--color"></i> */}
+
+                    <Paragraph
                       style={{
-                        width: "120px",
-                        padding: "10px 0px 0px 20px",
-                        position: "relative",
-                        "min-width": "unset!important",
-                        "min-height": "unset",
-                        "margin-left": "20px",
+                        "font-weight": "630",
+                        "font-size": "17px",
+                        "margin-left": "5px",
                         "margin-right": "auto",
                       }}
-                    />
-                  </div>
-                  <div>
-                    <CheckCircleFilled className="tool-check" />
-                  </div>
-                </div>
-              }
-            >
-              {/* <i class="dds__icon dds__icon--cloud-document dds__icon--color"></i> */}
+                    >
+                      Aria Automation
+                    </Paragraph>
 
-              <Paragraph
-                style={{
-                  "font-weight": "630",
-                  "font-size": "17px",
-                  "margin-left": "5px",
-                  "margin-right": "auto",
-                }}
-              >
-                Aria Automation
-              </Paragraph>
-
-              {/* <Paragraph>
+                    {/* <Paragraph>
                 In computing, a cache is a high-speed data storage layer which stores a subset ...
               </Paragraph> */}
-            </Card>
-          </Link>
-        </Col>
-        <Col span={4}>
-          <Link to={"/"}>
-            <Card
-              hoverable
-              style={{
-                width: 190,
-                justifyContent: "center",
-                border: "2px solid #f0f0f0",
-                height: 175,
-              }}
-              cover={
-                <div style={{ display: "flex" }}>
-                  <div>
-                    <img
-                      alt="Puppet"
-                      src={window.location.origin + "/products/Puppet.jpg"}
+                  </Card>
+                </Link>
+              </Col>
+              <Col span={5}>
+                <Link to={"/"}>
+                  <Card
+                    hoverable
+                    style={{
+                      width: 190,
+                      justifyContent: "center",
+                      border: "2px solid #f0f0f0",
+                      height: 175,
+                    }}
+                    cover={
+                      <div style={{ display: "flex" }}>
+                        <div>
+                          <img
+                            alt="Puppet"
+                            src={
+                              window.location.origin + "/products/Puppet.jpg"
+                            }
+                            style={{
+                              width: "120px",
+                              padding: "5px 0px 0px 20px",
+                              position: "relative",
+                              "min-width": "unset!important",
+                              "min-height": "102px",
+                              "margin-left": "20px",
+                              "margin-right": "auto",
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <CheckCircleFilled className="tool-check" />
+                        </div>
+                      </div>
+                    }
+                  >
+                    {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
+                    <Paragraph
                       style={{
-                        width: "120px",
-                        padding: "5px 0px 0px 20px",
-                        position: "relative",
-                        "min-width": "unset!important",
-                        "min-height": "102px",
-                        "margin-left": "20px",
-                        "margin-right": "auto",
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <CheckCircleFilled className="tool-check" />
-                  </div>
-                </div>
-              }
-            >
-              {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
-              <Paragraph
-                style={{
-                  "font-weight": "630",
-                  "font-size": "17px",
-                  "margin-left": "40px",
-                  "margin-right": "auto",
-                }}
-              >
-                Puppet
-              </Paragraph>
-            </Card>
-          </Link>
-        </Col>
-
-        <Col span={4}>
-          <Link to={"/"}>
-            <Card
-              hoverable
-              style={{
-                width: 190,
-                justifyContent: "center",
-                border: "2px solid #f0f0f0",
-                height: 175,
-              }}
-              cover={
-                <div style={{ display: "flex" }}>
-                  <div>
-                    <img
-                      alt="Qualys"
-                      src={window.location.origin + "/products/Qualys.png"}
-                      style={{
-                        width: "120px",
-                        padding: "15px 1px 0px 25px",
-                        position: "relative",
-                        "min-width": "unset!important",
-                        "min-height": "102px",
-                        "margin-left": "20px",
-                        "margin-right": "auto",
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <CheckCircleFilled className="tool-check" />
-                  </div>
-                </div>
-              }
-            >
-              {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
-              <Paragraph
-                style={{
-                  "font-weight": "630",
-                  "font-size": "17px",
-                  "margin-left": "40px",
-                  "margin-right": "auto",
-                }}
-              >
-                Qualys
-              </Paragraph>
-            </Card>
-          </Link>
-        </Col>
-
-        <Col span={4}>
-          <Link to={"/"}>
-            <Card
-              hoverable
-              style={{
-                width: 190,
-                justifyContent: "center",
-                border: "2px solid #f0f0f0",
-                height: 175,
-              }}
-              cover={
-                <div style={{ display: "flex" }}>
-                  <div>
-                    <img
-                      alt="ServiceNow"
-                      src={window.location.origin + "/products/ServiceNow.png"}
-                      style={{
-                        width: "120px",
-                        padding: "5px 0px 0px 20px",
-                        position: "relative",
-                        "min-width": "unset!important",
-                        "min-height": "102px",
-                        "margin-left": "20px",
-                        "margin-right": "auto",
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <CheckCircleFilled className="tool-check" />
-                  </div>
-                </div>
-              }
-            >
-              {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
-              <Paragraph
-                style={{
-                  "font-weight": "630",
-                  "font-size": "17px",
-                  "margin-left": "20px",
-                  "margin-right": "auto",
-                }}
-              >
-                ServiceNow
-              </Paragraph>
-            </Card>
-          </Link>
-        </Col>
-
-        <Col span={4}>
-          <Link
-            onClick={async () => {
-              modal.error(config);
-            }}
-          >
-            <Card
-              hoverable
-              style={{
-                width: 190,
-                justifyContent: "center",
-                border: "2px solid #f0f0f0",
-                height: 175,
-              }}
-              cover={
-                <div style={{ display: "flex" }}>
-                  <div>
-                    <img
-                      alt="Ansible"
-                      src={window.location.origin + "/products/Ansible.png"}
-                      // style={{
-                      //   width: "200px",
-                      //   padding: "5px 0px 0px 0px",
-                      //   position: "relative",
-                      //   "min-width": "unset!important",
-                      //   "min-height": "102px",
-                      //   "margin-left": "-5px",
-                      //   "margin-right": "auto",
-                      // }}
-                      className="ansible"
-                    />
-                  </div>
-                  <div>
-                    <CloseCircleFilled className="tool-check-error" />
-                  </div>
-                </div>
-              }
-            >
-              {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
-              <Paragraph
-                style={{
-                  "font-weight": "630",
-                  "font-size": "17px",
-                  "margin-left": "25px",
-                  "margin-right": "auto",
-                }}
-              >
-                Ansible
-              </Paragraph>
-            </Card>
-          </Link>
-        </Col>
-      </Row>
-
-      <Row gutter={250} style={{ marginTop: 15 }}>
-        <Col span={4}>
-          <Link to={"/"}>
-            <Card
-              hoverable
-              style={{
-                width: 190,
-                justifyContent: "center",
-                border: "2px solid #f0f0f0",
-                height: 175,
-              }}
-              cover={
-                <div style={{ display: "flex" }}>
-                  <div>
-                    <img
-                      alt="NSX"
-                      src={window.location.origin + "/products/NSX.png"}
-                      style={{
-                        width: "100px",
-                        padding: "5px 0px 0px 0px",
-                        position: "relative",
-                        "min-width": "unset!important",
-                        "min-height": "102px",
+                        "font-weight": "630",
+                        "font-size": "17px",
                         "margin-left": "40px",
                         "margin-right": "auto",
                       }}
-                    />
-                  </div>
-                  <div>
-                    <CheckCircleFilled className="tool-check" />
-                  </div>
-                </div>
-              }
-            >
-              {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
-              <Paragraph
-                style={{
-                  "font-weight": "630",
-                  "font-size": "17px",
-                  "margin-left": "40px",
-                  "margin-right": "auto",
-                }}
-              >
-                NSX
-              </Paragraph>
-            </Card>
-          </Link>
-        </Col>
+                    >
+                      Puppet
+                    </Paragraph>
+                  </Card>
+                </Link>
+              </Col>
 
-        <Col span={4}>
-          <Link to={"/"}>
-            <Card
-              hoverable
-              style={{
-                width: 190,
-                justifyContent: "center",
-                border: "2px solid #f0f0f0",
-                height: 175,
-              }}
-              cover={
-                <div style={{ display: "flex" }}>
-                  <div>
-                    <img
-                      alt="AWS"
-                      src={window.location.origin + "/products/AWS.jpg"}
+              <Col span={5}>
+                <Link to={"/"}>
+                  <Card
+                    hoverable
+                    style={{
+                      width: 190,
+                      justifyContent: "center",
+                      border: "2px solid #f0f0f0",
+                      height: 175,
+                    }}
+                    cover={
+                      <div style={{ display: "flex" }}>
+                        <div>
+                          <img
+                            alt="Qualys"
+                            src={
+                              window.location.origin + "/products/Qualys.png"
+                            }
+                            style={{
+                              width: "120px",
+                              padding: "15px 1px 0px 25px",
+                              position: "relative",
+                              "min-width": "unset!important",
+                              "min-height": "102px",
+                              "margin-left": "20px",
+                              "margin-right": "auto",
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <CheckCircleFilled className="tool-check" />
+                        </div>
+                      </div>
+                    }
+                  >
+                    {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
+                    <Paragraph
                       style={{
-                        width: "120px",
-                        padding: "10px 0px 0px 20px",
-                        position: "relative",
-                        "min-width": "unset!important",
-                        "min-height": "102px",
+                        "font-weight": "630",
+                        "font-size": "17px",
+                        "margin-left": "40px",
+                        "margin-right": "auto",
+                      }}
+                    >
+                      Qualys
+                    </Paragraph>
+                  </Card>
+                </Link>
+              </Col>
+
+              <Col span={5}>
+                <Link to={"/"}>
+                  <Card
+                    hoverable
+                    style={{
+                      width: 190,
+                      justifyContent: "center",
+                      border: "2px solid #f0f0f0",
+                      height: 175,
+                    }}
+                    cover={
+                      <div style={{ display: "flex" }}>
+                        <div>
+                          <img
+                            alt="ServiceNow"
+                            src={
+                              window.location.origin +
+                              "/products/ServiceNow.png"
+                            }
+                            style={{
+                              width: "120px",
+                              padding: "5px 0px 0px 20px",
+                              position: "relative",
+                              "min-width": "unset!important",
+                              "min-height": "102px",
+                              "margin-left": "20px",
+                              "margin-right": "auto",
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <CheckCircleFilled className="tool-check" />
+                        </div>
+                      </div>
+                    }
+                  >
+                    {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
+                    <Paragraph
+                      style={{
+                        "font-weight": "630",
+                        "font-size": "17px",
+                        "margin-left": "20px",
+                        "margin-right": "auto",
+                      }}
+                    >
+                      ServiceNow
+                    </Paragraph>
+                  </Card>
+                </Link>
+              </Col>
+            </Row>
+
+            <Row gutter={16} style={{ marginTop: 15 }}>
+              <Col span={5}>
+                <Link
+                  onClick={async () => {
+                    modal.error(config);
+                  }}
+                >
+                  <Card
+                    hoverable
+                    style={{
+                      width: 190,
+                      justifyContent: "center",
+                      border: "2px solid #f0f0f0",
+                      height: 175,
+                    }}
+                    cover={
+                      <div style={{ display: "flex" }}>
+                        <div>
+                          <img
+                            alt="Ansible"
+                            src={
+                              window.location.origin + "/products/Ansible.png"
+                            }
+                            // style={{
+                            //   width: "200px",
+                            //   padding: "5px 0px 0px 0px",
+                            //   position: "relative",
+                            //   "min-width": "unset!important",
+                            //   "min-height": "102px",
+                            //   "margin-left": "-5px",
+                            //   "margin-right": "auto",
+                            // }}
+                            className="ansible"
+                          />
+                        </div>
+                        <div>
+                          <CloseCircleFilled className="tool-check-error" />
+                        </div>
+                      </div>
+                    }
+                  >
+                    {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
+                    <Paragraph
+                      style={{
+                        "font-weight": "630",
+                        "font-size": "17px",
                         "margin-left": "25px",
                         "margin-right": "auto",
                       }}
-                    />
-                  </div>
-                  <div>
-                    <CheckCircleFilled className="tool-check" />
-                  </div>
-                </div>
-              }
-            >
-              {/* <i class="dds__icon dds__icon--cloud-document dds__icon--color"></i> */}
+                    >
+                      Ansible
+                    </Paragraph>
+                  </Card>
+                </Link>
+              </Col>
+              <Col span={5}>
+                <Link to={"/"}>
+                  <Card
+                    hoverable
+                    style={{
+                      width: 190,
+                      justifyContent: "center",
+                      border: "2px solid #f0f0f0",
+                      height: 175,
+                    }}
+                    cover={
+                      <div style={{ display: "flex" }}>
+                        <div>
+                          <img
+                            alt="NSX"
+                            src={window.location.origin + "/products/NSX.png"}
+                            style={{
+                              width: "100px",
+                              padding: "5px 0px 0px 0px",
+                              position: "relative",
+                              "min-width": "unset!important",
+                              "min-height": "102px",
+                              "margin-left": "40px",
+                              "margin-right": "auto",
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <CheckCircleFilled className="tool-check" />
+                        </div>
+                      </div>
+                    }
+                  >
+                    {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
+                    <Paragraph
+                      style={{
+                        "font-weight": "630",
+                        "font-size": "17px",
+                        "margin-left": "40px",
+                        "margin-right": "auto",
+                      }}
+                    >
+                      NSX
+                    </Paragraph>
+                  </Card>
+                </Link>
+              </Col>
 
-              <Paragraph
-                style={{
-                  "font-weight": "630",
-                  "font-size": "17px",
-                  "margin-left": "50px",
-                  "margin-right": "auto",
-                }}
-              >
-                AWS
-              </Paragraph>
+              <Col span={5}>
+                <Link to={"/"}>
+                  <Card
+                    hoverable
+                    style={{
+                      width: 190,
+                      justifyContent: "center",
+                      border: "2px solid #f0f0f0",
+                      height: 175,
+                    }}
+                    cover={
+                      <div style={{ display: "flex" }}>
+                        <div>
+                          <img
+                            alt="AWS"
+                            src={window.location.origin + "/products/AWS.jpg"}
+                            style={{
+                              width: "120px",
+                              padding: "10px 0px 0px 20px",
+                              position: "relative",
+                              "min-width": "unset!important",
+                              "min-height": "102px",
+                              "margin-left": "25px",
+                              "margin-right": "auto",
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <CheckCircleFilled className="tool-check" />
+                        </div>
+                      </div>
+                    }
+                  >
+                    {/* <i class="dds__icon dds__icon--cloud-document dds__icon--color"></i> */}
 
-              {/* <Paragraph>
+                    <Paragraph
+                      style={{
+                        "font-weight": "630",
+                        "font-size": "17px",
+                        "margin-left": "50px",
+                        "margin-right": "auto",
+                      }}
+                    >
+                      AWS
+                    </Paragraph>
+
+                    {/* <Paragraph>
                 In computing, a cache is a high-speed data storage layer which stores a subset ...
               </Paragraph> */}
-            </Card>
-          </Link>
-        </Col>
-        <Col span={4}>
-          <Link to={"/"}>
-            <Card
-              hoverable
-              style={{
-                width: 190,
-                justifyContent: "center",
-                border: "2px solid #f0f0f0",
-                height: 175,
-              }}
-              cover={
-                <div style={{ display: "flex" }}>
-                  <div>
-                    <img
-                      alt="Azure"
-                      src={window.location.origin + "/products/ANZ.png"}
+                  </Card>
+                </Link>
+              </Col>
+              <Col span={5}>
+                <Link to={"/"}>
+                  <Card
+                    hoverable
+                    style={{
+                      width: 190,
+                      justifyContent: "center",
+                      border: "2px solid #f0f0f0",
+                      height: 175,
+                    }}
+                    cover={
+                      <div style={{ display: "flex" }}>
+                        <div>
+                          <img
+                            alt="Azure"
+                            src={window.location.origin + "/products/ANZ.png"}
+                            style={{
+                              width: "120px",
+                              padding: "5px 0px 0px 20px",
+                              position: "relative",
+                              "min-width": "unset!important",
+                              "min-height": "102px",
+                              "margin-left": "25px",
+                              "margin-right": "auto",
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <CheckCircleFilled className="tool-check" />
+                        </div>
+                      </div>
+                    }
+                  >
+                    {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
+                    <Paragraph
                       style={{
-                        width: "120px",
-                        padding: "5px 0px 0px 20px",
-                        position: "relative",
-                        "min-width": "unset!important",
-                        "min-height": "102px",
-                        "margin-left": "25px",
+                        "font-weight": "630",
+                        "font-size": "17px",
+                        "margin-left": "50px",
                         "margin-right": "auto",
                       }}
-                    />
-                  </div>
-                  <div>
-                    <CheckCircleFilled className="tool-check" />
-                  </div>
-                </div>
-              }
-            >
-              {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
-              <Paragraph
-                style={{
-                  "font-weight": "630",
-                  "font-size": "17px",
-                  "margin-left": "50px",
-                  "margin-right": "auto",
-                }}
-              >
-                Azure
-              </Paragraph>
-            </Card>
-          </Link>
-        </Col>
+                    >
+                      Azure
+                    </Paragraph>
+                  </Card>
+                </Link>
+              </Col>
 
-        <Col span={4}>
+              {/* <Col span={4}>
           <Link to={"/"}>
             <Card
               hoverable
@@ -574,7 +613,6 @@ const Home = () => {
                 </div>
               }
             >
-              {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
               <Paragraph
                 style={{
                   "font-weight": "630",
@@ -622,7 +660,6 @@ const Home = () => {
                 </div>
               }
             >
-              {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
               <Paragraph
                 style={{
                   "font-weight": "630",
@@ -635,8 +672,11 @@ const Home = () => {
               </Paragraph>
             </Card>
           </Link>
-        </Col>
-      </Row>
+        </Col> */}
+            </Row>
+          </div>
+        </div>
+      </Card>
     </>
   );
 };
