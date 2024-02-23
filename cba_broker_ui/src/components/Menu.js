@@ -109,7 +109,7 @@ export const MenuBar = () => {
             <Link to="/" />
         </Menu.Item>
         <Menu.Item key="2">            
-            <CalculatorOutlined /><span>TransactionStatus</span>
+            <CalculatorOutlined /><span>Transaction Status</span>
             <Link to="/transacrion-status" />
         </Menu.Item>
         <Menu.Item key="3">

@@ -44,7 +44,7 @@ export const MenuBar = () => {
       getItem("Block Storage", 9),
       getItem("Group File Share", 10),
     ]),
-    getItem("Request Approvals", 16, <PullRequestOutlined />),
+    getItem("My Requests", 16, <PullRequestOutlined />),
     getItem("Capacity Calculation", 11, <CalculatorOutlined />),
     getItem("Integrations", 12, <InteractionOutlined />),
     getItem("User Administration", 13, <TeamOutlined />),
