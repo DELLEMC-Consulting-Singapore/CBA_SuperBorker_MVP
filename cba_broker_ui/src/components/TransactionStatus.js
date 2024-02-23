@@ -253,29 +253,25 @@ const TransactionStatus = () => {
       }
     });
     if (type == "all") {
-      if(puppetHistory.length>0)
-	    {setPuppetStatusHistory(puppetHistory[puppetHistory.length - 1]);
-}
-if(ariaHistory.length>0){
-setAriaStatusHistory(ariaHistory[ariaHistory.length - 1]);}
-
-      setAriaStatusHistory(ariaHistory[ariaHistory.length - 1]);
-      setPuppetStatusHistory(puppetHistory[puppetHistory.length - 1]);
+      if (ariaHistory.length)
+        setAriaStatusHistory(ariaHistory[ariaHistory.length - 1]);
+      if (puppetHistory.length)
+        setPuppetStatusHistory(puppetHistory[puppetHistory.length - 1]);
       setStatusHistory([]);
     } else if (type == "Puppet") {
-      if(puppetHistory.length>0)
-	    {setStatusHistory(puppetHistory[puppetHistory.length - 1]);
+      if (puppetHistory.length)
+        setStatusHistory(puppetHistory[puppetHistory.length - 1]);
       setPuppetStatusHistory([]);
       setAriaStatusHistory([]);
       setRetryData(historyData["childrens"][1]);
     } else {
-        if(ariaHistory.length>0){
- setStatusHistory(ariaHistory[ariaHistory.length - 1]);}
-     
+      if (ariaHistory.length)
+        setStatusHistory(ariaHistory[ariaHistory.length - 1]);
       setPuppetStatusHistory([]);
       setAriaStatusHistory([]);
       setRetryData(historyData["childrens"][0]);
     }
+
     setSpinning(false);
   };
   const handleOk = () => {
@@ -871,7 +867,6 @@ setAriaStatusHistory(ariaHistory[ariaHistory.length - 1]);}
         <br />
 
         <Table
-title={()=><b>{"Aria Automation Log Details"}</b>}
           columns={columnStatusHistory}
           dataSource={ariaStatusHistory}
           bordered={true}
@@ -882,7 +877,6 @@ title={()=><b>{"Aria Automation Log Details"}</b>}
         />
         <br />
         <Table
-title={()=><b>{"Puppet Log Details"}</b>}
           columns={columnStatusHistory}
           dataSource={puppetStatusHistory}
           bordered={true}
