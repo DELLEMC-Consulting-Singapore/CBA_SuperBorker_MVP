@@ -195,7 +195,7 @@ export const DevBoxRequestForm = () => {
       name="nest-messages"
       onFinish={onFinish}
       style={{
-        maxWidth: 600,
+        maxWidth: 950,
       }}
       validateMessages={validateMessages}
     >
