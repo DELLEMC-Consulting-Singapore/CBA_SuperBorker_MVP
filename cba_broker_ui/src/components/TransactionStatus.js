@@ -83,10 +83,10 @@ const TransactionStatus = () => {
     setSpinning(true);
     let deployStatus = await getStatusByDeploymentId(r["deployment_id"]);
     r["deploy_status"] = deployStatus;
-    if (deployStatus == "CREATE_FAILED") {
+    if (deployStatus["status"] == "CREATE_FAILED") {
       r["request_status"] = "failed";
       r["request_status1"] = "failed";
-    } else if (deployStatus["CREATE_SUCCESSFUL"]) {
+    } else if (deployStatus["status"] == "CREATE_SUCCESSFUL") {
       r["request_status"] = "completed";
       r["request_status1"] = "completed";
     }
@@ -121,6 +121,7 @@ const TransactionStatus = () => {
         }
       });
     });
+console.log(resourceType)
     let err = 0;
     let comp = 0;
     let run = 0;
@@ -162,6 +163,9 @@ const TransactionStatus = () => {
         }
       }
     });
+    if(resourceType[0]["error"]==0 && resourceType[0]["completed"]==0 && resourceType[0]["running"]==0)
+      r["childrens"][0]["status"] = "Running";
+
     r["created_by"] = deployStatus["createdBy"];
     await sendData(r);
     getNewTransaction();
@@ -201,7 +205,7 @@ const TransactionStatus = () => {
     let color = "geekblue"; //tag.length > 5 ? 'geekblue' : 'green';
     if (statusInfo["status"].includes("FAILED")) {
       color = "volcano";
-    } else if (statusInfo["status"].includes("FINISHED")) {
+    } else if (statusInfo["status"].includes("SUCCESSFUL")) {
       color = "green";
     }
 
