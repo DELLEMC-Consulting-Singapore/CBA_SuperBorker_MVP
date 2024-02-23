@@ -512,6 +512,7 @@ const Activities = () => {
         <br />
 
         <Table
+title={()=><b>{"Aria Automation Log Details"}</b>}
           columns={columnStatusHistory}
           dataSource={ariaStatusHistory}
           bordered={true}
@@ -522,6 +523,7 @@ const Activities = () => {
         />
         <br />
         <Table
+title={()=><b>{"Puppet Log Details"}</b>}
           columns={columnStatusHistory}
           dataSource={puppetStatusHistory}
           bordered={true}
