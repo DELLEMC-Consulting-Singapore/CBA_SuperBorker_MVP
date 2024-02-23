@@ -86,98 +86,110 @@ const TransactionStatus = () => {
 
   let refreshData = async (r) => {
     setSpinning(true);
-    let deployStatus = await getStatusByDeploymentId(r["deployment_id"]);
-    r["deploy_status"] = deployStatus;
-    if (deployStatus["status"] == "CREATE_FAILED") {
-      r["request_status"] = "failed";
-      r["request_status1"] = "failed";
-    } else if (deployStatus["status"] == "CREATE_SUCCESSFUL") {
-      r["request_status"] = "completed";
-      r["request_status1"] = "completed";
-    }
-    let deployHistory = await getStatusByDeploymentStatusHistory(
-      r["deployment_id"]
-    );
-    r["deploy_status_history"] = deployHistory;
-    let resourceType = [
-      { resourceType: "Cloud.Puppet", error: 0, completed: 0, running: 0 },
-      {
-        resourceType: "Cloud.vSphere.Machine",
-        error: 0,
-        completed: 0,
-        running: 0,
-      },
-      { resourceType: "Cloud.Network", error: 0, completed: 0, running: 0 },
-      { resourceType: "Cloud.Volume", error: 0, completed: 0, running: 0 },
-    ];
-    let l = 0;
-    deployHistory.map((history) => {
-      resourceType.map((resource, index) => {
-        if (history["resourceType"] != "") {
-          if (history["resourceType"] == resource["resourceType"]) {
-            if (history["name"] == "CREATE_FAILED") {
-              resource["error"] = parseInt(resource["error"]) + 1;
-            } else if (history["name"] == "CREATE_FINISHED") {
-              resource["completed"] = parseInt(resource["completed"]) + 1;
-            } else if (history["name"] == "CREATE_IN_PROGRESS") {
-              resource["running"] = parseInt(resource["running"]) + 1;
+    if (r["request_status"] == "running") {
+      let deployStatus = await getStatusByDeploymentId(r["deployment_id"]);
+      r["deploy_status"] = deployStatus;
+      if (deployStatus["status"] == "CREATE_FAILED") {
+        r["request_status"] = "failed";
+        r["request_status1"] = "failed";
+      } else if (deployStatus["status"] == "CREATE_SUCCESSFUL") {
+        r["request_status"] = "completed";
+        r["request_status1"] = "completed";
+      }
+      let deployHistory = await getStatusByDeploymentStatusHistory(
+        r["deployment_id"]
+      );
+      r["deploy_status_history"] = deployHistory;
+      let resourceType = [
+        { resourceType: "Cloud.Puppet", error: 0, completed: 0, running: 0 },
+        {
+          resourceType: "Cloud.vSphere.Machine",
+          error: 0,
+          completed: 0,
+          running: 0,
+        },
+        { resourceType: "Cloud.Network", error: 0, completed: 0, running: 0 },
+        { resourceType: "Cloud.Volume", error: 0, completed: 0, running: 0 },
+      ];
+      let l = 0;
+      deployHistory.map((history) => {
+        resourceType.map((resource, index) => {
+          if (history["resourceType"] != "") {
+            if (history["resourceType"] == resource["resourceType"]) {
+              if (history["name"] == "CREATE_FAILED") {
+                resource["error"] = parseInt(resource["error"]) + 1;
+              } else if (history["name"] == "CREATE_FINISHED") {
+                resource["completed"] = parseInt(resource["completed"]) + 1;
+              } else if (history["name"] == "CREATE_IN_PROGRESS") {
+                resource["running"] = parseInt(resource["running"]) + 1;
+              }
             }
+          }
+        });
+      });
+      console.log(resourceType);
+      let err = 0;
+      let comp = 0;
+      let run = 0;
+      resourceType.map((resource) => {
+        if (resource["resourceType"].includes("Puppet")) {
+          if (resource["error"] > 0) {
+            r["childrens"][1]["status"] = "Failed";
+          } else if (resource["completed"] > 0 && resource["error"] == 0) {
+            r["childrens"][1]["status"] = "Completed";
+          } else if (
+            resource["running"] > 0 &&
+            resource["completed"] == 0 &&
+            resource["error"] == 0
+          ) {
+            r["childrens"][1]["status"] = "Running";
+          }
+        } else {
+          if (resource["error"] > 0 && err == 0) {
+            r["childrens"][0]["status"] = "Failed";
+            err++;
+          } else if (
+            resource["completed"] > 0 &&
+            resource["error"] == 0 &&
+            err == 0 &&
+            comp == 0
+          ) {
+            r["childrens"][0]["status"] = "Completed";
+            comp++;
+          } else if (
+            resource["running"] > 0 &&
+            resource["completed"] == 0 &&
+            resource["error"] == 0 &&
+            err == 0 &&
+            comp == 0 &&
+            run == 0
+          ) {
+            r["childrens"][0]["status"] = "Running";
+            run++;
           }
         }
       });
-    });
-    console.log(resourceType);
-    let err = 0;
-    let comp = 0;
-    let run = 0;
-    resourceType.map((resource) => {
-      if (resource["resourceType"].includes("Puppet")) {
-        if (resource["error"] > 0) {
-          r["childrens"][1]["status"] = "Failed";
-        } else if (resource["completed"] > 0 && resource["error"] == 0) {
-          r["childrens"][1]["status"] = "Completed";
-        } else if (
-          resource["running"] > 0 &&
-          resource["completed"] == 0 &&
-          resource["error"] == 0
-        ) {
-          r["childrens"][1]["status"] = "Running";
-        }
-      } else {
-        if (resource["error"] > 0 && err == 0) {
-          r["childrens"][0]["status"] = "Failed";
-          err++;
-        } else if (
-          resource["completed"] > 0 &&
-          resource["error"] == 0 &&
-          err == 0 &&
-          comp == 0
-        ) {
-          r["childrens"][0]["status"] = "Completed";
-          comp++;
-        } else if (
-          resource["running"] > 0 &&
-          resource["completed"] == 0 &&
-          resource["error"] == 0 &&
-          err == 0 &&
-          comp == 0 &&
-          run == 0
-        ) {
-          r["childrens"][0]["status"] = "Running";
-          run++;
-        }
-      }
-    });
-    if (
-      resourceType[0]["error"] == 0 &&
-      resourceType[0]["completed"] == 0 &&
-      resourceType[0]["running"] == 0
-    )
-      r["childrens"][0]["status"] = "Running";
+      if (
+        resourceType[0]["error"] == 0 &&
+        resourceType[0]["completed"] == 0 &&
+        resourceType[0]["running"] == 0
+      )
+        r["childrens"][0]["status"] = "Running";
 
-    r["created_by"] = deployStatus["createdBy"];
-    await sendData(r);
-    getNewTransaction();
+      r["created_by"] = deployStatus["createdBy"];
+      await sendData(r);
+
+      let j;
+      newData.map((existingData) => {
+        if (existingData["transaction_id"] == r["transaction_id"]) {
+          newData[j] = r;
+        }
+        j++;
+      });
+
+      setData([...newData]);
+    }
+
     setSpinning(false);
   };
 
@@ -764,13 +776,16 @@ const TransactionStatus = () => {
                 },
                 {
                   key1: "No. of Retries",
-                  key2: (
+                  key2: retryData["no_of_retry"] ? (
                     <Tag
                       color="#A0522D"
                       style={{ width: 40, textAlign: "center" }}
                     >
-                      {retryData["no_of_retry"]}
+                      {" "}
+                      {retryData["no_of_retry"]}{" "}
                     </Tag>
+                  ) : (
+                    "-"
                   ),
                 },
               ]}
@@ -781,29 +796,57 @@ const TransactionStatus = () => {
             />
           </div>
           <div style={{ width: "50%" }}>
-            <Table
-              columns={showInfo}
-              dataSource={[
-                {
-                  key1: (
-                    <span style={{ textAlign: "left" }}>
-                      <b>Incident</b>
-                    </span>
-                  ),
-                  key2: <Tag color="green">{retryData["incident"]}</Tag>,
-                },
-                { key1: "State", key2: "Inprogress" },
-                {
-                  key1: "Comments",
-                  key2: "We are acknowledging the error, checking the Puppet integration with OSB.",
-                },
-                ,
-              ]}
-              showHeader={false}
-              bordered={true}
-              pagination={false}
-              size="small"
-            />
+            {retryData["incident"] && (
+              <Table
+                columns={showInfo}
+                dataSource={[
+                  {
+                    key1: (
+                      <span style={{ textAlign: "left" }}>
+                        <b>Incident</b>
+                      </span>
+                    ),
+                    key2: <Tag color="green">{retryData["incident"]}</Tag>,
+                  },
+                  { key1: "State", key2: "Inprogress" },
+                  {
+                    key1: "Comments",
+                    key2: "We are acknowledging the error, checking the Puppet integration with OSB.",
+                  },
+                  ,
+                ]}
+                showHeader={false}
+                bordered={true}
+                pagination={false}
+                size="small"
+              />
+            )}
+
+            {!retryData["incident"] && (
+              <Table
+                columns={showInfo}
+                dataSource={[
+                  {
+                    key1: (
+                      <span style={{ textAlign: "left" }}>
+                        <b>Incident</b>
+                      </span>
+                    ),
+                    key2: "-",
+                  },
+                  { key1: "State", key2: "-" },
+                  {
+                    key1: "Comments",
+                    key2: "-",
+                  },
+                  ,
+                ]}
+                showHeader={false}
+                bordered={true}
+                pagination={false}
+                size="small"
+              />
+            )}
           </div>
         </div>
         <br />

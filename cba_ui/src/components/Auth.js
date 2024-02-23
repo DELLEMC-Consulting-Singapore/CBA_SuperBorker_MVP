@@ -49,6 +49,9 @@ const Auth = {
       };
     }
   },
+  getUserProfile1: function () {
+    return localStorage.getItem("username1");
+  },
   isValidToken: function () {
     let session = localStorage.getItem("token");
     return session ? true : false;
