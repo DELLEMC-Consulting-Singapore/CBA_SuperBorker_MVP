@@ -866,7 +866,7 @@ const TransactionStatus = () => {
         />
         <br />
 
-        <Table title={()=><b>{"Aria Automation Log Details"}</b>}
+        <Table
           columns={columnStatusHistory}
           dataSource={ariaStatusHistory}
           bordered={true}
@@ -876,7 +876,7 @@ const TransactionStatus = () => {
           }}
         />
         <br />
-        <Table title={()=><b>{"Puppet Log Details"}</b>}
+        <Table
           columns={columnStatusHistory}
           dataSource={puppetStatusHistory}
           bordered={true}
