@@ -253,16 +253,25 @@ const TransactionStatus = () => {
       }
     });
     if (type == "all") {
+      if(puppetHistory.length>0)
+	    {setPuppetStatusHistory(puppetHistory[puppetHistory.length - 1]);
+}
+if(ariaHistory.length>0){
+setAriaStatusHistory(ariaHistory[ariaHistory.length - 1]);}
+
       setAriaStatusHistory(ariaHistory[ariaHistory.length - 1]);
       setPuppetStatusHistory(puppetHistory[puppetHistory.length - 1]);
       setStatusHistory([]);
     } else if (type == "Puppet") {
-      setStatusHistory(puppetHistory[puppetHistory.length - 1]);
+      if(puppetHistory.length>0)
+	    {setStatusHistory(puppetHistory[puppetHistory.length - 1]);
       setPuppetStatusHistory([]);
       setAriaStatusHistory([]);
       setRetryData(historyData["childrens"][1]);
     } else {
-      setStatusHistory(ariaHistory[ariaHistory.length - 1]);
+        if(ariaHistory.length>0){
+ setStatusHistory(ariaHistory[ariaHistory.length - 1]);}
+     
       setPuppetStatusHistory([]);
       setAriaStatusHistory([]);
       setRetryData(historyData["childrens"][0]);
