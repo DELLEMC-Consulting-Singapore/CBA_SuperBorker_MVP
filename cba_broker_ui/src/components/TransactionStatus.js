@@ -198,8 +198,8 @@ const TransactionStatus = () => {
 
   function getNewTransaction() {
     let username = Auth.getUserProfile1();
-    axios.get(`http://localhost:3002/`).then((response) => {
-      // axios.get(`http://10.45.197.10:5000/api/transactions`).then((response) => {
+    //axios.get(`http://localhost:3002/`).then((response) => {
+    axios.get(`http://10.45.197.10:5000/api/transactions`).then((response) => {
       let responseData = sortByKey(response["data"]);
       let newdata = responseData.map((r) => {
         if (username == "puppetuser" || username == "puppet") {
