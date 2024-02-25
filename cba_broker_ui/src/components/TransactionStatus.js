@@ -521,6 +521,11 @@ const TransactionStatus = () => {
         title: "Incident",
         dataIndex: "incident",
         key: "incident",
+        render: (incidents, data) => {
+          if (data["status"] == "Failed") {
+            return incidents;
+          }
+        },
       },
     ];
     return (
