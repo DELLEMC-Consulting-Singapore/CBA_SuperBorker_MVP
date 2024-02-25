@@ -130,18 +130,13 @@ export const MenuBar = () => {
           <span>Integrations</span>
           <Link to="/" />
         </Menu.Item>
-        <Menu.Item key="5">
-          <TeamOutlined />
-          <span>User Administration</span>
-          <Link to="/" />
-        </Menu.Item>
+
         <Menu.Item key="6">
           <RiseOutlined />
-
-          <Link to="/knowledge-base">
-            <span>Knowledge Base</span>
-          </Link>
+          <span>Knowledge Base</span>
+          <Link to="/" />
         </Menu.Item>
+
         <Menu.Item key="7">
           <LogoutOutlined />
           <span>Logout</span>

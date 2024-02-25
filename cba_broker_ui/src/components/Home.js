@@ -165,7 +165,7 @@ const Home = (props) => {
                 marginRight: 200,
               }}
             >
-              Integrations & Availability
+              Integrations & Tools Availability
             </Typography.Title>
           </div>
           <div style={{ marginTop: 25 }}>
