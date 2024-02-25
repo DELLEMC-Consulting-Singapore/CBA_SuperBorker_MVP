@@ -25,10 +25,12 @@ const Activities = () => {
   const [puppetStatusHistory, setPuppetStatusHistory] = useState([]);
   const [ariaStatusHistory, setAriaStatusHistory] = useState([]);
 
-  const [deploymentStatus, setDeploymentStatus] = useState("");
+  const [deploymentStatus, setDeploymentStatus] = useState("geekblue");
   const [retryData, setRetryData] = useState({});
   const [spinning, setSpinning] = useState(false);
   let [newData, setData] = useState([]);
+  let [incidents, setIncidents] = useState([]);
+  let [retries, setRetries] = useState(0);
 
   let getStatusByDeploymentId = (deployment_id) => {
     return new Promise((resolve, reject) => {
@@ -177,8 +179,8 @@ const Activities = () => {
 
   function getNewTransaction() {
     let username = Auth.getUserProfile1();
-    //axios.get(`http://localhost:3002/`).then((response) => {
-    axios.get(`http://10.45.197.10:5000/api/transactions`).then((response) => {
+    axios.get(`http://localhost:3002/`).then((response) => {
+      //axios.get(`http://10.45.197.10:5000/api/transactions`).then((response) => {
       let responseData = sortByKey(response["data"]);
       let newdata = responseData.map((r) => {
         if (username == "puppetuser" || username == "puppet") {
@@ -201,39 +203,70 @@ const Activities = () => {
     setIsModalOpen(true);
 
     let statusInfo = historyData["deploy_status"];
-    setAriaStatusInfo(statusInfo);
+    //if (statusInfo !== undefined)
+    {
+      setAriaStatusInfo(statusInfo);
 
-    let color = "geekblue"; //tag.length > 5 ? 'geekblue' : 'green';
-    if (statusInfo["status"].includes("FAILED")) {
-      color = "volcano";
-    } else if (statusInfo["status"].includes("SUCCESSFUL")) {
-      color = "green";
-    }
-
-    setDeploymentStatus(color);
-
-    let allHistory = historyData["deploy_status_history"];
-
-    let puppetHistory = [];
-    let ariaHistory = [];
-    let findPuppet = 0;
-
-    let ariaIndex = 0;
-    allHistory.map((history) => {
-      findPuppet++;
-      if (history["resourceType"] !== undefined) {
-        if (history["resourceType"].includes("Puppet")) {
-          puppetHistory.push(allHistory.slice(0, findPuppet));
-          ariaIndex = findPuppet;
-        } else {
-          ariaHistory.push(allHistory.slice(ariaIndex, allHistory.length - 1));
-        }
+      let color = "geekblue"; //tag.length > 5 ? 'geekblue' : 'green';
+      if (statusInfo["status"].includes("FAILED")) {
+        color = "volcano";
+      } else if (statusInfo["status"].includes("SUCCESSFUL")) {
+        color = "green";
       }
-    });
-    if (type == "all") {
-      setAriaStatusHistory(ariaHistory[ariaHistory.length - 1]);
-      setPuppetStatusHistory(puppetHistory[puppetHistory.length - 1]);
+
+      setDeploymentStatus(color);
+
+      let allHistory = historyData["deploy_status_history"];
+
+      let puppetHistory = [];
+      let ariaHistory = [];
+      let findPuppet = 0;
+
+      let ariaIndex = 0;
+      allHistory.map((history) => {
+        findPuppet++;
+        if (history["resourceType"] !== undefined) {
+          if (history["resourceType"].includes("Puppet")) {
+            puppetHistory.push(allHistory.slice(0, findPuppet));
+            ariaIndex = findPuppet;
+          } else {
+            ariaHistory.push(
+              allHistory.slice(ariaIndex, allHistory.length - 1)
+            );
+          }
+        }
+      });
+
+      if (type == "all") {
+        if (ariaHistory.length)
+          setAriaStatusHistory(ariaHistory[ariaHistory.length - 1]);
+        if (puppetHistory.length)
+          setPuppetStatusHistory(puppetHistory[puppetHistory.length - 1]);
+        setStatusHistory([]);
+      }
+
+      //incidents
+      let incidentData = [];
+      let noOfRtries = 0;
+      historyData["childrens"].map((c) => {
+        if (c["status"] == "Failed") {
+          incidentData.push({
+            incident: c["incident"],
+            status: "Inprogress",
+            comments: `We are acknowledging the error, checking the ${c["tool_integration"]} integration with OSB.`,
+          });
+        }
+        console.log("RETRIES", c["no_of_retry"]);
+        noOfRtries += Number(c["no_of_retry"]);
+      });
+      setIncidents(incidentData);
+      setRetries(noOfRtries);
+      // if (type == "all") {
+      //   setAriaStatusHistory(ariaHistory[ariaHistory.length - 1]);
+      //   setPuppetStatusHistory(puppetHistory[puppetHistory.length - 1]);
+      // }
     }
+
     setSpinning(false);
   };
   const handleOk = () => {
@@ -381,6 +414,24 @@ const Activities = () => {
     },
   ];
 
+  const incidentHistory = [
+    {
+      title: "Incident Id",
+      dataIndex: "incident",
+      key: "incident",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+    },
+    {
+      title: "Comments",
+      dataIndex: "comments",
+      key: "comments",
+    },
+  ];
+
   let showInfo = [
     {
       title: "Date",
@@ -436,16 +487,13 @@ const Activities = () => {
                 },
                 {
                   key1: "No. of Retries",
-                  key2: retryData["no_of_retry"] ? (
+                  key2: (
                     <Tag
                       color="#A0522D"
                       style={{ width: 40, textAlign: "center" }}
                     >
-                      {" "}
-                      {retryData["no_of_retry"]}{" "}
+                      {retries}
                     </Tag>
-                  ) : (
-                    "-"
                   ),
                 },
               ]}
@@ -456,79 +504,44 @@ const Activities = () => {
             />
           </div>
           <div style={{ width: "50%" }}>
-            {retryData["incident"] && (
+            {
               <Table
-                columns={showInfo}
-                dataSource={[
-                  {
-                    key1: (
-                      <span style={{ textAlign: "left" }}>
-                        <b>Incident</b>
-                      </span>
-                    ),
-                    key2: <Tag color="green">{retryData["incident"]}</Tag>,
-                  },
-                  { key1: "State", key2: "Inprogress" },
-                  {
-                    key1: "Comments",
-                    key2: "We are acknowledging the error, checking the Puppet integration with OSB.",
-                  },
-                  ,
-                ]}
-                showHeader={false}
+                columns={incidentHistory}
+                dataSource={incidents}
+                showHeader={true}
                 bordered={true}
                 pagination={false}
                 size="small"
               />
-            )}
-
-            {!retryData["incident"] && (
-              <Table
-                columns={showInfo}
-                dataSource={[
-                  {
-                    key1: (
-                      <span style={{ textAlign: "left" }}>
-                        <b>Incident</b>
-                      </span>
-                    ),
-                    key2: "-",
-                  },
-                  { key1: "State", key2: "-" },
-                  {
-                    key1: "Comments",
-                    key2: "-",
-                  },
-                  ,
-                ]}
-                showHeader={false}
-                bordered={true}
-                pagination={false}
-                size="small"
-              />
-            )}
+            }
           </div>
         </div>
         <br />
 
         <Table
+          title={() => <b>{"Aria Automation Log Details"}</b>}
           columns={columnStatusHistory}
           dataSource={ariaStatusHistory}
           bordered={true}
           size="small"
-          style={{
-            display: ariaStatusHistory.length > 0 ? "block" : "none",
-          }}
+          style={
+            {
+              // display: ariaStatusHistory.length > 0 ? "block" : "none",
+            }
+          }
         />
         <br />
         <Table
+          title={() => <b>{"Puppet Log Details"}</b>}
           columns={columnStatusHistory}
           dataSource={puppetStatusHistory}
           bordered={true}
           size="small"
-          style={{
-            display: puppetStatusHistory.length > 0 ? "block" : "none",
-          }}
+          style={
+            {
+              // display: puppetStatusHistory.length > 0 ? "block" : "none",
+            }
+          }
         />
       </Modal>
       <Spin spinning={spinning} fullscreen />

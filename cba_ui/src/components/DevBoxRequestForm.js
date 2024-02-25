@@ -86,7 +86,7 @@ export const DevBoxRequestForm = () => {
       newPayload["date_time"] = moment(new Date()).format("MM-DD-YYYY HH:mm");
       newPayload["request_status"] = "running";
       newPayload["request_status1"] = "running";
-      newPayload["created_by"] = "Admin";
+      newPayload["created_by"] = "gutturra";
       newPayload["request_id"] = newPayload["requestId"];
       newPayload["transaction_id"] = newPayload["transactionId"];
       newPayload["payload"] = JSON.stringify(newPayload["payload"]);
@@ -94,6 +94,46 @@ export const DevBoxRequestForm = () => {
       newPayload["service_action"] = "CREATE";
       newPayload["deployment_id"] = newPayload["deployment_id"];
       newPayload["deployment_name"] = newPayload["deployment_name"];
+      newPayload["deploy_status"] = {
+        id: "377609b1-f166-4206-a30c-b83de2be541c",
+        name: "deployment_377609b1-f166-4206-a30c-b83de2be541c",
+        orgId: "69bb0283-5024-409b-a1df-829a911cf6b0",
+        catalogItemId: "4c31e0fc-02f9-354d-b4c7-088ea2d0bfad",
+        catalogItemVersion: "24",
+        blueprintId: "6bb0b94f-ba27-4925-847f-22b9162da013",
+        blueprintVersion: "24",
+        iconId: "13a3d6b7-5185-3995-820f-4968f18daa69",
+        createdAt: moment(new Date()).format("MM-DD-YYYY HH:mm"),
+        createdBy: "gutturra",
+        ownedBy: "gutturra",
+        ownerType: "USER",
+        lastUpdatedAt: "2024-02-21T14:59:42.220618Z",
+        lastUpdatedBy: "gutturra",
+        leaseExpireAt: "2024-02-28T14:59:00Z",
+        leaseGracePeriodDays: 5,
+        status: "CREATE_IN_PROGRESS",
+      };
+      newPayload["deploy_status_history"] = [
+        {
+          id: "4b5a14a2-6008-4636-8731-9ef81da9ec14",
+          name: "INITIALIZATION_IN_PROGRESS",
+          details: "",
+          resourceName: "",
+          resourceType: "",
+          timestamp: moment().format(),
+          userEvent: false,
+        },
+        {
+          id: "af4d77a3-d23a-4018-9f81-070e61f884de",
+          name: "REQUEST_IN_PROGRESS",
+          details:
+            "CREATES Cloud_vSphere_Machine_1 of type Cloud.vSphere.Machine and Cloud_Network_1 of type Cloud.Network and Cloud_Puppet_1 of type Cloud.Puppet and Additional_Disk_1_Disk[0] of type Cloud.Volume",
+          resourceName: "",
+          resourceType: "",
+          timestamp: moment().format(),
+          userEvent: false,
+        },
+      ];
       newPayload["childrens"] = [
         {
           key: 0,
@@ -106,6 +146,7 @@ export const DevBoxRequestForm = () => {
           deployment_id: newPayload["deployment_id"],
           deployment_name: newPayload["deployment_name"],
           incident: `INC${getRandomInt1()}`,
+          no_of_retry: 0,
         },
         {
           key: 1,
@@ -118,6 +159,7 @@ export const DevBoxRequestForm = () => {
           deployment_id: newPayload["deployment_id"],
           deployment_name: newPayload["deployment_name"],
           incident: `INC${getRandomInt1()}`,
+          no_of_retry: 0,
         },
         // {
         //   key: 2,
@@ -146,6 +188,7 @@ export const DevBoxRequestForm = () => {
       let sendData = JSON.stringify(transactions);
       axios
         .post(`http://10.45.197.10:5000/api/transactions`, { data: sendData })
+        //.post(`http://localhost:3002/`, { data: sendData })
         .then((response) => {
           setSpinning(false);
         })
@@ -162,6 +205,9 @@ export const DevBoxRequestForm = () => {
     values["payload"]["transactionId"] = transactionId;
     let requestId = `REQ${getRandomInt()}`;
     values["payload"]["requestId"] = requestId;
+    // values["payload"]["deployment_id"] = "1231231-sdgsdg-345123";
+    // values["payload"]["deployment_name"] = "sdfsdf";
+    // insertLocalStorage(values);
     axios
       .post(`http://10.45.197.10:5000/api/deploy`, values)
       .then((response) => {

@@ -58,6 +58,9 @@ const TransactionStatus = () => {
   const [retryData, setRetryData] = useState({});
   const [spinning, setSpinning] = useState(false);
   let [newData, setData] = useState([]);
+  let [incidents, setIncidents] = useState([]);
+  let [retries, setRetries] = useState(0);
+  let [title, setTitle] = useState("Aria Automation Log Details");
 
   let getStatusByDeploymentId = (deployment_id) => {
     return new Promise((resolve, reject) => {
@@ -253,20 +256,84 @@ const TransactionStatus = () => {
       }
     });
     if (type == "all") {
-      setAriaStatusHistory(ariaHistory[ariaHistory.length - 1]);
-      setPuppetStatusHistory(puppetHistory[puppetHistory.length - 1]);
+      if (ariaHistory.length)
+        setAriaStatusHistory(ariaHistory[ariaHistory.length - 1]);
+      if (puppetHistory.length)
+        setPuppetStatusHistory(puppetHistory[puppetHistory.length - 1]);
       setStatusHistory([]);
     } else if (type == "Puppet") {
-      setStatusHistory(puppetHistory[puppetHistory.length - 1]);
+      if (puppetHistory.length)
+        setStatusHistory(puppetHistory[puppetHistory.length - 1]);
       setPuppetStatusHistory([]);
       setAriaStatusHistory([]);
       setRetryData(historyData["childrens"][1]);
     } else {
-      setStatusHistory(ariaHistory[ariaHistory.length - 1]);
+      if (ariaHistory.length)
+        setStatusHistory(ariaHistory[ariaHistory.length - 1]);
       setPuppetStatusHistory([]);
       setAriaStatusHistory([]);
       setRetryData(historyData["childrens"][0]);
     }
+
+    if (type == "Puppet") {
+      setTitle("Puppet Log Details");
+    }
+    //incidents
+    if (type == "all") {
+      let incidentData = [];
+      let noOfRtries = 0;
+      historyData["childrens"].map((c) => {
+        if (c["status"] == "Failed") {
+          incidentData.push({
+            incident: c["incident"],
+            status: "Inprogress",
+            comments: `We are acknowledging the error, checking the ${c["tool_integration"]} integration with OSB.`,
+          });
+        }
+        noOfRtries += Number(c["no_of_retry"]);
+      });
+
+      setIncidents(incidentData);
+
+      setRetries(noOfRtries);
+    } else if (type == "Puppet") {
+      let incidentData = [];
+      let noOfRtries = 0;
+      historyData["childrens"].map((c) => {
+        if (c["tool_integration"] == "Puppet") {
+          if (c["status"] == "Failed") {
+            incidentData.push({
+              incident: c["incident"],
+              status: "Inprogress",
+              comments: `We are acknowledging the error, checking the ${c["tool_integration"]} integration with OSB.`,
+            });
+          }
+          noOfRtries += Number(c["no_of_retry"]);
+        }
+      });
+
+      setIncidents(incidentData);
+      setRetries(noOfRtries);
+    } else {
+      let incidentData = [];
+      let noOfRtries = 0;
+      historyData["childrens"].map((c) => {
+        if (c["tool_integration"] == "Aria Automation") {
+          if (c["status"] == "Failed") {
+            incidentData.push({
+              incident: c["incident"],
+              status: "Inprogress",
+              comments: `We are acknowledging the error, checking the ${c["tool_integration"]} integration with OSB.`,
+            });
+          }
+          noOfRtries += Number(c["no_of_retry"]);
+        }
+      });
+
+      setIncidents(incidentData);
+      setRetries(noOfRtries);
+    }
+
     setSpinning(false);
   };
   const handleOk = () => {
@@ -393,7 +460,7 @@ const TransactionStatus = () => {
                 </span>
               </a>
             );
-          } else if (d["status"] == "completed") {
+          } else if (d["status"] == "Completed") {
             return (
               <a>
                 <span style={{ fontSize: 17 }}>
@@ -446,6 +513,25 @@ const TransactionStatus = () => {
       />
     );
   };
+
+  const incidentHistory = [
+    {
+      title: "Incident Id",
+      dataIndex: "incident",
+      key: "incident",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+    },
+    {
+      title: "Comments",
+      dataIndex: "comments",
+      key: "comments",
+    },
+  ];
+
   const columns = [
     {
       title: "Date",
@@ -776,16 +862,13 @@ const TransactionStatus = () => {
                 },
                 {
                   key1: "No. of Retries",
-                  key2: retryData["no_of_retry"] ? (
+                  key2: (
                     <Tag
                       color="#A0522D"
                       style={{ width: 40, textAlign: "center" }}
                     >
-                      {" "}
-                      {retryData["no_of_retry"]}{" "}
+                      {retries}
                     </Tag>
-                  ) : (
-                    "-"
                   ),
                 },
               ]}
@@ -796,61 +879,21 @@ const TransactionStatus = () => {
             />
           </div>
           <div style={{ width: "50%" }}>
-            {retryData["incident"] && (
+            {
               <Table
-                columns={showInfo}
-                dataSource={[
-                  {
-                    key1: (
-                      <span style={{ textAlign: "left" }}>
-                        <b>Incident</b>
-                      </span>
-                    ),
-                    key2: <Tag color="green">{retryData["incident"]}</Tag>,
-                  },
-                  { key1: "State", key2: "Inprogress" },
-                  {
-                    key1: "Comments",
-                    key2: "We are acknowledging the error, checking the Puppet integration with OSB.",
-                  },
-                  ,
-                ]}
-                showHeader={false}
+                columns={incidentHistory}
+                dataSource={incidents}
+                showHeader={true}
                 bordered={true}
                 pagination={false}
                 size="small"
               />
-            )}
-
-            {!retryData["incident"] && (
-              <Table
-                columns={showInfo}
-                dataSource={[
-                  {
-                    key1: (
-                      <span style={{ textAlign: "left" }}>
-                        <b>Incident</b>
-                      </span>
-                    ),
-                    key2: "-",
-                  },
-                  { key1: "State", key2: "-" },
-                  {
-                    key1: "Comments",
-                    key2: "-",
-                  },
-                  ,
-                ]}
-                showHeader={false}
-                bordered={true}
-                pagination={false}
-                size="small"
-              />
-            )}
+            }
           </div>
         </div>
         <br />
         <Table
+          title={() => <b>{title}</b>}
           columns={columnStatusHistory}
           dataSource={statusHistory}
           bordered={true}
@@ -862,22 +905,24 @@ const TransactionStatus = () => {
         <br />
 
         <Table
+          title={() => <b>{"Aria Automation Log Details"}</b>}
           columns={columnStatusHistory}
           dataSource={ariaStatusHistory}
           bordered={true}
           size="small"
           style={{
-            display: ariaStatusHistory.length > 0 ? "block" : "none",
+            display: statusHistory.length > 0 ? "none" : "block",
           }}
         />
         <br />
         <Table
+          title={() => <b>{"Puppet Log Details"}</b>}
           columns={columnStatusHistory}
           dataSource={puppetStatusHistory}
           bordered={true}
           size="small"
           style={{
-            display: puppetStatusHistory.length > 0 ? "block" : "none",
+            display: statusHistory.length > 0 ? "none" : "block",
           }}
         />
       </Modal>
