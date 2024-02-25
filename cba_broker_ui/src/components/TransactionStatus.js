@@ -61,7 +61,7 @@ const TransactionStatus = () => {
   let [incidents, setIncidents] = useState([]);
   let [retries, setRetries] = useState(0);
   let [title, setTitle] = useState("Aria Automation Log Details");
-
+  let [toolType, setToolType] = useState("all");
   let getStatusByDeploymentId = (deployment_id) => {
     return new Promise((resolve, reject) => {
       axios
@@ -198,8 +198,8 @@ const TransactionStatus = () => {
 
   function getNewTransaction() {
     let username = Auth.getUserProfile1();
-    //axios.get(`http://localhost:3002/`).then((response) => {
-    axios.get(`http://10.45.197.10:5000/api/transactions`).then((response) => {
+    axios.get(`http://localhost:3002/`).then((response) => {
+      // axios.get(`http://10.45.197.10:5000/api/transactions`).then((response) => {
       let responseData = sortByKey(response["data"]);
       let newdata = responseData.map((r) => {
         if (username == "puppetuser" || username == "puppet") {
@@ -222,6 +222,7 @@ const TransactionStatus = () => {
   }, []);
 
   const showModal = (type, historyData) => {
+    setToolType(type);
     setSpinning(true);
     setIsModalOpen(true);
 
@@ -251,25 +252,44 @@ const TransactionStatus = () => {
           puppetHistory.push(allHistory.slice(0, findPuppet));
           ariaIndex = findPuppet;
         } else {
-          ariaHistory.push(allHistory.slice(ariaIndex, allHistory.length - 1));
+          if (ariaIndex == 0) {
+            ariaIndex++;
+          } else {
+            ariaHistory.push(
+              allHistory.slice(ariaIndex, allHistory.length - 1)
+            );
+          }
         }
       }
     });
+    console.log(type);
     if (type == "all") {
-      if (ariaHistory.length)
+      if (ariaIndex == 1) {
+        setAriaStatusHistory(allHistory);
+      } else {
         setAriaStatusHistory(ariaHistory[ariaHistory.length - 1]);
+      }
       if (puppetHistory.length)
         setPuppetStatusHistory(puppetHistory[puppetHistory.length - 1]);
+      else {
+        setPuppetStatusHistory([]);
+      }
       setStatusHistory([]);
     } else if (type == "Puppet") {
       if (puppetHistory.length)
         setStatusHistory(puppetHistory[puppetHistory.length - 1]);
+      else {
+        setStatusHistory([]);
+      }
       setPuppetStatusHistory([]);
       setAriaStatusHistory([]);
       setRetryData(historyData["childrens"][1]);
     } else {
-      if (ariaHistory.length)
-        setStatusHistory(ariaHistory[ariaHistory.length - 1]);
+      if (ariaIndex == 1) {
+        setStatusHistory(allHistory);
+      } else {
+        setAriaStatusHistory(ariaHistory[ariaHistory.length - 1]);
+      }
       setPuppetStatusHistory([]);
       setAriaStatusHistory([]);
       setRetryData(historyData["childrens"][0]);
@@ -392,7 +412,7 @@ const TransactionStatus = () => {
                 key={status}
                 onClick={() => showModal(d["tool_integration"], data)}
               >
-                {d["status"].toUpperCase()}
+                {status.toUpperCase()}
               </Tag>
             </a>
           );
@@ -899,7 +919,10 @@ const TransactionStatus = () => {
           bordered={true}
           size="small"
           style={{
-            display: statusHistory.length > 0 ? "block" : "none",
+            display:
+              toolType == "Aria Automation" || toolType == "Puppet"
+                ? "block"
+                : "none",
           }}
         />
         <br />
@@ -911,7 +934,7 @@ const TransactionStatus = () => {
           bordered={true}
           size="small"
           style={{
-            display: statusHistory.length > 0 ? "none" : "block",
+            display: toolType == "all" ? "block" : "none",
           }}
         />
         <br />
@@ -922,7 +945,7 @@ const TransactionStatus = () => {
           bordered={true}
           size="small"
           style={{
-            display: statusHistory.length > 0 ? "none" : "block",
+            display: toolType == "all" ? "block" : "none",
           }}
         />
       </Modal>
