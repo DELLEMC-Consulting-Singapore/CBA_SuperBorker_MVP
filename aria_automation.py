@@ -292,15 +292,15 @@ def update_transactions():
                             { "resourceType": "Cloud.Volume", "error": 0, "completed": 0, "running": 0 },
                         ]    
 
-                        for deploy_history in deploy_history_data:
+                        for deploy_histories in deploy_history_data:
                             for resource_type in resourceType:
-                                if deploy_history["resourceType"] != "":
-                                    if deploy_history["resourceType"] == resource_type["resourceType"]:
-                                        if deploy_history["name"] == "CREATE_FAILED":
+                                if deploy_histories["resourceType"] != "":
+                                    if deploy_histories["resourceType"] == resource_type["resourceType"]:
+                                        if deploy_histories["name"] == "CREATE_FAILED":
                                             resource_type["error"] = int(resource_type["error"]) + 1
-                                        elif deploy_history["name"] == "CREATE_FINISHED":
+                                        elif deploy_histories["name"] == "CREATE_FINISHED":
                                             resource_type["completed"] = int(resource_type["completed"]) + 1
-                                        elif deploy_history["name"] == "CREATE_IN_PROGRESS":
+                                        elif deploy_histories["name"] == "CREATE_IN_PROGRESS":
                                             resource_type["running"] = int(resource_type["running"]) + 1
 
                         
