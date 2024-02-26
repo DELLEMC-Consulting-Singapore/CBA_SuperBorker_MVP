@@ -72,6 +72,8 @@ export const MenuBar = () => {
       history("/knowledge-base");
     } else if (e.key == 3) {
       history("/capacity-calculation");
+    } else if (e.key == 4) {
+      history("/integrations");
     } else if (e.key == 7) {
       Auth.invalidate();
       history && history("/");
@@ -129,7 +131,6 @@ export const MenuBar = () => {
         <Menu.Item key="4">
           <InteractionOutlined />
           <span>Integrations</span>
-          <Link to="/" />
         </Menu.Item>
 
         <Menu.Item key="6">

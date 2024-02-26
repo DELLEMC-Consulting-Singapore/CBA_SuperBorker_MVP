@@ -33,6 +33,7 @@ import Qualys from "./components/Qualys";
 import ServiceNow from "./components/ServiceNow";
 import { KnowledgeBase } from "./components/KnowledgeBase";
 import CapacityCalculation from "./components/CapacityCalculation";
+import { Integrations } from "./components/Integrations";
 const { Content, Footer, Sider } = Layout;
 
 const App = () => {
@@ -233,6 +234,15 @@ const App = () => {
                       element={
                         <Protected isLoggedIn={Auth.isAuthenticated()}>
                           <CapacityCalculation />
+                        </Protected>
+                      }
+                    />
+
+                    <Route
+                      path="/integrations"
+                      element={
+                        <Protected isLoggedIn={Auth.isAuthenticated()}>
+                          <Integrations />
                         </Protected>
                       }
                     />
