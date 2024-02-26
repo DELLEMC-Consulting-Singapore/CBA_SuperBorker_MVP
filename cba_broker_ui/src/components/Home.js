@@ -64,7 +64,7 @@ const Home = (props) => {
           width: "100%",
         }}
       >
-        Open Service Broker
+        Open Service Broker - Dashboard
       </Typography.Title>
 
       <Paragraph
@@ -91,12 +91,14 @@ const Home = (props) => {
                 position: "relative",
                 left: "55%",
                 transform: "translate(-60%, 0%)",
+                border: "3px solid #f0f0f0",
               }
             : {
                 width: 750,
                 position: "relative",
                 left: "50%",
-                transform: "translate(-60%, 0%)",
+                transform: "translate(-50%, 0%)",
+                border: "3px solid #f0f0f0",
               }
         }
       >
@@ -147,7 +149,7 @@ const Home = (props) => {
       </Card>
 
       <Card
-        style={{ width: "100%", border: "2px solid #f0f0f0", marginTop: 15 }}
+        style={{ width: "100%", border: "3px solid #f0f0f0", marginTop: 15 }}
         bodyStyle={{ padding: 10 }}
       >
         <div style={{ marginLeft: 130 }}>
@@ -162,13 +164,13 @@ const Home = (props) => {
                 "line-height": "1.05",
                 color: "#565656",
                 "text-align": "center",
-                marginRight: 200,
+                marginRight: 180,
               }}
             >
               Integrations & Tools Availability
             </Typography.Title>
           </div>
-          <div style={{ marginTop: 25 }}>
+          <div style={{ marginTop: 25, marginLeft: 40 }}>
             <Row gutter={16}>
               <Col span={5}>
                 <Link to={"/"}>
