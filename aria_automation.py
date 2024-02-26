@@ -331,11 +331,11 @@ def update_transactions():
                     new_data.append(data)
                 else:
                     new_data.append(data)           
-            # with open("transactions.json", "w") as outfile:
-            #     json.dump(new_data, outfile)
+            with open("transactions.json", "w") as outfile:
+                json.dump(new_data, outfile)
             read_transactions_data = read_transactions()
             if read_transactions_data:
-                return jsonify(data), 200
+                return jsonify(read_transactions_data), 200
             else:
                 return jsonify({'error': 'No data found'}), 500
         else:
