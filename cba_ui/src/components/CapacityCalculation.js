@@ -25,7 +25,7 @@ const CapacityCalculation = () => (
             color: "#231f20",
           }}
         >
-          Back Dashboard
+          Back Home
         </Button>
       </Link>
     }

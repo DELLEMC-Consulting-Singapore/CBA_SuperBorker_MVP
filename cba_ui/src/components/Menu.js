@@ -47,7 +47,7 @@ export const MenuBar = () => {
     getItem("My Requests", 16, <PullRequestOutlined />),
     getItem("Capacity Calculation", 11, <CalculatorOutlined />),
     getItem("Integrations", 12, <InteractionOutlined />),
-    getItem("User Administration", 13, <TeamOutlined />),
+    //getItem("User Administration", 13, <TeamOutlined />),
     getItem("Knowledge Base", 14, <RiseOutlined />),
     getItem("Logout", 15, <LogoutOutlined />),
     // getItem('Reporting', 6, <FileOutlined />),
