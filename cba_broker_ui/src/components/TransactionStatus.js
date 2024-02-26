@@ -217,8 +217,16 @@ const TransactionStatus = () => {
     });
   }
 
+  // useEffect(() => {
+
+  //   getNewTransaction();
+  // }, []);
+
   useEffect(() => {
-    getNewTransaction();
+    const interval = setInterval(() => {
+      getNewTransaction();
+    }, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   const showModal = (type, historyData) => {
@@ -457,76 +465,67 @@ const TransactionStatus = () => {
       //     }
       //   },
       // },
-      {
-        title: "Log Details",
-        key: "error_log",
-        render: (d) => {
-          if (d["status"] == "Failed" || d["status"] == "Rollback") {
-            return (
-              <a>
-                <span
-                  style={{
-                    fontSize: 17,
-                  }}
-                >
-                  <ExceptionOutlined
-                    style={{
-                      color: "#ff4d4f",
-                      background: "#fff2f0",
-                      "border-color": "#ffccc7",
-                    }}
-                    onClick={() => showModal(d["tool_integration"], data)}
-                  />
-                </span>
-              </a>
-            );
-          } else if (d["status"] == "Completed") {
-            return (
-              <a>
-                <span style={{ fontSize: 17 }}>
-                  <FileDoneOutlined
-                    style={{
-                      color: "#389e0d",
-                      background: "#f6ffed",
-                      "border-color": "#b7eb8f",
-                    }}
-                    onClick={() => showModal(d["tool_integration"], data)}
-                  />
-                </span>
-              </a>
-            );
-          } else if (d["status"] == "Running") {
-            return (
-              <a>
-                <span style={{ fontSize: 17 }}>
-                  <FileSyncOutlined
-                    onClick={() => showModal(d["tool_integration"], data)}
-                  />
-                </span>
-              </a>
-            );
-          }
-          // return (
-          //   <a>
-          //     <span style={{ fontSize: 25 }}>
-          //       <DownloadOutlined
-          //         onClick={() => showModal(d["tool_integration"], data)}
-          //       />
-          //     </span>
-          //   </a>
-          // );
-        },
-      },
-      {
-        title: "Incident",
-        dataIndex: "incident",
-        key: "incident",
-        render: (incidents, data) => {
-          if (data["status"] == "Failed") {
-            return incidents;
-          }
-        },
-      },
+      // {
+      //   title: "Log Details",
+      //   key: "error_log",
+      //   render: (d) => {
+      //     if (d["status"] == "Failed" || d["status"] == "Rollback") {
+      //       return (
+      //         <a>
+      //           <span
+      //             style={{
+      //               fontSize: 17,
+      //             }}
+      //           >
+      //             <ExceptionOutlined
+      //               style={{
+      //                 color: "#ff4d4f",
+      //                 background: "#fff2f0",
+      //                 "border-color": "#ffccc7",
+      //               }}
+      //               onClick={() => showModal(d["tool_integration"], data)}
+      //             />
+      //           </span>
+      //         </a>
+      //       );
+      //     } else if (d["status"] == "Completed") {
+      //       return (
+      //         <a>
+      //           <span style={{ fontSize: 17 }}>
+      //             <FileDoneOutlined
+      //               style={{
+      //                 color: "#389e0d",
+      //                 background: "#f6ffed",
+      //                 "border-color": "#b7eb8f",
+      //               }}
+      //               onClick={() => showModal(d["tool_integration"], data)}
+      //             />
+      //           </span>
+      //         </a>
+      //       );
+      //     } else if (d["status"] == "Running") {
+      //       return (
+      //         <a>
+      //           <span style={{ fontSize: 17 }}>
+      //             <FileSyncOutlined
+      //               onClick={() => showModal(d["tool_integration"], data)}
+      //             />
+      //           </span>
+      //         </a>
+      //       );
+      //     }
+      //   },
+      // },
+      // {
+      //   title: "Incident",
+      //   dataIndex: "incident",
+      //   key: "incident",
+      //   render: (incidents, data) => {
+      //     if (data["status"] == "Failed") {
+      //       return incidents;
+      //     }
+      //   },
+      // },
     ];
     return (
       <Table
@@ -621,14 +620,14 @@ const TransactionStatus = () => {
                 {tag.toUpperCase()}
               </Tag>
             </a>
-            <a>
+            {/* <a>
               {tag != "completed" && (
                 <ReloadOutlined
                   style={{ fontSize: "20px", color: "#fc0" }}
                   onClick={() => refreshData(data)}
                 />
               )}
-            </a>
+            </a> */}
           </span>
         );
       },
