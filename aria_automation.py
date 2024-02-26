@@ -249,6 +249,7 @@ def put_transactions():
     return jsonify({}), 201
 
 @app.route('/api/update_transactions', methods=['GET'])
+def update_transactions():
     trans = read_transactions()
     refresh_token = get_refresh_token()
     new_data = []
@@ -272,14 +273,13 @@ def put_transactions():
                 else:
                     newdata.append(data)           
             with open("transactions.json", "w") as outfile:
-            json.dump(newdata, outfile)
+                json.dump(newdata, outfile)
 
             read_transactions_data = read_transactions()
             if read_transactions_data:
                 return jsonify(read_transactions_data), 200
             else:
                 return jsonify({'error': 'No data found'}), 500
-
         else:
             return jsonify({'error': 'Bearer Token not obtained'}), 500
     else:
