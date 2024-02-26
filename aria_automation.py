@@ -345,5 +345,5 @@ def update_transactions():
 
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=8443, debug=True)
+    app.run(host='10.45.197.28', port=8443, debug=True)
     
