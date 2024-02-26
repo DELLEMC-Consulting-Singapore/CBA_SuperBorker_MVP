@@ -32,6 +32,7 @@ import Puppet from "./components/Puppet";
 import Qualys from "./components/Qualys";
 import ServiceNow from "./components/ServiceNow";
 import { KnowledgeBase } from "./components/KnowledgeBase";
+import CapacityCalculation from "./components/CapacityCalculation";
 const { Content, Footer, Sider } = Layout;
 
 const App = () => {
@@ -223,6 +224,15 @@ const App = () => {
                       element={
                         <Protected isLoggedIn={Auth.isAuthenticated()}>
                           <ServiceNow />
+                        </Protected>
+                      }
+                    />
+
+                    <Route
+                      path="/capacity-calculation"
+                      element={
+                        <Protected isLoggedIn={Auth.isAuthenticated()}>
+                          <CapacityCalculation />
                         </Protected>
                       }
                     />
