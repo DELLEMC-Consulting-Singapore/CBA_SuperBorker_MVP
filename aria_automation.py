@@ -248,6 +248,43 @@ def put_transactions():
        json.dump(newdata, outfile)
     return jsonify({}), 201
 
+@app.route('/api/update_transactions', methods=['GET'])
+    trans = read_transactions()
+    refresh_token = get_refresh_token()
+    new_data = []
+    if refresh_token:
+        bearer_token = get_bearer_token(refresh_token)
+        if bearer_token:
+            for data in trans:
+                if data['status'] == "running":
+                    deploymentID = data['deployment_id']
+                    deploy_status_data = deploy_status(deploymentID, bearer_token)
+                    # Return the raw JSON response from the external API call
+                    if deploy_status_data:                            
+                        data['deploy_status'] =  deploy_status_data                            
+                    #deploy_status_history
+                    request_id_data = request_id(deploymentID, bearer_token)
+                    if request_id_data:
+                        deploy_history_data = deploy_history(request_id_data, deploymentID, bearer_token)
+                        data['deploy_status_history'] = deploy_history_data
+                    
+                    newdata.append(data)
+                else:
+                    newdata.append(data)           
+            with open("transactions.json", "w") as outfile:
+            json.dump(newdata, outfile)
+
+            read_transactions_data = read_transactions()
+            if read_transactions_data:
+                return jsonify(read_transactions_data), 200
+            else:
+                return jsonify({'error': 'No data found'}), 500
+
+        else:
+            return jsonify({'error': 'Bearer Token not obtained'}), 500
+    else:
+        return jsonify({'error': 'Refresh Token not obtained'}), 500
+
 
 if __name__ == '__main__':
     app.run(host='10.45.197.28', port=8443, debug=True)
