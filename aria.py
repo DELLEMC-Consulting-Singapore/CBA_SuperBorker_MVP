@@ -99,7 +99,7 @@ def put_transactions():
         return e
 
 @app.route('/api/update_transactions', methods=['GET'])
-def put_transactions():
+def update_transactions():
     url = "http://10.45.197.28:8443/api/update_transactions"
     headers = {
         'Content-Type': 'application/json',
