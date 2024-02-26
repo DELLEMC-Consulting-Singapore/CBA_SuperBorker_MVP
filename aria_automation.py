@@ -261,24 +261,25 @@ def update_transactions():
                     deploymentID = data['deployment_id']
                     deploy_status_data = deploy_status(deploymentID, bearer_token)
                     # Return the raw JSON response from the external API call
-                    if deploy_status_data:                            
-                        data['deploy_status'] = deploy_status_data        
+                    if deploy_status_data:
+                        data['deploy_status'] = deploy_status_data
 
-                        if deploy_status_data["status"] == "CREATE_FAILED": 
+                        if deploy_status_data["status"] == "CREATE_FAILED":
                             data["request_status"] = "failed"
                             data["request_status1"] = "failed"
                         elif deploy_status_data["status"] == "CREATE_SUCCESSFUL":
                             data["request_status"] = "completed"
                             data["request_status1"] = "completed"
-                        
+
                         data["created_by"] = deploy_status_data["createdBy"]
-                        
+
 
                     #deploy_status_history
+
                     request_id_data = request_id(deploymentID, bearer_token)
                     if request_id_data:
                         deploy_history_data = deploy_history(request_id_data, deploymentID, bearer_token)
-                        data['deploy_status_history'] = deploy_history_data
+                        data['deploy_status_history'] = deploy_history_data["content"]
 
                         resourceType = [
                             { "resourceType": "Cloud.Puppet", "error": 0, "completed": 0, "running": 0 },
@@ -290,11 +291,11 @@ def update_transactions():
                             },
                             { "resourceType": "Cloud.Network", "error": 0, "completed": 0, "running": 0 },
                             { "resourceType": "Cloud.Volume", "error": 0, "completed": 0, "running": 0 },
-                        ]    
-
-                        for deploy_histories in deploy_history_data:
+                        ]
+                        #print(deploy_history_data)
+                        for deploy_histories in data["deploy_status_history"]:
                             for resource_type in resourceType:
-                                if deploy_histories["resourceType"] != "":
+                                if deploy_histories["resourceType"]:
                                     if deploy_histories["resourceType"] == resource_type["resourceType"]:
                                         if deploy_histories["name"] == "CREATE_FAILED":
                                             resource_type["error"] = int(resource_type["error"]) + 1
@@ -303,7 +304,7 @@ def update_transactions():
                                         elif deploy_histories["name"] == "CREATE_IN_PROGRESS":
                                             resource_type["running"] = int(resource_type["running"]) + 1
 
-                        
+
                         err = 0
                         comp = 0
                         run = 0
@@ -327,15 +328,16 @@ def update_transactions():
                                     run+=1
 
                         if resourceType[0]["error"] == 0 and resourceType[0]["completed"] == 0 and resourceType[0]["running"] == 0:
-                            data["childrens"][0]["status"] = "Running"                          
+                            data["childrens"][0]["status"] = "Running"
                     new_data.append(data)
                 else:
-                    new_data.append(data)           
+                    new_data.append(data)
             with open("transactions.json", "w") as outfile:
                 json.dump(new_data, outfile)
             read_transactions_data = read_transactions()
             if read_transactions_data:
                 return jsonify(read_transactions_data), 200
+                #return jsonify(new_data), 200
             else:
                 return jsonify({'error': 'No data found'}), 500
         else:
@@ -346,4 +348,3 @@ def update_transactions():
 
 if __name__ == '__main__':
     app.run(host='10.45.197.28', port=8443, debug=True)
-    
