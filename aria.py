@@ -98,6 +98,20 @@ def put_transactions():
     except requests.RequestException as e:
         return e
 
+@app.route('/api/update_transactions', methods=['GET'])
+def put_transactions():
+    url = "http://10.45.197.28:8443/api/update_transactions"
+    headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    }
+    try:
+        response = requests.get(url, json={}, headers=headers, verify=False)
+        response_json = response.json()
+        return jsonify(response_json), 200
+    except requests.RequestException as e:
+        return e
+
 
 if __name__ == '__main__':
     app.run(host='10.45.197.10', port=5000, debug=True)
