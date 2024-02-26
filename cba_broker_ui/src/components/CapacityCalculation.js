@@ -11,10 +11,22 @@ const CapacityCalculation = () => (
   <Result
     status="404"
     title="404"
-    subTitle="This feature will be developed for Phase 2 initiative."
+    subTitle={
+      <b style={{ fontSize: 20 }}>
+        This feature will be developed for Phase 2 initiative.
+      </b>
+    }
     extra={
       <Link to="/">
-        <Button type="primary">Back Home</Button>
+        <Button
+          type="primary"
+          style={{
+            backgroundColor: "#fc0",
+            color: "#231f20",
+          }}
+        >
+          Back Home
+        </Button>
       </Link>
     }
   />

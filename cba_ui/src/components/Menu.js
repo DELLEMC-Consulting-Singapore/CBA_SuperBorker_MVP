@@ -77,6 +77,8 @@ export const MenuBar = () => {
       history("/knowledge-base");
     } else if (e.key == 11) {
       history("/capacity-calculation");
+    } else if (e.key == 12) {
+      history("/integrations");
     } else {
       history("#");
     }

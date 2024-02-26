@@ -31,6 +31,7 @@ import { DetailLinux } from "./components/DetailLinux";
 import Activities from "./Activities";
 import { KnowledgeBase } from "./components/KnowledgeBase";
 import CapacityCalculation from "./components/CapacityCalculation";
+import { Integrations } from "./components/Integrations";
 
 const { Content, Footer, Sider } = Layout;
 
@@ -192,6 +193,15 @@ const App = () => {
                       element={
                         <Protected isLoggedIn={Auth.isAuthenticated()}>
                           <CapacityCalculation />
+                        </Protected>
+                      }
+                    />
+
+                    <Route
+                      path="/integrations"
+                      element={
+                        <Protected isLoggedIn={Auth.isAuthenticated()}>
+                          <Integrations />
                         </Protected>
                       }
                     />
