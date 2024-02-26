@@ -1,0 +1,6 @@
+* * * * * ( curl GET http://10.45.197.10:5000/api/update_transactions -k )
+* * * * * ( sleep 10 ; curl GET http://10.45.197.10:5000/api/update_transactions -k )
+* * * * * ( sleep 20 ; curl GET http://10.45.197.10:5000/api/update_transactions -k )
+* * * * * ( sleep 30 ; curl GET http://10.45.197.10:5000/api/update_transactions -k )
+* * * * * ( sleep 40 ; curl GET http://10.45.197.10:5000/api/update_transactions -k )
+* * * * * ( sleep 50 ; curl GET http://10.45.197.10:5000/api/update_transactions -k )
