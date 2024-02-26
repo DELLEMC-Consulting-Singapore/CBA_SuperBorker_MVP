@@ -365,6 +365,10 @@ const Activities = () => {
 
   useEffect(() => {
     getNewTransaction();
+    const interval = setInterval(() => {
+      getNewTransaction();
+    }, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   const columnStatusHistory = [

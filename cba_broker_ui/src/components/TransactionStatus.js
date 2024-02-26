@@ -223,6 +223,7 @@ const TransactionStatus = () => {
   // }, []);
 
   useEffect(() => {
+    getNewTransaction();
     const interval = setInterval(() => {
       getNewTransaction();
     }, 10000);
