@@ -20,6 +20,7 @@ import {
   Button,
   Flex,
   Select,
+  message,
 } from "antd";
 import axios from "axios";
 import Auth from "./Auth";
@@ -63,6 +64,15 @@ const TransactionStatus = () => {
   let [retries, setRetries] = useState(0);
   let [title, setTitle] = useState("Aria Automation Log Details");
   let [toolType, setToolType] = useState("all");
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const errorRetries = (errorRetryMsg) => {
+    messageApi.open({
+      type: "error",
+      content: `${errorRetryMsg}`,
+    });
+  };
+
   let getStatusByDeploymentId = (deployment_id) => {
     return new Promise((resolve, reject) => {
       axios
@@ -857,6 +867,7 @@ const TransactionStatus = () => {
           } else if (retryData["status"] == "Failed") {
             return (
               <>
+                {contextHolder}
                 <Button onClick={handleCancel}>Cancel</Button>
                 &nbsp;
                 <Select value={retries} onChange={handleChangeRetry}>
@@ -870,7 +881,11 @@ const TransactionStatus = () => {
                 <Button
                   type="primary"
                   onClick={() => {
-                    handleResume(retryData);
+                    if (retries == 0) {
+                      errorRetries("Please select no. of retries");
+                    } else {
+                      handleResume(retryData);
+                    }
                   }}
                   danger
                 >
