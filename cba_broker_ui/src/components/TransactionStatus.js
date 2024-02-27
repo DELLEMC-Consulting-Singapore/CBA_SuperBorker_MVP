@@ -700,7 +700,7 @@ const TransactionStatus = () => {
                 newData[i]["childrens"][resumeData["key"]]["no_of_retry"] =
                   parseInt(
                     newData[i]["childrens"][resumeData["key"]]["no_of_retry"]
-                  ) + 1;
+                  ) + retries;
                 setData([...newData]);
                 index = i;
               }
