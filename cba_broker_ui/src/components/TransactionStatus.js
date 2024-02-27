@@ -19,6 +19,7 @@ import {
   Spin,
   Button,
   Flex,
+  Select,
 } from "antd";
 import axios from "axios";
 import Auth from "./Auth";
@@ -198,8 +199,8 @@ const TransactionStatus = () => {
 
   function getNewTransaction() {
     let username = Auth.getUserProfile1();
-    //axios.get(`http://localhost:3002/`).then((response) => {
-    axios.get(`http://10.45.197.10:5000/api/transactions`).then((response) => {
+    axios.get(`http://localhost:3002/`).then((response) => {
+      //axios.get(`http://10.45.197.10:5000/api/transactions`).then((response) => {
       let responseData = sortByKey(response["data"]);
       let newdata = responseData.map((r) => {
         if (username == "puppetuser" || username == "puppet") {
@@ -715,7 +716,7 @@ const TransactionStatus = () => {
       newData[index]["request_status1"] = "running";
     }
     console.log(newData[index]);
-    // sendData(newData[index]);
+    //sendData(newData[index]);
     handleCancel();
   };
 
@@ -805,6 +806,22 @@ const TransactionStatus = () => {
     },
   ];
 
+  const retryOptions = [
+    { name: 1, id: 1 },
+    { name: 2, id: 2 },
+    { name: 3, id: 3 },
+    { name: 4, id: 4 },
+    { name: 5, id: 5 },
+    { name: 6, id: 6 },
+    { name: 7, id: 7 },
+    { name: 8, id: 8 },
+    { name: 9, id: 9 },
+    { name: 10, id: 10 },
+  ];
+
+  let handleChangeRetry = (e) => {
+    setRetries(e);
+  };
   return (
     <>
       <Table
@@ -841,6 +858,15 @@ const TransactionStatus = () => {
             return (
               <>
                 <Button onClick={handleCancel}>Cancel</Button>
+                &nbsp;
+                <Select value={retries} onChange={handleChangeRetry}>
+                  {retryOptions.map((item, index) => (
+                    <Select.Option key={index} value={item.id}>
+                      {item.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+                &nbsp;
                 <Button
                   type="primary"
                   onClick={() => {
