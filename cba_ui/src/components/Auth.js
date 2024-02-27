@@ -50,7 +50,7 @@ const Auth = {
     }
   },
   getUserProfile1: function () {
-    return localStorage.getItem("username1");
+    return localStorage.getItem("username");
   },
   isValidToken: function () {
     let session = localStorage.getItem("token");

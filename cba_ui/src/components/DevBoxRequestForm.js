@@ -208,6 +208,7 @@ export const DevBoxRequestForm = () => {
     // values["payload"]["deployment_id"] = "1231231-sdgsdg-345123";
     // values["payload"]["deployment_name"] = "sdfsdf";
     // insertLocalStorage(values);
+    values["payload"]["username"] = Auth.getUserProfile1();
     axios
       .post(`http://10.45.197.10:5000/api/deploy`, values)
       .then((response) => {
