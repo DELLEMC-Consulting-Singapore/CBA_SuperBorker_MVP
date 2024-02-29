@@ -55,7 +55,7 @@ const Login = (props) => {
       })
       await Auth.authenticate(value.username, value.password).catch((err) => {
         if (err) {
-          errorMsg('User Email/Password Incorrect')
+          errorMsg('Unauthorized access')
         }
       })
       //  if(true){
