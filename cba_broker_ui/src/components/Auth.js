@@ -1,12 +1,13 @@
+import axios from 'axios';
 // import bcrypt from 'bcryptjs';
 
-import { message } from "antd";
+import {  message } from 'antd';
 
 const errorMsg = (msg) => {
   message.error({
     content: msg,
     style: {
-      marginTop: "5vh",
+      marginTop: '5vh',
     },
     duration: 2,
   });
@@ -15,46 +16,92 @@ const errorMsg = (msg) => {
 const Auth = {
   authenticate: async function (email, password) {
     if (email != "" && password != "") {
-      try {
-        localStorage.setItem("token1", true);
-        localStorage.setItem("username1", email);
+      //try {
+
+        var data = JSON.stringify({
+          "username": email,
+          "password": password
+        });
+        
+        var config = {
+          method: 'post',
+          url: 'http://10.45.197.10:5000/api/validate-user-group',
+          headers: { 
+            'Content-Type': 'application/json'
+          },
+          data : data
+        };
+
+        
+
+        await axios(config)
+        .then((response) => {
+          if(response["status"] == 200){
+            sessionStorage.setItem("username", email)
+          }
+        })
+        .catch(function (error) {
+          if(error["response"]["status"] == 401){
+            errorMsg('Unauthorized access');
+            return;
+          }else if(error["response"]["status"] == 500){
+            errorMsg('Something went wrong! Please contact administrator');
+            return;
+          }else if(error["response"]["status"] == 404){
+            errorMsg('Services are unavailable, Please try after sometime');
+            return;
+          }
+        })
+
+        
         await this.getUserProfile();
-      } catch (err) {
-        console.log(err);
-        throw err;
-      }
+
+        // sessionStorage.setItem("username", email)
+        // localStorage.setItem("token", true);
+        // localStorage.setItem("username", email);
+        //await this.getUserProfile();
+      // } catch (err) {
+      //   console.log(err);
+      //   throw err;
+      // }
     }
   },
   isAuthenticated: function () {
-    let session = localStorage.getItem("token1");
+    let session = sessionStorage.getItem("username");
     if (!session) {
       return false;
     }
-    return this.isValidtoken1();
+    return this.isValidToken();
   },
   getUserProfile: async function () {
-    let token = localStorage.getItem("token1");
-    let username = localStorage.getItem("username1");
-    if (!token) {
+    //let token = sessionStorage.getItem("token");
+    let username = sessionStorage.getItem("username");
+    if (!sessionStorage) {
+      this.invalidate()
       throw new Error("User Not Authenticated .");
     } else {
       return {
-        token,
         username,
       };
     }
   },
   getUserProfile1: function () {
-    return localStorage.getItem("username1");
+    let username =  sessionStorage.getItem("username");
+    if (!username) {
+      this.invalidate()
+      throw new Error("User Not Authenticated .");
+    } else {
+      return username
+    }
+    
   },
-  isValidtoken1: function () {
-    let session = localStorage.getItem("token1");
+  isValidToken: function () {
+    let session = sessionStorage.getItem("username");
     return session ? true : false;
   },
   invalidate: function () {
-    localStorage.removeItem("token1");
-    localStorage.removeItem("username1");
-  },
+    sessionStorage.removeItem("username");
+  }
 };
 
 export default Auth;
