@@ -137,11 +137,11 @@ const Login = (props) => {
                     rules={[
                       {
                         required: true,
-                        message: 'Please input your username!',
+                        message: 'Please input your LAN User ID!',
                       },
                     ]}
                   >
-                    <Input placeholder="Username" autoComplete="off" />
+                    <Input placeholder="LAN User ID" autoComplete="off" />
                   </FormItem>
 
                   <FormItem
@@ -151,13 +151,13 @@ const Login = (props) => {
                     rules={[
                       {
                         required: true,
-                        message: 'Please input your password!',
+                        message: 'Please input your LAN password!',
                       },
                     ]}
                   >
                     <Password
                       autoComplete="off"
-                      placeholder="Password"
+                      placeholder="LAN Password"
                       // style={{
                       //   borderRadius: '4px',
                       //   border: '1px solid #aaaaaa',

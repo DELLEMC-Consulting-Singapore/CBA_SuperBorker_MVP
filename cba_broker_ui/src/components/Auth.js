@@ -1,6 +1,6 @@
 import axios from 'axios';
 // import bcrypt from 'bcryptjs';
-
+import { SERVICE_API } from '../config/config';
 import {  message } from 'antd';
 
 const errorMsg = (msg) => {
@@ -25,7 +25,7 @@ const Auth = {
         
         var config = {
           method: 'post',
-          url: 'http://10.45.197.10:5000/api/validate-user-group',
+          url: `${SERVICE_API}/validate-user-group`,
           headers: { 
             'Content-Type': 'application/json'
           },

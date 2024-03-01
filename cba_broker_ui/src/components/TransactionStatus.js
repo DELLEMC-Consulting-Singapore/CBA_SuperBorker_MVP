@@ -6,6 +6,7 @@ import {
   WarningOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
+import { SERVICE_API } from "../config/config";
 import {
   Badge,
   Dropdown,
@@ -77,7 +78,7 @@ const TransactionStatus = () => {
     return new Promise((resolve, reject) => {
       axios
         .get(
-          `http://10.45.197.10:5000/api/deploy_status?deploymentId=${deployment_id}`
+          `${SERVICE_API}/deploy_status?deploymentId=${deployment_id}`
         )
         .then((res) => {
           resolve(res["data"]);
@@ -89,7 +90,7 @@ const TransactionStatus = () => {
     return new Promise((resolve, reject) => {
       axios
         .get(
-          `http://10.45.197.10:5000/api/deploy_history_status?deploymentId=${deployment_id}`
+          `${SERVICE_API}/deploy_history_status?deploymentId=${deployment_id}`
         )
         .then((res) => {
           resolve(res["data"]);
@@ -210,7 +211,7 @@ const TransactionStatus = () => {
   function getNewTransaction() {
     let username = Auth.getUserProfile1();
     //axios.get(`http://localhost:3002/`).then((response) => {
-    axios.get(`http://10.45.197.10:5000/api/transactions`).then((response) => {
+    axios.get(`${SERVICE_API}/transactions`).then((response) => {
       let responseData = sortByKey(response["data"]);
       let newdata = responseData.map((r) => {
         if (username == "puppetuser" || username == "puppet") {
@@ -689,7 +690,7 @@ const TransactionStatus = () => {
   async function sendData(transactions) {
     let sendData = JSON.stringify(transactions);
     await axios
-      .post(`http://10.45.197.10:5000/api/transactions_post`, {
+      .post(`${SERVICE_API}/transactions_post`, {
         data: sendData,
       })
       .then((response) => {})
