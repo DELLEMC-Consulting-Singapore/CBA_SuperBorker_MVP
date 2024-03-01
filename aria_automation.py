@@ -8,22 +8,20 @@ app = Flask(__name__)
 
 cors = CORS(app)
 
-deploymentID = "33eca87f-7a0a-4671-8b3d-a7c458a60564"
-
 def read_transactions():
     with open('transactions.json', 'r') as file:
         data = json.load(file)
     return data
 
-def get_refresh_token():
+def get_refresh_token(username,password):
     url = "https://vmpautomation-dev.stg.nonprod.vmware.cba/csp/gateway/am/api/login?access_token="
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     }
     data = {
-        "username": "gutturra",
-        "password": "G$Gbz3TNAzLN-b"
+        "username": username,
+        "password": password
     }
     try:
         response = requests.post(url, json=data, headers=headers, verify=False)
@@ -59,7 +57,7 @@ def get_bearer_token(refresh_token):
     except requests.RequestException as e:
         return None
 
-def deploy_resource(bearer_token):
+def deploy_resource(bearer_token, username):
     url = "https://vmpautomation-dev.stg.nonprod.vmware.cba/catalog/api/items/4c31e0fc-02f9-354d-b4c7-088ea2d0bfad/request"
     headers = {
         'Content-Type': 'application/json',
@@ -70,12 +68,14 @@ def deploy_resource(bearer_token):
         "projectId": "0d5d4d40-53f6-44df-963a-3593955dbd0c",
         "inputs": {
             "vCPU": 4,
-            "ramGb": 4
+            "ramGb": 4,
+            "username":username
         }
     }
     try:
         response = requests.post(url, json=data, headers=headers, verify=False)
         response_json = response.json()
+        print("response", response_json)
         if response_json and isinstance(response_json, list):
             # Access the first element of the list and extract 'deploymentID'
             deployment_id = response_json[0].get('deploymentId')
@@ -139,11 +139,15 @@ def deploy_history(request_id_data, deploymentID, bearer_token):
 @app.route('/api/deploy', methods=['POST'])
 def deploy():
     data = {}
-    refresh_token = get_refresh_token()
+    request_data = request.get_json()
+    payload = request_data['payload']
+    username = payload.get('username')
+    password = payload.get('password')
+    refresh_token = get_refresh_token(username,password)
     if refresh_token:
         bearer_token = get_bearer_token(refresh_token)
         if bearer_token:
-            deployment_id, deployment_name = deploy_resource(bearer_token)
+            deployment_id, deployment_name = deploy_resource(bearer_token,username)
             if deployment_id:
                 return jsonify({
                     'message': 'Deployment Successful',
@@ -229,21 +233,12 @@ def put_transactions():
     request_data = request.get_json()
     payload = json.loads(request_data['data'])
     trans = read_transactions()
-    #print(payload)
-    #transaction_data = map(map_data,trans,payload)
-    #sys.exit(0)
     newdata = []
     for data in trans:
-       #print(data)
        if data["key"]== payload["key"]:
           newdata.append(payload)
        else:
           newdata.append(data)
-    #print(newdata)
-#    payload = "[{\"request_id\":\"REQ2324\",\"transaction_id\":\"7479-aKmr-1708409110630-8cRb\",\"service_name\":\"DevBox\",\"date_time\":\"01-31-20$
-    #payload_data = json.loads(payload)
-    #payload_data[0]['key'] = len_trans
-    #trans.append(payload_data[0])
     with open("transactions.json", "w") as outfile:
        json.dump(newdata, outfile)
     return jsonify({}), 201
@@ -260,76 +255,83 @@ def update_transactions():
                 if data['request_status'] == "running":
                     deploymentID = data['deployment_id']
                     deploy_status_data = deploy_status(deploymentID, bearer_token)
-                    # Return the raw JSON response from the external API call
-                    if deploy_status_data:
-                        data['deploy_status'] = deploy_status_data
+                    print("DEPLOY_STATUS_DATA",deploy_status_data)
+                    statusCode = 200
+                    if 'statusCode' in deploy_status_data:
+                        statusCode = deploy_status_data['statusCode']
+                    if statusCode == 200:
+                        # Return the raw JSON response from the external API call
+                        if deploy_status_data:
+                            data['deploy_status'] = deploy_status_data
 
-                        if deploy_status_data["status"] == "CREATE_FAILED":
-                            data["request_status"] = "failed"
-                            data["request_status1"] = "failed"
-                        elif deploy_status_data["status"] == "CREATE_SUCCESSFUL":
-                            data["request_status"] = "completed"
-                            data["request_status1"] = "completed"
+                            if deploy_status_data["status"] == "CREATE_FAILED":
+                                data["request_status"] = "failed"
+                                data["request_status1"] = "failed"
+                            elif deploy_status_data["status"] == "CREATE_SUCCESSFUL":
+                                data["request_status"] = "completed"
+                                data["request_status1"] = "completed"
 
-                        data["created_by"] = deploy_status_data["createdBy"]
+                            data["created_by"] = deploy_status_data["createdBy"]
 
 
-                    #deploy_status_history
+                        #deploy_status_history
 
-                    request_id_data = request_id(deploymentID, bearer_token)
-                    if request_id_data:
-                        deploy_history_data = deploy_history(request_id_data, deploymentID, bearer_token)
-                        data['deploy_status_history'] = deploy_history_data["content"]
+                        request_id_data = request_id(deploymentID, bearer_token)
+                        if request_id_data:
+                            deploy_history_data = deploy_history(request_id_data, deploymentID, bearer_token)
+                            data['deploy_status_history'] = deploy_history_data["content"]
 
-                        resourceType = [
-                            { "resourceType": "Cloud.Puppet", "error": 0, "completed": 0, "running": 0 },
-                            {
-                            "resourceType": "Cloud.vSphere.Machine",
-                            "error": 0,
-                            "completed": 0,
-                            "running": 0,
-                            },
-                            { "resourceType": "Cloud.Network", "error": 0, "completed": 0, "running": 0 },
-                            { "resourceType": "Cloud.Volume", "error": 0, "completed": 0, "running": 0 },
-                        ]
-                        #print(deploy_history_data)
-                        for deploy_histories in data["deploy_status_history"]:
+                            resourceType = [
+                                { "resourceType": "Cloud.Puppet", "error": 0, "completed": 0, "running": 0 },
+                                {
+                                "resourceType": "Cloud.vSphere.Machine",
+                                "error": 0,
+                                "completed": 0,
+                                "running": 0,
+                                },
+                                { "resourceType": "Cloud.Network", "error": 0, "completed": 0, "running": 0 },
+                                { "resourceType": "Cloud.Volume", "error": 0, "completed": 0, "running": 0 },
+                            ]
+                            #print(deploy_history_data)
+                            for deploy_histories in data["deploy_status_history"]:
+                                for resource_type in resourceType:
+                                    if deploy_histories["resourceType"]:
+                                        if deploy_histories["resourceType"] == resource_type["resourceType"]:
+                                            if deploy_histories["name"] == "CREATE_FAILED":
+                                                resource_type["error"] = int(resource_type["error"]) + 1
+                                            elif deploy_histories["name"] == "CREATE_FINISHED":
+                                                resource_type["completed"] = int(resource_type["completed"]) + 1
+                                            elif deploy_histories["name"] == "CREATE_IN_PROGRESS":
+                                                resource_type["running"] = int(resource_type["running"]) + 1
+
+
+                            err = 0
+                            comp = 0
+                            run = 0
                             for resource_type in resourceType:
-                                if deploy_histories["resourceType"]:
-                                    if deploy_histories["resourceType"] == resource_type["resourceType"]:
-                                        if deploy_histories["name"] == "CREATE_FAILED":
-                                            resource_type["error"] = int(resource_type["error"]) + 1
-                                        elif deploy_histories["name"] == "CREATE_FINISHED":
-                                            resource_type["completed"] = int(resource_type["completed"]) + 1
-                                        elif deploy_histories["name"] == "CREATE_IN_PROGRESS":
-                                            resource_type["running"] = int(resource_type["running"]) + 1
+                                if 'Puppet' in resource_type["resourceType"]:
+                                    if resource_type["error"] > 0:
+                                        data["childrens"][1]["status"] = "Failed"
+                                    elif resource_type["completed"] > 0 and resource_type["error"] == 0:
+                                        data["childrens"][1]["status"] = "Completed"
+                                    elif resource_type["running"] > 0 and resource_type["completed"] == 0 and resource_type["error"] == 0:
+                                        data["childrens"][1]["status"] = "Running"
+                                else:
+                                    if resource_type["error"] > 0 and err == 0:
+                                        data["childrens"][0]["status"] = "Failed"
+                                        err+=1
+                                    elif resource_type["completed"] > 0 and resource_type["error"] == 0 and err == 0 and comp == 0:
+                                        data["childrens"][0]["status"] = "Completed"
+                                        comp+=1
+                                    elif resource_type["running"] > 0 and resource_type["completed"] == 0 and resource_type["error"] == 0 and err == 0 and comp == 0 and run == 0:
+                                        data["childrens"][0]["status"] = "Running"
+                                        run+=1
 
-
-                        err = 0
-                        comp = 0
-                        run = 0
-                        for resource_type in resourceType:
-                            if 'Puppet' in resource_type["resourceType"]:
-                                if resource_type["error"] > 0:
-                                    data["childrens"][1]["status"] = "Failed"
-                                elif resource_type["completed"] > 0 and resource_type["error"] == 0:
-                                    data["childrens"][1]["status"] = "Completed"
-                                elif resource_type["running"] > 0 and resource_type["completed"] == 0 and resource_type["error"] == 0:
-                                    data["childrens"][1]["status"] = "Running"
-                            else:
-                                if resource_type["error"] > 0 and err == 0:
-                                    data["childrens"][0]["status"] = "Failed"
-                                    err+=1
-                                elif resource_type["completed"] > 0 and resource_type["error"] == 0 and err == 0 and comp == 0:
-                                    data["childrens"][0]["status"] = "Completed"
-                                    comp+=1
-                                elif resource_type["running"] > 0 and resource_type["completed"] == 0 and resource_type["error"] == 0 and err == 0 and comp == 0 and run == 0:
-                                    data["childrens"][0]["status"] = "Running"
-                                    run+=1
-
-                        if resourceType[0]["error"] == 0 and resourceType[0]["completed"] == 0 and resourceType[0]["running"] == 0:
-                            data["childrens"][0]["status"] = "Running"
-                    new_data.append(data)
+                            if resourceType[0]["error"] == 0 and resourceType[0]["completed"] == 0 and resourceType[0]["running"] == 0:
+                                data["childrens"][0]["status"] = "Running"
+                        new_data.append(data)
+                    else:
+                        new_data.append(data)
                 else:
                     new_data.append(data)
             with open("transactions.json", "w") as outfile:
@@ -348,3 +350,4 @@ def update_transactions():
 
 if __name__ == '__main__':
     app.run(host='10.45.197.28', port=8443, debug=True)
+    
