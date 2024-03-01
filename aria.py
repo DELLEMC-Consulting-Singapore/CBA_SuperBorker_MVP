@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
+from ldap3 import Server, Connection, SIMPLE, ALL, SUBTREE
 import requests
 import json
 import sys
@@ -7,6 +8,8 @@ import sys
 app = Flask(__name__)
 
 cors = CORS(app)
+
+group_dn = "CN=SGG_CBA_ED_DAAS_USERS,OU=DaaS,OU=Applications,OU=Groups,DC=au,DC=cbainet,DC=com"
 
 @app.route('/api/deploy', methods=['POST'])
 def deploy():
@@ -16,7 +19,8 @@ def deploy():
         'Accept': 'application/json',
     }
     try:
-        response = requests.post(url, json={}, headers=headers, verify=False)
+        request_data = request.get_json()
+        response = requests.post(url, json=request_data, headers=headers, verify=False)
         response_json = response.json()
         return jsonify(response_json), 200
     except requests.RequestException as e:
@@ -112,6 +116,78 @@ def update_transactions():
     except requests.RequestException as e:
         return e
 
+## LDAP User authentication in User Base DN
+@app.route('/api/validate-user', methods=['POST'])
+def validate_user():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    ldap_url = 'ldaps://lb.au.cbainet.com'
+
+    try:
+        # Define LDAP server
+        server = Server(ldap_url, port=636, use_ssl=True)
+
+        # Define LDAP connection
+        conn = Connection(server, user="CN={},OU=EUC Accounts,DC=au,DC=cbainet,DC=com".format(username),
+                          authentication=SIMPLE, password=password)
+
+        conn.open()  # Open the connection
+
+        if conn.bind():
+            # User authenticated successfully, now search for user
+            conn.search(search_base='dc=au,dc=cbainet,dc=com',
+                        search_filter='(sAMAccountName={})'.format(username))
+
+            if len(conn.entries) == 1:
+                return jsonify({'message': 'User ID exists in LDAP.'}), 200
+            else:
+                return jsonify({'message': 'User ID does not exist in LDAP or authentication failed.'}), 401
+        else:
+            return jsonify({'message': 'LDAP bind failed'}), 401
+    except Exception as e:
+        return jsonify({'message': f'LDAP connection error: {e}'}), 500
+    finally:
+        conn.unbind()  # Close the connection
+
+@app.route('/api/validate-user-group', methods=['POST'])
+def validate_user_group():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    ldap_url = 'ldaps://lb.au.cbainet.com'
+    user_dn = f"CN={username},OU=EUC Accounts,DC=au,DC=cbainet,DC=com"
+
+    try:
+        # Define LDAP server
+        server = Server(ldap_url, port=636, use_ssl=True)
+
+        # Define LDAP connection
+        conn = Connection(server, user=f"CN={username},OU=EUC Accounts,DC=au,DC=cbainet,DC=com",
+                          authentication=SIMPLE, password=password)
+
+        conn.open()  # Open the connection
+
+        if conn.bind():
+            # User authenticated successfully, now search for the group entry
+            conn.search(search_base=group_dn,
+                        search_filter=f'(&(objectClass=group)(member={user_dn}))',
+                        search_scope=SUBTREE,
+                        attributes=['cn', 'memberOf'])
+
+            if len(conn.entries) == 1:
+                return jsonify({'message': 'User is a member of the group.'}), 200
+            else:
+                return jsonify({'message': 'User is not a member of the group.'}), 401
+        else:
+            return jsonify({'message': 'LDAP bind failed'}), 401
+    except Exception as e:
+        return jsonify({'message': f'LDAP connection error: {e}'}), 500
+    finally:
+        conn.unbind()  # Close the connection
 
 if __name__ == '__main__':
     app.run(host='10.45.197.10', port=5000, debug=True)
+    
