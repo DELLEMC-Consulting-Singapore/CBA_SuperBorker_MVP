@@ -245,6 +245,7 @@ export const DevBoxRequestForm = () => {
       content: `Request ${requestId} has been opened successfully`,
       onOk: async () => {
         navigate("/activities", { replace: true });
+        navigate(0)
       },
     });
   }
