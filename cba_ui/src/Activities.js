@@ -3,6 +3,7 @@ import { Modal, Spin, Space, Table, Tag, Tooltip } from "antd";
 import axios from "axios";
 import moment from "moment";
 import Auth from "./components/Auth";
+import { SERVICE_API } from "./config/config";
 function sortByKey(d) {
   return d.sort((a, b) => parseInt(b["key"]) - parseInt(a["key"]));
 }
@@ -36,7 +37,7 @@ const Activities = () => {
     return new Promise((resolve, reject) => {
       axios
         .get(
-          `http://10.45.197.10:5000/api/deploy_status?deploymentId=${deployment_id}`
+          `${SERVICE_API}/deploy_status?deploymentId=${deployment_id}`
         )
         .then((res) => {
           resolve(res["data"]);
@@ -48,7 +49,7 @@ const Activities = () => {
     return new Promise((resolve, reject) => {
       axios
         .get(
-          `http://10.45.197.10:5000/api/deploy_history_status?deploymentId=${deployment_id}`
+          `${SERVICE_API}/deploy_history_status?deploymentId=${deployment_id}`
         )
         .then((res) => {
           resolve(res["data"]);
@@ -170,7 +171,7 @@ const Activities = () => {
   async function sendData(transactions) {
     let sendData = JSON.stringify(transactions);
     await axios
-      .post(`http://10.45.197.10:5000/api/transactions_post`, {
+      .post(`${SERVICE_API}/transactions_post`, {
         data: sendData,
       })
       .then((response) => {})
@@ -180,7 +181,7 @@ const Activities = () => {
   function getNewTransaction() {
     let username = Auth.getUserProfile1();
     //axios.get(`http://localhost:3002/`).then((response) => {
-    axios.get(`http://10.45.197.10:5000/api/transactions`).then((response) => {
+    axios.get(`${SERVICE_API}/transactions`).then((response) => {
       let responseData = sortByKey(response["data"]);
       let newdata = responseData.map((r) => {
         if (username == "puppetuser" || username == "puppet") {

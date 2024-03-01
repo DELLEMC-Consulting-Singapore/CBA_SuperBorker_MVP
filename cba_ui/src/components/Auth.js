@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {SERVICE_API} from "../config/config"
 // import bcrypt from 'bcryptjs';
 
 import {  message } from 'antd';
@@ -25,7 +26,7 @@ const Auth = {
         
         var config = {
           method: 'post',
-          url: 'http://10.45.197.10:5000/api/validate-user',
+          url: `${SERVICE_API}/validate-user`,
           headers: { 
             'Content-Type': 'application/json'
           },
@@ -38,6 +39,7 @@ const Auth = {
         .then((response) => {
           if(response["status"] == 200){
             sessionStorage.setItem("username", email)
+            sessionStorage.setItem("token", JSON.stringify({username:email, password:password}))
           }
         })
         .catch(function (error) {
@@ -74,13 +76,14 @@ const Auth = {
     return this.isValidToken();
   },
   getUserProfile: async function () {
-    //let token = sessionStorage.getItem("token");
+    let token = sessionStorage.getItem("token");
     let username = sessionStorage.getItem("username");
     if (!sessionStorage) {
       throw new Error("User Not Authenticated .");
     } else {
       return {
         username,
+        token
       };
     }
   },
@@ -93,6 +96,7 @@ const Auth = {
   },
   invalidate: function () {
     sessionStorage.removeItem("username");
+    sessionStorage.removeItem("token");
   }
 };
 

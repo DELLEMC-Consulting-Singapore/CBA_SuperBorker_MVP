@@ -4,6 +4,7 @@ import axios from "axios";
 import queryString from "query-string";
 import { useNavigate } from "react-router-dom";
 import Auth from "./Auth";
+import { SERVICE_API } from "../config/config";
 import moment from "moment";
 function errorMessage() {
   Modal.error({
@@ -187,7 +188,7 @@ export const DevBoxRequestForm = () => {
       transactions.push(newPayload);
       let sendData = JSON.stringify(transactions);
       axios
-        .post(`http://10.45.197.10:5000/api/transactions`, { data: sendData })
+        .post(`${SERVICE_API}/transactions`, { data: sendData })
         //.post(`http://localhost:3002/`, { data: sendData })
         .then((response) => {
           setSpinning(false);
@@ -197,7 +198,7 @@ export const DevBoxRequestForm = () => {
         });
     }
   };
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     setSpinning(true);
     let transactionId = `${randomNumeric(4)}-${randomString(
       4
@@ -208,9 +209,14 @@ export const DevBoxRequestForm = () => {
     // values["payload"]["deployment_id"] = "1231231-sdgsdg-345123";
     // values["payload"]["deployment_name"] = "sdfsdf";
     // insertLocalStorage(values);
-    values["payload"]["username"] = Auth.getUserProfile1();
+    let userInfo = await Auth.getUserProfile()
+
+
+    userInfo = JSON.parse(userInfo["token"])
+    values["payload"]["username"] = userInfo["username"];
+    values["payload"]["password"] = userInfo["password"];
     axios
-      .post(`http://10.45.197.10:5000/api/deploy`, values)
+      .post(`${SERVICE_API}/deploy`, values)
       .then((response) => {
         if (response.status === 200) {
           let responseData = response["data"];
