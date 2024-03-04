@@ -26,7 +26,7 @@ const Auth = {
         
         var config = {
           method: 'post',
-          url: `${SERVICE_API}/validate-user`,
+          url: `${SERVICE_API}/ldap/validate-user`,
           headers: { 
             'Content-Type': 'application/json'
           },
@@ -39,7 +39,7 @@ const Auth = {
         .then((response) => {
           if(response["status"] == 200){
             sessionStorage.setItem("username", email)
-            sessionStorage.setItem("token", JSON.stringify({username:email, password:password}))
+            sessionStorage.setItem("token", JSON.stringify({username:email}))
           }
         })
         .catch(function (error) {
