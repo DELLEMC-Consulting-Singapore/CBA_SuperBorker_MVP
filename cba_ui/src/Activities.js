@@ -206,6 +206,7 @@ const Activities = () => {
     let statusInfo = historyData["deploy_status"];
     //if (statusInfo !== undefined)
     {
+      statusInfo['createdBy'] = historyData['created_by']
       setAriaStatusInfo(statusInfo);
 
       let color = "geekblue"; //tag.length > 5 ? 'geekblue' : 'green';
