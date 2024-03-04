@@ -248,6 +248,7 @@ const TransactionStatus = () => {
     setIsModalOpen(true);
 
     let statusInfo = historyData["deploy_status"];
+    statusInfo['createdBy'] = historyData['created_by']
     setAriaStatusInfo(statusInfo);
 
     let color = "geekblue"; //tag.length > 5 ? 'geekblue' : 'green';
