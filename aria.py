@@ -11,12 +11,13 @@ cors = CORS(app)
 
 group_dn = "CN=SGG_CBA_ED_DAAS_USERS,OU=DaaS,OU=Applications,OU=Groups,DC=au,DC=cbainet,DC=com"
 
-@app.route('/api/deploy', methods=['POST'])
-def deploy():
+###### UI ############
+@app.route('/api/ui/devbox/create', methods=['POST'])
+def deploy_ui():
     url = "http://10.45.197.28:8443/api/deploy"
     headers = {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        'Accept': 'application/json'
     }
     try:
         request_data = request.get_json()
@@ -25,6 +26,38 @@ def deploy():
         return jsonify(response_json), 200
     except requests.RequestException as e:
         return e
+
+#### POSTMAN ######
+@app.route('/api/devbox/create', methods=['POST'])
+def deploy_postman():
+    try:
+        data = request.get_json()
+       # username = data.get('username')
+       # password = data.get('password')
+        lan_id = data.get('lan_id')
+        lan_password = data.get('lan_password')
+        source = data.get('source')
+
+        # Call the validate-user endpoint to validate the user's credentials
+        validation_response = requests.post('http://10.45.197.10:5000/api/ldap/validate-user',
+                                            json={'username': lan_id, 'password': lan_password})
+
+        if validation_response.status_code == 200:
+            # User authentication successful, proceed with devbox creation
+            url = "http://10.45.197.28:8443/api/deploy"
+            headers = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+
+            response = requests.post(url, json=data, headers=headers, verify=False)
+            response_json = response.json()
+            return jsonify(response_json), 200
+        else:
+            # User authentication failed, return the validation response
+            return validation_response.json(), validation_response.status_code
+    except requests.RequestException as e:
+        return str(e), 500
 
 @app.route('/api/deploy_history_status', methods=['GET'])
 def get_deploy_history_status():
@@ -117,9 +150,10 @@ def update_transactions():
         return e
 
 ## LDAP User authentication in User Base DN
-@app.route('/api/validate-user', methods=['POST'])
+@app.route('/api/ldap/validate-user', methods=['POST'])
 def validate_user():
     data = request.get_json()
+    print(data)
     username = data.get('username')
     password = data.get('password')
 
@@ -151,7 +185,7 @@ def validate_user():
     finally:
         conn.unbind()  # Close the connection
 
-@app.route('/api/validate-user-group', methods=['POST'])
+@app.route('/api/ldap/validate-user-group', methods=['POST'])
 def validate_user_group():
     data = request.get_json()
     username = data.get('username')
