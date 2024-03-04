@@ -13,15 +13,15 @@ def read_transactions():
         data = json.load(file)
     return data
 
-def get_refresh_token(username,password):
+def get_refresh_token():
     url = "https://vmpautomation-dev.stg.nonprod.vmware.cba/csp/gateway/am/api/login?access_token="
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     }
     data = {
-        "username": username,
-        "password": password
+        "username": "acoe_osbvaa_npd",
+        "password": "EXgwgt12DWiqmv12"
     }
     try:
         response = requests.post(url, json=data, headers=headers, verify=False)
@@ -57,7 +57,7 @@ def get_bearer_token(refresh_token):
     except requests.RequestException as e:
         return None
 
-def deploy_resource(bearer_token, username):
+def deploy_resource(bearer_token, lan_id):
     url = "https://vmpautomation-dev.stg.nonprod.vmware.cba/catalog/api/items/4c31e0fc-02f9-354d-b4c7-088ea2d0bfad/request"
     headers = {
         'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ def deploy_resource(bearer_token, username):
         "inputs": {
             "vCPU": 4,
             "ramGb": 4,
-            "username":username
+            "username": lan_id
         }
     }
     try:
@@ -140,14 +140,22 @@ def deploy_history(request_id_data, deploymentID, bearer_token):
 def deploy():
     data = {}
     request_data = request.get_json()
-    payload = request_data['payload']
-    username = payload.get('username')
-    password = payload.get('password')
-    refresh_token = get_refresh_token(username,password)
+   # payload = request_data['payload']
+   # username = payload.get('username')
+   # password = payload.get('password')
+   # username = request_data.get('username')
+   # password = request_data.get('password')
+    lan_id = request_data.get('lan_id')
+    source = request_data.get('source')
+    # Validate user credentials with LDAP
+ #   validated, validation_response = validate_user(username, password)
+ #   if not validated:
+  #          return jsonify(validation_response), 401
+    refresh_token = get_refresh_token()
     if refresh_token:
         bearer_token = get_bearer_token(refresh_token)
         if bearer_token:
-            deployment_id, deployment_name = deploy_resource(bearer_token,username)
+            deployment_id, deployment_name = deploy_resource(bearer_token, lan_id)
             if deployment_id:
                 return jsonify({
                     'message': 'Deployment Successful',
@@ -255,7 +263,7 @@ def update_transactions():
                 if data['request_status'] == "running":
                     deploymentID = data['deployment_id']
                     deploy_status_data = deploy_status(deploymentID, bearer_token)
-                    print("DEPLOY_STATUS_DATA",deploy_status_data)
+                    #print("DEPLOY_STATUS_DATA",deploy_status_data)
                     statusCode = 200
                     if 'statusCode' in deploy_status_data:
                         statusCode = deploy_status_data['statusCode']
@@ -271,7 +279,7 @@ def update_transactions():
                                 data["request_status"] = "completed"
                                 data["request_status1"] = "completed"
 
-                            data["created_by"] = deploy_status_data["createdBy"]
+                            #data["created_by"] = deploy_status_data["createdBy"]
 
 
                         #deploy_status_history
