@@ -212,11 +212,12 @@ export const DevBoxRequestForm = () => {
     let userInfo = await Auth.getUserProfile()
 
 
-    userInfo = JSON.parse(userInfo["token"])
-    values["payload"]["username"] = userInfo["username"];
-    values["payload"]["password"] = userInfo["password"];
+    //userInfo = JSON.parse(userInfo["token"])
+    values["payload"]["lan_id"] = userInfo["username"];
+    let newPlayload = values["payload"]
+    newPlayload["source"] = "UI"
     axios
-      .post(`${SERVICE_API}/deploy`, values)
+      .post(`${SERVICE_API}/ui/devbox/create`, newPlayload)
       .then((response) => {
         if (response.status === 200) {
           let responseData = response["data"];
