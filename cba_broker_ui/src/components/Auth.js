@@ -25,7 +25,7 @@ const Auth = {
         
         var config = {
           method: 'post',
-          url: `${SERVICE_API}/validate-user-group`,
+          url: `${SERVICE_API}/ldap/validate-user-group`,
           headers: { 
             'Content-Type': 'application/json'
           },
