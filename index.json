@@ -1,0 +1,5 @@
+{
+   "aria_api" : "https://vmpautomation-dev.stg.nonprod.vmware.cba",
+   "worker_node_ip" : "10.45.197.28",
+   "worker_node_port" : 8443
+} 
