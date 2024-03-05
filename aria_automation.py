@@ -3,25 +3,60 @@ from flask_cors import CORS, cross_origin
 import requests
 import json
 import sys
+import base64
 
 app = Flask(__name__)
 
 cors = CORS(app)
+
+def read_index_json():
+    file_path = "/apps/vmware_aria_integration/index.json"
+    try:
+        with open(file_path, 'r') as file:
+            index_data = json.load(file)
+            return index_data
+    except FileNotFoundError:
+        print(f"File '{file_path}' not found.")
+        return None
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON: {e}")
+        return None
+
+index_data = read_index_json()
+aria_api = index_data.get('aria_api')
+worker_node_ip = index_data.get('worker_node_ip')
+worker_node_port = index_data.get('worker_node_port')
+
+def read_sa_creds():
+    creds_file_path = "/apps/vmware_aria_integration/service_account_credentials.txt"
+    try:
+        with open(creds_file_path, 'r') as t:
+            lines = t.readlines()
+            sa_username = base64.b64decode(lines[0].strip()).decode('utf-8')
+            sa_password = base64.b64decode(lines[1].strip()).decode('utf-8')
+            return sa_username, sa_password
+    except FileNotFoundError:
+        print(f"File '{creds_file_path}' not found.")
+        return None, None
+
+sa_username, sa_password = read_sa_creds()
 
 def read_transactions():
     with open('transactions.json', 'r') as file:
         data = json.load(file)
     return data
 
-def get_refresh_token():
-    url = "https://vmpautomation-dev.stg.nonprod.vmware.cba/csp/gateway/am/api/login?access_token="
+def get_refresh_token(sa_username, sa_password):
+    print("USERNAME", sa_username)
+    print("PASSWORD", sa_password)
+    url = f"{aria_api}/csp/gateway/am/api/login?access_token="
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     }
     data = {
-        "username": "acoe_osbvaa_npd",
-        "password": "EXgwgt12DWiqmv12"
+        "username": sa_username,
+        "password": sa_password
     }
     try:
         response = requests.post(url, json=data, headers=headers, verify=False)
@@ -37,7 +72,7 @@ def get_refresh_token():
         return None
 
 def get_bearer_token(refresh_token):
-    url = "https://vmpautomation-dev.stg.nonprod.vmware.cba/iaas/api/login"
+    url = f"{aria_api}/iaas/api/login"
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -58,7 +93,7 @@ def get_bearer_token(refresh_token):
         return None
 
 def deploy_resource(bearer_token, lan_id):
-    url = "https://vmpautomation-dev.stg.nonprod.vmware.cba/catalog/api/items/4c31e0fc-02f9-354d-b4c7-088ea2d0bfad/request"
+    url = f"{aria_api}/catalog/api/items/4c31e0fc-02f9-354d-b4c7-088ea2d0bfad/request"
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -88,7 +123,7 @@ def deploy_resource(bearer_token, lan_id):
         return False
 
 def deploy_status(deploymentID, bearer_token):
-    url = f"https://vmpautomation-dev.stg.nonprod.vmware.cba/deployment/api/deployments/{deploymentID}?expand=resources"
+    url = f"{aria_api}/deployment/api/deployments/{deploymentID}?expand=resources"
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -102,7 +137,7 @@ def deploy_status(deploymentID, bearer_token):
         return e
 
 def request_id(deploymentID, bearer_token):
-    url = f"https://vmpautomation-dev.stg.nonprod.vmware.cba/deployment/api/deployments/{deploymentID}/requests?size=100&apiVersion=2020-08-25"
+    url = f"{aria_api}/deployment/api/deployments/{deploymentID}/requests?size=100&apiVersion=2020-08-25"
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -121,8 +156,7 @@ def request_id(deploymentID, bearer_token):
         return e
 
 def deploy_history(request_id_data, deploymentID, bearer_token):
-    url = f"https://vmpautomation-dev.stg.nonprod.vmware.cba/deployment/api/deployments/{deploymentID}/requests/{request_id_data}/events?page=0&size=50&apiVersion=2020-08-25"
-    #print(url)
+    url = f"{aria_api}/deployment/api/deployments/{deploymentID}/requests/{request_id_data}/events?page=0&size=50&apiVersion=2020-08-25"
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -140,18 +174,9 @@ def deploy_history(request_id_data, deploymentID, bearer_token):
 def deploy():
     data = {}
     request_data = request.get_json()
-   # payload = request_data['payload']
-   # username = payload.get('username')
-   # password = payload.get('password')
-   # username = request_data.get('username')
-   # password = request_data.get('password')
     lan_id = request_data.get('lan_id')
     source = request_data.get('source')
-    # Validate user credentials with LDAP
- #   validated, validation_response = validate_user(username, password)
- #   if not validated:
-  #          return jsonify(validation_response), 401
-    refresh_token = get_refresh_token()
+    refresh_token = get_refresh_token(sa_username, sa_password)
     if refresh_token:
         bearer_token = get_bearer_token(refresh_token)
         if bearer_token:
@@ -172,9 +197,7 @@ def deploy():
 @app.route('/api/deploy_status', methods=['GET'])
 def get_deploy_status():
     deploymentID = request.args.get("deploymentId")
-    #print("REQUEST DATA", request_data)
-    #sys.exit(0)
-    refresh_token = get_refresh_token()
+    refresh_token = get_refresh_token(sa_username, sa_password)
     if refresh_token:
         bearer_token = get_bearer_token(refresh_token)
         if bearer_token:
@@ -192,7 +215,7 @@ def get_deploy_status():
 @app.route('/api/deploy_history_status', methods=['GET'])
 def get_deploy_history():
     deploymentID = request.args.get("deploymentId")
-    refresh_token = get_refresh_token()
+    refresh_token = get_refresh_token(sa_username, sa_password)
     if refresh_token:
         bearer_token = get_bearer_token(refresh_token)
         if bearer_token:
@@ -225,7 +248,6 @@ def post_transactions():
     payload = request_data['data']
     trans = read_transactions()
     len_trans = len(trans) + 1
-#    payload = "[{\"request_id\":\"REQ2324\",\"transaction_id\":\"7479-aKmr-1708409110630-8cRb\",\"service_name\":\"DevBox\",\"date_time\":\"01-31-202$
     payload_data = json.loads(payload)
     payload_data[0]['key'] = len_trans
     trans.append(payload_data[0])
@@ -254,7 +276,7 @@ def put_transactions():
 @app.route('/api/update_transactions', methods=['GET'])
 def update_transactions():
     trans = read_transactions()
-    refresh_token = get_refresh_token()
+    refresh_token = get_refresh_token(sa_username, sa_password)
     new_data = []
     if refresh_token:
         bearer_token = get_bearer_token(refresh_token)
@@ -357,5 +379,4 @@ def update_transactions():
 
 
 if __name__ == '__main__':
-    app.run(host='10.45.197.28', port=8443, debug=True)
-    
+    app.run(host=worker_node_ip, port=worker_node_port, debug=True)
