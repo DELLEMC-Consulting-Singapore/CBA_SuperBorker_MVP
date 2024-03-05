@@ -9,12 +9,29 @@ app = Flask(__name__)
 
 cors = CORS(app)
 
-group_dn = "CN=SGG_CBA_ED_DAAS_USERS,OU=DaaS,OU=Applications,OU=Groups,DC=au,DC=cbainet,DC=com"
+def read_index_json():
+    file_path = "/apps/aria_automation/index.json"
+    try:
+        with open(file_path, 'r') as file:
+            index_data = json.load(file)
+            return index_data
+    except FileNotFoundError:
+        print(f"File '{file_path}' not found.")
+        return None
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON: {e}")
+        return None
+
+index_data = read_index_json()
+osb_api = index_data.get('osb_api')
+osb_ip = index_data.get('osb_ip')
+osb_port = index_data.get('osb_port')
+group_dn = index_data.get('group_base_dn')
 
 ###### UI ############
 @app.route('/api/ui/devbox/create', methods=['POST'])
 def deploy_ui():
-    url = "http://10.45.197.28:8443/api/deploy"
+    url = f"{osb_api}/deploy"
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -32,19 +49,17 @@ def deploy_ui():
 def deploy_postman():
     try:
         data = request.get_json()
-       # username = data.get('username')
-       # password = data.get('password')
         lan_id = data.get('lan_id')
         lan_password = data.get('lan_password')
         source = data.get('source')
 
         # Call the validate-user endpoint to validate the user's credentials
-        validation_response = requests.post('http://10.45.197.10:5000/api/ldap/validate-user',
-                                            json={'username': lan_id, 'password': lan_password})
+        validation_url = f'http://{osb_ip}:{osb_port}/api/ldap/validate-user'
+        validation_response = requests.post(validation_url, json={'username': lan_id, 'password': lan_password})
 
         if validation_response.status_code == 200:
             # User authentication successful, proceed with devbox creation
-            url = "http://10.45.197.28:8443/api/deploy"
+            url = f"{osb_api}/deploy"
             headers = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -62,7 +77,7 @@ def deploy_postman():
 @app.route('/api/deploy_history_status', methods=['GET'])
 def get_deploy_history_status():
     deploymentID = request.args.get("deploymentId")
-    url = "http://10.45.197.28:8443/api/deploy_history_status?deploymentId="+deploymentID
+    url = f"{osb_api}/deploy_history_status?deploymentId="+deploymentID
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -77,7 +92,7 @@ def get_deploy_history_status():
 @app.route('/api/deploy_status', methods=['GET'])
 def get_deploy_status():
     deploymentID = request.args.get("deploymentId")
-    url = "http://10.45.197.28:8443/api/deploy_status?deploymentId="+deploymentID
+    url = f"{osb_api}/deploy_status?deploymentId="+deploymentID
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -91,7 +106,7 @@ def get_deploy_status():
 
 @app.route('/api/transactions', methods=['GET'])
 def get_transactions():
-    url = "http://10.45.197.28:8443/api/transactions"
+    url = f"{osb_api}/transactions"
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -105,7 +120,7 @@ def get_transactions():
 
 @app.route('/api/transactions', methods=['POST'])
 def post_transactions():
-    url = "http://10.45.197.28:8443/api/transactions"
+    url = f"{osb_api}/transactions"
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -121,7 +136,7 @@ def post_transactions():
 
 @app.route('/api/transactions_post', methods=['POST'])
 def put_transactions():
-    url = "http://10.45.197.28:8443/api/transactions_post"
+    url = f"{osb_api}/transactions_post"
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -137,7 +152,7 @@ def put_transactions():
 
 @app.route('/api/update_transactions', methods=['GET'])
 def update_transactions():
-    url = "http://10.45.197.28:8443/api/update_transactions"
+    url = f"{osb_api}/update_transactions"
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -153,7 +168,6 @@ def update_transactions():
 @app.route('/api/ldap/validate-user', methods=['POST'])
 def validate_user():
     data = request.get_json()
-    print(data)
     username = data.get('username')
     password = data.get('password')
 
@@ -223,5 +237,5 @@ def validate_user_group():
         conn.unbind()  # Close the connection
 
 if __name__ == '__main__':
-    app.run(host='10.45.197.10', port=5000, debug=True)
+    app.run(host=osb_ip, port=osb_port, debug=True)
     
