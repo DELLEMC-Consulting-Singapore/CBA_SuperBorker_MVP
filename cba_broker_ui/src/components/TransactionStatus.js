@@ -872,7 +872,8 @@ const TransactionStatus = () => {
                 {contextHolder}
                 <Button onClick={handleCancel}>Cancel</Button>
                 &nbsp;
-                <Select value={retries} onChange={handleChangeRetry}>
+                <Select value={0} onChange={handleChangeRetry} style={{width:175}}>
+                <Select.Option value={0}>Select No. of Retries</Select.Option>
                   {retryOptions.map((item, index) => (
                     <Select.Option key={index} value={item.id}>
                       {item.name}
@@ -880,6 +881,7 @@ const TransactionStatus = () => {
                   ))}
                 </Select>
                 &nbsp;
+
                 <Button
                   type="primary"
                   onClick={() => {
