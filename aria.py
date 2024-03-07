@@ -4,10 +4,25 @@ from ldap3 import Server, Connection, SIMPLE, ALL, SUBTREE
 import requests
 import json
 import sys
+import pika
+import pymssql
+import random
+import string
+from datetime import datetime
 
 app = Flask(__name__)
 
 cors = CORS(app)
+
+server = "10.45.198.34"
+database = "OSBDB"
+db_username = "acoe_sqlapp_osb"
+db_password = "UXAp!1thoTmMzPq"
+db_port = "1433"
+
+req_number = 2000
+
+#group_dn = "CN=SGG_CBA_ED_DAAS_USERS,OU=DaaS,OU=Applications,OU=Groups,DC=au,DC=cbainet,DC=com"
 
 def read_index_json():
     file_path = "/apps/aria_automation/index.json"
@@ -28,8 +43,231 @@ osb_ip = index_data.get('osb_ip')
 osb_port = index_data.get('osb_port')
 group_dn = index_data.get('group_base_dn')
 
+def generate_random_string(length):
+    # Define the characters to choose from
+    characters = string.ascii_letters + string.digits  # You can add more characters if needed
+
+    # Generate the random string
+    random_string = ''.join(random.choice(characters) for _ in range(length))
+
+    return random_string
+
+############# RABBITMQ#############
+# Establish connection to RabbitMQ
+credentials = pika.PlainCredentials(username="test", password="test@123")
+
+connection = pika.BlockingConnection(pika.ConnectionParameters(
+    host="10.45.197.10",
+    port=5672,
+    virtual_host='/',
+    credentials=credentials
+))
+channel = connection.channel()
+channel.queue_declare(queue="test", durable=True)
+
+# Route to handle POST requests
+@app.route('/api/devbox/create', methods=['POST'])
+def send_message():
+    try:
+        # Get JSON data from the request
+        data = request.get_json()
+        data = json.dumps(data)
+
+        # Ensure the payload is not empty
+        if not data:
+            return jsonify({'error': 'Empty payload'}), 400
+
+        # Convert the payload to a string
+     #   message_body = str(data)
+     #   print("json_string",message_body)
+
+        # Publish the message to RabbitMQ
+        channel.basic_publish(
+            exchange='',
+            routing_key="test",
+            body=data,
+            properties=pika.BasicProperties(
+                delivery_mode=2,  # Make the message persistent
+            )
+        )
+
+        # Include the JSON data in the response
+        response_data = {'message': 'Request created successfully'}
+        return jsonify(response_data), 201
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Route to handle GET requests
+@app.route('/api/rabbitmq-transaction', methods=['GET'])
+def receive_message():
+    try:
+        # Get a message from RabbitMQ with auto-acknowledgment
+        method_frame, header_frame, body = channel.basic_get(queue="test", auto_ack=True)
+
+        if method_frame:
+            # Convert the message body to JSON
+            message_data = body.decode('utf-8')
+            print("message_data", message_data)
+            data = json.loads(message_data)
+            print("data", data['lan_id'])
+            if data['source'] == "API": 
+                deployment_url = f'http://{osb_ip}:{osb_port}/api/devbox/deploy'
+            else: 
+                deployment_url = f'http://{osb_ip}:{osb_port}/api/ui/devbox/deploy'
+            deployment_response = requests.post(deployment_url, json=data)
+            if deployment_response.status_code == 200:
+                deployment_response_data = deployment_response.json()
+                conn, cursor = connect_to_sql_server(server, database, db_username, db_password, db_port)
+                timestamp = datetime.now().strftime("%Y%m%d%H%M%S%f")
+                transaction_id = generate_random_string(4)+"-"+generate_random_string(4)+"-"+timestamp+"-"+generate_random_string(4)
+                service_name = "DevBox"
+                service_action = "CREATE"
+                running_status = "running"
+                created_by = data['lan_id']
+                payload = ""
+                date_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                deployment_id = deployment_response_data['deployment_id']
+                deployment_name = deployment_response_data['deployment_name']
+                source = data['source']
+                deploy_status = json.dumps({})
+                deploy_status_history = json.dumps([])
+                childrens = [
+                                {
+                                    "key": 0,
+                                    "date": date_time,
+                                    "tool_integration": "Aria Automation",
+                                    "status": "Running",
+                                    "incident": "INC"+str(random.randint(2000, 999999999)),
+                                    "no_of_retry": 0
+                                },
+                                {
+                                    "key": 1,
+                                    "date": date_time,
+                                    "tool_integration": "Puppet",
+                                    "status": "Running",
+                                    "incident": "INC"+str(random.randint(2000, 999999999)),
+                                    "no_of_retry": 0
+                                }
+                            ]
+                childrens = json.dumps(childrens)
+                insert_data = ("", transaction_id, service_name, service_action, running_status, created_by, payload, date_time, deployment_id, deployment_name, source, deploy_status, deploy_status_history, childrens)
+                if conn and cursor:
+                    query = """
+                                INSERT INTO services (
+                                request_id, 
+                                transaction_id, 
+                                service_name, 
+                                service_action, 
+                                running_status, 
+                                created_by, 
+                                payload, 
+                                date_time, 
+                                deployment_id, 
+                                deployment_name, 
+                                source, 
+                                deploy_status, 
+                                deploy_status_history, 
+                                childrens)
+                                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                            """
+                    
+                    # Execute SQL query
+                    execute_query_insert(cursor, conn, query, insert_data)
+                    #conn.commit()
+                    # Close connection
+                    close_connection(conn, cursor)
+                response_data = {'message': 'Message received from RabbitMQ'}
+                return jsonify(response_data), 200
+        else:
+            return jsonify({'message': 'No messages in the queue'}), 404
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+##################### DATABASE #######################
+def connect_to_sql_server(server, database, db_username, db_password, db_port):
+    try:
+        # Establish connection to SQL Server
+        conn = pymssql.connect(server=server, user=db_username, password=db_password, database=database, port=db_port)
+
+        # Create a cursor object
+        cursor = conn.cursor()
+ 
+        print("Connection to SQL Server successful!")
+ 
+        return conn, cursor
+        
+ 
+    except Exception as e:
+        print(f"Error connecting to SQL Server: {e}")
+        return None, None
+ 
+def execute_query_select(cursor, query):
+    try:
+        # Execute SQL query
+        cursor.execute(query)
+        column_names = [column[0] for column in cursor.description]
+        # Fetch all the rows returned by the query
+        rows = cursor.fetchall()
+        # print(rows)
+ 
+        return rows, column_names
+ 
+    except Exception as e:
+        print(f"Error executing query: {e}")
+        return None
+    
+def execute_query_insert(cursor, conn, query, data):
+    try:
+        # Execute SQL query
+        cursor.execute(query, data)
+        conn.commit()
+        query_last_inserted_id = '''SELECT IDENT_CURRENT('Services') AS LastInsertedID;'''
+        cursor.execute(query_last_inserted_id)
+
+        # Fetch only one record
+        one_record = cursor.fetchone()
+        print("ONE_RECORD_OF", one_record[0])
+        print("ONE_RECORD", one_record)
+        last_record_id = int(one_record[0])
+        req_id = req_number+last_record_id
+        req_id = "REQ"+str(req_id)
+        print("REQ_ID", req_id)
+        query =  f"UPDATE Services SET request_id='{req_id}' WHERE id='{last_record_id}'"
+        print("UPDATE_QUERY", query)
+        # update_data = (req_id, last_record_id)
+        cursor.execute(query)
+        conn.commit()
+        return one_record
+ 
+    except Exception as e:
+        print(f"Error executing query: {e}")
+        return None
+
+def execute_query_update(cursor, conn, query):
+    try:
+        cursor.execute(query)
+        conn.commit()
+        return True
+ 
+    except Exception as e:
+        print(f"Error executing query: {e}")
+        return None
+
+def close_connection(conn, cursor):
+    try:
+        # Close cursor and connection
+        cursor.close()
+        conn.close()
+        print("Connection closed.")
+ 
+    except Exception as e:
+        print(f"Error closing connection: {e}")
+
+
 ###### UI ############
-@app.route('/api/ui/devbox/create', methods=['POST'])
+@app.route('/api/ui/devbox/deploy', methods=['POST'])
 def deploy_ui():
     url = f"{osb_api}/deploy"
     headers = {
@@ -45,7 +283,7 @@ def deploy_ui():
         return e
 
 #### POSTMAN ######
-@app.route('/api/devbox/create', methods=['POST'])
+@app.route('/api/devbox/deploy', methods=['POST'])
 def deploy_postman():
     try:
         data = request.get_json()
@@ -64,7 +302,7 @@ def deploy_postman():
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
             }
-
+            
             response = requests.post(url, json=data, headers=headers, verify=False)
             response_json = response.json()
             return jsonify(response_json), 200
@@ -106,17 +344,44 @@ def get_deploy_status():
 
 @app.route('/api/transactions', methods=['GET'])
 def get_transactions():
+    username = request.args.get('username')
+    # if not username:
+    #     return jsonify({'error': 'Username parameter is required'}), 400
     url = f"{osb_api}/transactions"
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     }
     try:
-        response = requests.get(url,headers=headers, verify=False)
-        response_json = response.json()
-        return jsonify(response_json), 200
+        conn, cursor = connect_to_sql_server(server, database, db_username, db_password, db_port)
+        if not username:
+            query = f'''SELECT * FROM Services  ORDER BY id DESC'''
+        else:
+            query = f'''SELECT * FROM Services WHERE created_by = '{username}' ORDER BY id DESC'''
+        response_json, column_names = execute_query_select(cursor, query)
+        result = [{key: value for key, value in zip(column_names, data)} for data in response_json]
+        return jsonify(result), 200
     except requests.RequestException as e:
-        return e
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/last_transaction', methods=['GET'])
+def get_last_transaction():
+    username = request.args.get('username')
+    if username:
+        # if not username:
+        #     return jsonify({'error': 'Username parameter is required'}), 400
+
+        try:
+            conn, cursor = connect_to_sql_server(server, database, db_username, db_password, db_port)
+            query = f'''SELECT TOP(1) request_id FROM Services WHERE created_by = '{username}' ORDER BY id DESC'''
+            response_json, column_names = execute_query_select(cursor, query)
+            result = [{key: value for key, value in zip(column_names, data)} for data in response_json]
+            return jsonify(result), 200
+        except requests.RequestException as e:
+            return jsonify({'error': str(e)}), 500
+    else:
+        return jsonify({'message': "[username] missing"}), 500
 
 @app.route('/api/transactions', methods=['POST'])
 def post_transactions():
@@ -150,21 +415,117 @@ def put_transactions():
     except requests.RequestException as e:
         return e
 
+# @app.route('/api/update_transactions', methods=['GET'])
+# def update_transactions():
+#     url = f"{osb_api}/update_transactions"
+#     headers = {
+#         'Content-Type': 'application/json',
+#         'Accept': 'application/json'
+#     }
+#     try:
+#         response = requests.get(url, json={}, headers=headers, verify=False)
+#         response_json = response.json()
+#         return jsonify(response_json), 200
+#     except requests.RequestException as e:
+#         return e
+    
 @app.route('/api/update_transactions', methods=['GET'])
 def update_transactions():
-    url = f"{osb_api}/update_transactions"
-    headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    }
     try:
-        response = requests.get(url, json={}, headers=headers, verify=False)
-        response_json = response.json()
-        return jsonify(response_json), 200
+        url = f"{osb_api}/update_transactions?deployment_id=[]"
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+        conn, cursor = connect_to_sql_server(server, database, db_username, db_password, db_port)
+        query = f'''SELECT * FROM Services WHERE running_status = 'running' ORDER BY id DESC'''
+        response_json, column_names = execute_query_select(cursor, query)
+        result = [{key: value for key, value in zip(column_names, data)} for data in response_json]
+        for i in result:
+            url = url.replace("[]", i["deployment_id"])
+            response = requests.get(url, json={}, headers=headers, verify=False)
+            deploy_response_json = response.json()
+            deploy_status_data =  deploy_response_json["deploy_status_data"]
+            data = []
+            running_status = "running"
+            if deploy_status_data["status"] == "CREATE_FAILED":
+                running_status = "failed"
+            elif deploy_status_data["status"] == "CREATE_SUCCESSFUL":
+                running_status = "completed"
+
+            deploy_status = json.dumps(deploy_status_data)
+
+
+            deploy_history_data = deploy_response_json['deploy_status_history']
+            
+            if len(deploy_history_data) > 0:
+                #data["deploy_status_history"] = deploy_history_data
+                resourceType = [
+                                    { "resourceType": "Cloud.Puppet", "error": 0, "completed": 0, "running": 0 },
+                                    {
+                                    "resourceType": "Cloud.vSphere.Machine",
+                                    "error": 0,
+                                    "completed": 0,
+                                    "running": 0,
+                                    },
+                                    { "resourceType": "Cloud.Network", "error": 0, "completed": 0, "running": 0 },
+                                    { "resourceType": "Cloud.Volume", "error": 0, "completed": 0, "running": 0 },
+                                ]
+                                #print(deploy_history_data)
+                request_failed = 0
+                for deploy_histories in deploy_history_data:
+                    for resource_type in resourceType:
+                        if deploy_histories["resourceType"]:
+                            if deploy_histories["resourceType"] == resource_type["resourceType"]:
+                                if deploy_histories["name"] == "CREATE_FAILED":
+                                    resource_type["error"] = int(resource_type["error"]) + 1
+                                elif  deploy_histories["name"] == "REQUEST_FAILED" or deploy_histories["name"] == "ALLOCATE_FAILED":
+                                    request_failed = 1
+                                    resource_type["error"] = int(resource_type["error"]) + 1
+                                elif deploy_histories["name"] == "CREATE_FINISHED":
+                                    resource_type["completed"] = int(resource_type["completed"]) + 1
+                                elif deploy_histories["name"] == "CREATE_IN_PROGRESS":
+                                    resource_type["running"] = int(resource_type["running"]) + 1
+
+                childrens = json.loads(i["childrens"])
+                err = 0
+                comp = 0
+                run = 0
+                for resource_type in resourceType:
+                    if 'Puppet' in resource_type["resourceType"]:
+                        if resource_type["error"] > 0 or request_failed > 0:
+                            childrens[1]["status"] = "Failed"
+                        elif resource_type["completed"] > 0 and resource_type["error"] == 0:
+                            childrens[1]["status"] = "Completed"
+                        elif resource_type["running"] > 0 and resource_type["completed"] == 0 and resource_type["error"] == 0:
+                            childrens[1]["status"] = "Running"
+                    else:
+                        if (resource_type["error"] > 0 and err == 0) or request_failed > 0:
+                            childrens[0]["status"] = "Failed"
+                            err+=1
+                        elif resource_type["completed"] > 0 and resource_type["error"] == 0 and err == 0 and comp == 0:
+                            childrens[0]["status"] = "Completed"
+                            comp+=1
+                        elif resource_type["running"] > 0 and resource_type["completed"] == 0 and resource_type["error"] == 0 and err == 0 and comp == 0 and run == 0:
+                            childrens[0]["status"] = "Running"
+                            run+=1
+
+                if request_failed==0 and resourceType[0]["error"] == 0 and resourceType[0]["completed"] == 0 and resourceType[0]["running"] == 0:
+                    childrens[0]["status"] = "Running"
+                
+                childrens_updated =json.dumps(childrens)
+                deploy_status_history = json.dumps(deploy_history_data).replace("'", "")
+                update_id = i["id"]
+                #query =  f"UPDATE Services SET running_status='{running_status}', childrens='{childrens_updated}', deploy_status='{deploy_status}',  deploy_status_history='{deploy_status_history}' WHERE id='{update_id}';"
+                query = f"UPDATE Services SET [running_status]='{running_status}',[childrens] = '{childrens_updated}', [deploy_status] = '{deploy_status}', [deploy_status_history] = '{deploy_status_history}' WHERE [id] = {update_id}"
+                execute_query_update(cursor, conn, query)
+            # return jsonify(response_json), 200
+            
+        return jsonify({}), 200
     except requests.RequestException as e:
         return e
 
-## LDAP User authentication in User Base DN
+## LDAP User authentication in User Base DN 
 @app.route('/api/ldap/validate-user', methods=['POST'])
 def validate_user():
     data = request.get_json()
@@ -238,4 +599,4 @@ def validate_user_group():
 
 if __name__ == '__main__':
     app.run(host=osb_ip, port=osb_port, debug=True)
-    
+  
