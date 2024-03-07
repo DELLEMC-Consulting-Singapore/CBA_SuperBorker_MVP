@@ -4,20 +4,7 @@ import axios from "axios";
 import moment from "moment";
 import Auth from "./components/Auth";
 import { SERVICE_API } from "./config/config";
-function sortByKey(d) {
-  return d.sort((a, b) => parseInt(b["key"]) - parseInt(a["key"]));
-}
 
-const items = [
-  {
-    key: "1",
-    label: "Action 1",
-  },
-  {
-    key: "2",
-    label: "Action 2",
-  },
-];
 const Activities = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -33,169 +20,26 @@ const Activities = () => {
   let [incidents, setIncidents] = useState([]);
   let [retries, setRetries] = useState(0);
 
-  let getStatusByDeploymentId = (deployment_id) => {
-    return new Promise((resolve, reject) => {
-      axios
-        .get(
-          `${SERVICE_API}/deploy_status?deploymentId=${deployment_id}`
-        )
-        .then((res) => {
-          resolve(res["data"]);
-        })
-        .catch((err) => reject(err));
-    });
-  };
-  let getStatusByDeploymentStatusHistory = (deployment_id) => {
-    return new Promise((resolve, reject) => {
-      axios
-        .get(
-          `${SERVICE_API}/deploy_history_status?deploymentId=${deployment_id}`
-        )
-        .then((res) => {
-          resolve(res["data"]);
-        })
-        .catch((err) => reject(err));
-    });
-  };
-
-  let refreshData = async (r) => {
-    setSpinning(true);
-    if (r["request_status"] == "running") {
-      let deployStatus = await getStatusByDeploymentId(r["deployment_id"]);
-      r["deploy_status"] = deployStatus;
-      if (deployStatus["status"] == "CREATE_FAILED") {
-        r["request_status"] = "failed";
-        r["request_status1"] = "failed";
-      } else if (deployStatus["status"] == "CREATE_SUCCESSFUL") {
-        r["request_status"] = "completed";
-        r["request_status1"] = "completed";
-      }
-      let deployHistory = await getStatusByDeploymentStatusHistory(
-        r["deployment_id"]
-      );
-      r["deploy_status_history"] = deployHistory;
-      let resourceType = [
-        { resourceType: "Cloud.Puppet", error: 0, completed: 0, running: 0 },
-        {
-          resourceType: "Cloud.vSphere.Machine",
-          error: 0,
-          completed: 0,
-          running: 0,
-        },
-        { resourceType: "Cloud.Network", error: 0, completed: 0, running: 0 },
-        { resourceType: "Cloud.Volume", error: 0, completed: 0, running: 0 },
-      ];
-      let l = 0;
-      deployHistory.map((history) => {
-        resourceType.map((resource, index) => {
-          if (history["resourceType"] != "") {
-            if (history["resourceType"] == resource["resourceType"]) {
-              if (history["name"] == "CREATE_FAILED") {
-                resource["error"] = parseInt(resource["error"]) + 1;
-              } else if (history["name"] == "CREATE_FINISHED") {
-                resource["completed"] = parseInt(resource["completed"]) + 1;
-              } else if (history["name"] == "CREATE_IN_PROGRESS") {
-                resource["running"] = parseInt(resource["running"]) + 1;
-              }
-            }
-          }
-        });
-      });
-      console.log(resourceType);
-      let err = 0;
-      let comp = 0;
-      let run = 0;
-      resourceType.map((resource) => {
-        if (resource["resourceType"].includes("Puppet")) {
-          if (resource["error"] > 0) {
-            r["childrens"][1]["status"] = "Failed";
-          } else if (resource["completed"] > 0 && resource["error"] == 0) {
-            r["childrens"][1]["status"] = "Completed";
-          } else if (
-            resource["running"] > 0 &&
-            resource["completed"] == 0 &&
-            resource["error"] == 0
-          ) {
-            r["childrens"][1]["status"] = "Running";
-          }
-        } else {
-          if (resource["error"] > 0 && err == 0) {
-            r["childrens"][0]["status"] = "Failed";
-            err++;
-          } else if (
-            resource["completed"] > 0 &&
-            resource["error"] == 0 &&
-            err == 0 &&
-            comp == 0
-          ) {
-            r["childrens"][0]["status"] = "Completed";
-            comp++;
-          } else if (
-            resource["running"] > 0 &&
-            resource["completed"] == 0 &&
-            resource["error"] == 0 &&
-            err == 0 &&
-            comp == 0 &&
-            run == 0
-          ) {
-            r["childrens"][0]["status"] = "Running";
-            run++;
-          }
-        }
-      });
-      if (
-        resourceType[0]["error"] == 0 &&
-        resourceType[0]["completed"] == 0 &&
-        resourceType[0]["running"] == 0
-      )
-        r["childrens"][0]["status"] = "Running";
-
-      r["created_by"] = deployStatus["createdBy"];
-      await sendData(r);
-
-      let j;
-      newData.map((existingData) => {
-        if (existingData["transaction_id"] == r["transaction_id"]) {
-          newData[j] = r;
-        }
-        j++;
-      });
-
-      setData([...newData]);
-    }
-
-    //getNewTransaction();
-    setSpinning(false);
-  };
-
-  async function sendData(transactions) {
-    let sendData = JSON.stringify(transactions);
-    await axios
-      .post(`${SERVICE_API}/transactions_post`, {
-        data: sendData,
-      })
-      .then((response) => {})
-      .catch((error) => {});
-  }
 
   function getNewTransaction() {
     let username = Auth.getUserProfile1();
     //axios.get(`http://localhost:3002/`).then((response) => {
-    axios.get(`${SERVICE_API}/transactions`).then((response) => {
-      let responseData = sortByKey(response["data"]);
-      let newdata = responseData.map((r) => {
-        if (username == "puppetuser" || username == "puppet") {
-          let puppet = r["childrens"].filter((c) => {
-            if (c["tool_integration"] == "Puppet") {
-              return c;
-            }
-          });
-          r["childrens"] = [...puppet];
-        }
+    axios.get(`${SERVICE_API}/transactions?username=${username}`).then((response) => {
+      // console.log("DATA", response["data"])
+      // let responseData = (response["data"]);
+      // let newdata = responseData.map((r) => {
+      //   if (username == "puppetuser" || username == "puppet") {
+      //     let puppet = r["childrens"].filter((c) => {
+      //       if (c["tool_integration"] == "Puppet") {
+      //         return c;
+      //       }
+      //     });
+      //     r["childrens"] = [...puppet];
+      //   }
 
-        return r;
-      });
-      setData(sortByKey(newdata));
+      //   return r;
+      // });
+      setData(response["data"]);
     });
   }
 
@@ -203,7 +47,7 @@ const Activities = () => {
     setSpinning(true);
     setIsModalOpen(true);
 
-    let statusInfo = historyData["deploy_status"];
+    let statusInfo = JSON.parse(historyData["deploy_status"]);
     //if (statusInfo !== undefined)
     {
       statusInfo['createdBy'] = historyData['created_by']
@@ -218,7 +62,7 @@ const Activities = () => {
 
       setDeploymentStatus(color);
 
-      let allHistory = historyData["deploy_status_history"];
+      let allHistory = JSON.parse(historyData["deploy_status_history"]);
 
       let puppetHistory = [];
       let ariaHistory = [];
@@ -246,7 +90,7 @@ const Activities = () => {
           setPuppetStatusHistory(puppetHistory[puppetHistory.length - 1]);
         setStatusHistory([]);
       }
-
+      historyData["childrens"] = JSON.parse(historyData["childrens"])
       //incidents
       let incidentData = [];
       let noOfRtries = 0;
@@ -284,6 +128,9 @@ const Activities = () => {
       dataIndex: "date_time",
       key: "date_time",
       width: 120,
+      render: (d) => {
+        return moment(d).format("MM-DD-YYYY HH:mm");
+      }
     },
     {
       title: "Request Id",
@@ -316,8 +163,8 @@ const Activities = () => {
     },
     {
       title: "Status",
-      key: "request_status",
-      dataIndex: "request_status",
+      key: "running_status",
+      dataIndex: "running_status",
       render: (tag, data) => {
         let color = "volcano"; //tag.length > 5 ? 'geekblue' : 'green';
         if (tag == "running") {
