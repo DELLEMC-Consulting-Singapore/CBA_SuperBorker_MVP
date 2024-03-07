@@ -86,7 +86,22 @@ export const DevBoxRequestForm = () => {
       .then((response) => {
         if (response.status === 201) {
           //let responseData = response["data"];
-          success();
+          setTimeout(()=>{
+            axios
+            .get(`${SERVICE_API}/last_transaction?username=${userInfo["username"]}`)
+            .then((lastTransactionResponse) => {
+              if (lastTransactionResponse.status === 200) {
+                let lastTransactionResponseData = lastTransactionResponse["data"];
+                success(lastTransactionResponseData[0]["request_id"]);
+                setSpinning(false);
+              }
+            })
+            .catch((error) => {
+              console.log("incatch::", error);
+            });
+          }, 5000)
+          
+
         }
       })
       .catch((error) => {
@@ -95,12 +110,12 @@ export const DevBoxRequestForm = () => {
     form.resetFields();
   };
 
-  function success() {
+  function success(requestId) {
     const success = Modal.success({});
     success.update({
       title: "",
-      //content: `Request ${requestId} has been opened successfully`,
-      content: `Request has been opened successfully`,
+      content: `Request ${requestId} has been opened successfully`,
+      //content: `Request has been opened successfully`,
       onOk: async () => {
         navigate("/activities", { replace: true });
         navigate(0)
