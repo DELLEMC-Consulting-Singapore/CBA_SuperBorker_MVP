@@ -323,11 +323,15 @@ def update_transactions():
                                 { "resourceType": "Cloud.Volume", "error": 0, "completed": 0, "running": 0 },
                             ]
                             #print(deploy_history_data)
+                            request_failed = 0
                             for deploy_histories in data["deploy_status_history"]:
                                 for resource_type in resourceType:
                                     if deploy_histories["resourceType"]:
                                         if deploy_histories["resourceType"] == resource_type["resourceType"]:
                                             if deploy_histories["name"] == "CREATE_FAILED":
+                                                resource_type["error"] = int(resource_type["error"]) + 1
+                                            elif  deploy_histories["name"] == "REQUEST_FAILED" or deploy_histories["name"] == "ALLOCATE_FAILED":
+                                                request_failed = 1
                                                 resource_type["error"] = int(resource_type["error"]) + 1
                                             elif deploy_histories["name"] == "CREATE_FINISHED":
                                                 resource_type["completed"] = int(resource_type["completed"]) + 1
@@ -340,14 +344,14 @@ def update_transactions():
                             run = 0
                             for resource_type in resourceType:
                                 if 'Puppet' in resource_type["resourceType"]:
-                                    if resource_type["error"] > 0:
+                                    if resource_type["error"] > 0 or request_failed > 0:
                                         data["childrens"][1]["status"] = "Failed"
                                     elif resource_type["completed"] > 0 and resource_type["error"] == 0:
                                         data["childrens"][1]["status"] = "Completed"
                                     elif resource_type["running"] > 0 and resource_type["completed"] == 0 and resource_type["error"] == 0:
                                         data["childrens"][1]["status"] = "Running"
                                 else:
-                                    if resource_type["error"] > 0 and err == 0:
+                                    if (resource_type["error"] > 0 and err == 0) or request_failed > 0:
                                         data["childrens"][0]["status"] = "Failed"
                                         err+=1
                                     elif resource_type["completed"] > 0 and resource_type["error"] == 0 and err == 0 and comp == 0:
@@ -357,8 +361,9 @@ def update_transactions():
                                         data["childrens"][0]["status"] = "Running"
                                         run+=1
 
-                            if resourceType[0]["error"] == 0 and resourceType[0]["completed"] == 0 and resourceType[0]["running"] == 0:
+                            if request_failed==0 and resourceType[0]["error"] == 0 and resourceType[0]["completed"] == 0 and resourceType[0]["running"] == 0:
                                 data["childrens"][0]["status"] = "Running"
+
                         new_data.append(data)
                     else:
                         new_data.append(data)
