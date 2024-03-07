@@ -1,0 +1,363 @@
+.dds__card h5 {
+  font-weight: 300;
+  margin: 0;
+}
+
+.dds__card__header__text {
+  font-size: 32px;
+  line-height: 1.25;
+  font-weight: 300;
+}
+
+.dds__card__header__text {
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+}
+.dds__mb-0,
+.dds__my-0 {
+  margin-bottom: 0 !important;
+}
+
+.dds__card__body {
+  line-height: 2.5rem;
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+}
+
+.dds__card__body p {
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  line-height: 1.5rem;
+  margin: 0;
+}
+
+.dds__mb-4,
+.dds__my-4 {
+  margin-bottom: 24px !important;
+}
+
+.dds__container-fluid {
+  position: relative;
+  width: 100%;
+}
+
+[_nghost-lux-c294] ddc-rating-card[_ngcontent-lux-c294] .dds__row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  align-items: center;
+}
+
+.text-80 {
+  font-size: 80px;
+  line-height: 1.1;
+}
+
+.text-21 {
+  font-size: 21px;
+  line-height: 1.71;
+}
+
+.dds__pl-4,
+.dds__px-4 {
+  padding-left: 24px !important;
+}
+
+.dds__d-flex {
+  display: flex !important;
+}
+
+i.active {
+  color: rgb(255, 204, 0);
+}
+
+.dds__button--sm {
+  border-radius: 0.125rem;
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+  padding: 0.1875rem 0.6875rem;
+}
+
+.dds__button--primary,
+.dds__button {
+  background-color: rgb(255, 204, 0);
+  color: rgb(35, 31, 32);
+}
+
+.dds__button[_ngcontent-kne-c288] {
+  border-radius: 0.125rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  padding: 0.6875rem 1.1875rem;
+  border: 0.0625rem solid transparent;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+  -webkit-user-select: none;
+  user-select: none;
+  vertical-align: middle;
+  white-space: normal;
+  fill: currentColor;
+}
+
+.dds__container-fluid .dds__col-1 {
+  flex: 0 0 auto;
+  width: 50%;
+}
+
+.dds__container-fluid .dds__col--sm-2 {
+  flex: 0 0 auto;
+  width: 48%;
+}
+
+.dds__pt-sm-5 {
+  padding: 40px;
+}
+
+.dds__container-fluid {
+  position: relative;
+  width: 100%;
+}
+
+.dds__container .dds__row,
+.dds__container--comfy .dds__row,
+.dds__container--compact .dds__row,
+.dds__container-fluid .dds__row,
+.dds__container-fluid--comfy .dds__row,
+.dds__container-fluid--compact .dds__row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.dds__align-items-center {
+  align-items: center !important;
+}
+
+.dds__d-flex {
+  display: flex !important;
+}
+
+.text-20 {
+  font-size: 20px;
+}
+
+.dds__pl-2,
+.dds__px-2 {
+  padding-left: 8px !important;
+}
+
+.dds__ml-4,
+.dds__mx-4 {
+  margin-left: 24px !important;
+}
+
+.dds__tooltip {
+  transition: opacity 0.13s ease-out;
+  display: none;
+  top: 0;
+  left: 0;
+  position: absolute;
+  opacity: 0;
+  min-width: 2.5rem;
+  max-width: 18rem;
+  word-wrap: break-word;
+}
+
+.dds__tooltip__pointer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #e1e1e1;
+  width: 0.75rem;
+  height: 0.75rem;
+  transform: rotate(45deg);
+  z-index: -1;
+}
+
+.dds__tooltip__body {
+  font-size: 0.75rem;
+  letter-spacing: 0.005em;
+  line-height: 1.25rem;
+  font-weight: 400;
+  background-color: #e1e1e1;
+  border-radius: 0.125rem;
+  color: #0e0e0e;
+  padding: 0.5rem;
+}
+
+.dds__col--md-4 {
+  justify-content: space-around;
+}
+
+.dds__container-fluid .dds__col--xl-6 {
+  flex: 0 0 auto;
+  width: 50%;
+}
+
+.dds__card {
+  border: 0.0625rem solid #e1e1e1;
+  border-radius: 0.125rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 100%;
+  background-color: #fff;
+}
+
+.dds__p-4 {
+  padding: 24px !important;
+}
+
+.text-32 {
+  font-size: 2rem;
+  line-height: 1.25;
+}
+
+.dds__font-weight-light {
+  font-weight: 300 !important;
+}
+
+.dds__mb-3,
+.dds__my-3 {
+  margin-bottom: 16px !important;
+}
+
+.comments-container {
+  height: 400px;
+  overflow-y: auto;
+}
+
+.comment-container {
+  width: 100%;
+  min-height: 70px;
+  display: flex;
+  font-size: 14px;
+  font-family: Roboto;
+  font-weight: normal;
+  margin-bottom: 15px;
+}
+
+.comment-container .icon-block {
+  width: 82px;
+  min-width: 82px;
+  max-height: 70px;
+  display: flex;
+  justify-content: center;
+}
+
+.icon-block {
+  padding-left: 0.5rem;
+  padding-right: 1.5rem;
+  min-width: auto !important;
+  width: auto !important;
+}
+
+.comment-container * {
+  font-size: 0.875rem !important;
+}
+
+.comment-container .icon-block .dds__icon {
+  font-size: 24px;
+  color: #00447c;
+}
+
+.comment-container i {
+  font-size: 1.4375rem !important;
+}
+
+.comment-container .text-block--divider {
+  border-bottom: 1px solid #e1e1e1;
+}
+
+.comment-container .text-block {
+  width: 100%;
+  height: 100%;
+  min-height: 70px;
+  line-height: normal;
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 10px;
+}
+
+.comment-container * {
+  font-size: 0.875rem !important;
+}
+
+.header {
+  font-weight: 300;
+}
+
+.comment-container .text-block .detail {
+  margin-top: 10px;
+  white-space: nowrap;
+}
+
+.comment-container .text-block .title {
+  font-weight: 500;
+  margin-right: 5px;
+}
+
+.comment-container .text-block .date,
+.comment-container .text-block .value {
+  color: #00447c;
+  margin-right: 16px;
+  padding: 0 5px;
+}
+
+.comment-container .text-block .detail {
+  margin-top: 10px;
+  white-space: nowrap;
+}
+
+.dds__pagination--width-1024,
+.dds__pagination--width-640,
+.dds__pagination--width-768 {
+  padding: 1rem;
+}
+
+.dds__pagination {
+  color: #6e6e6e;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 1rem;
+  background-color: #fff;
+}
+
+.dds__pagination__summary {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  letter-spacing: 0.005em;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.dds__pagination--width-640 .dds__pagination__per-page-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  left: 0;
+}
+
+.dds__pagination__per-page-select {
+  min-width: 4.25rem;
+  margin-right: 1rem;
+}
+
+.mt--3 {
+  padding: 0px 10px 0px 10px;
+}

@@ -1,0 +1,39 @@
+.anchor-tag {
+  cursor: pointer;
+  font-weight: 600;
+  color: #0672cb !important;
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.tools-grid {
+  width: 120px;
+  padding: 5px 0px 0px 20px;
+  position: relative;
+  min-width: unset !important;
+  min-height: unset;
+  transform: unset;
+  justify-content: center;
+}
+
+.tool-check {
+  color: rgb(82, 196, 26);
+  font-size: 20px;
+  margin: 10px;
+}
+
+.tool-check-error {
+  color: red;
+  font-size: 20px;
+  margin-top: 10px;
+  margin-right: 95px;
+}
+
+.ansible {
+  width: 170px;
+  padding: 22px 0px 0px 15px;
+  position: relative;
+  min-height: 105px;
+  margin-left: -10px;
+  margin-right: 0px;
+}
