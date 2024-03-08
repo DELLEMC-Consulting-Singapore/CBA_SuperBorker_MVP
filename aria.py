@@ -9,18 +9,19 @@ import pymssql
 import random
 import string
 from datetime import datetime
+import base64
 
 app = Flask(__name__)
 
 cors = CORS(app)
 
-server = "10.45.198.34"
-database = "OSBDB"
-db_username = "acoe_sqlapp_osb"
-db_password = "UXAp!1thoTmMzPq"
-db_port = "1433"
+# server = "10.45.198.34"
+# database = "OSBDB"
+# db_username = "acoe_sqlapp_osb"
+# db_password = "UXAp!1thoTmMzPq"
+# db_port = "1433"
 
-req_number = 2000
+# req_number = 2000
 
 #group_dn = "CN=SGG_CBA_ED_DAAS_USERS,OU=DaaS,OU=Applications,OU=Groups,DC=au,DC=cbainet,DC=com"
 
@@ -42,6 +43,23 @@ osb_api = index_data.get('osb_api')
 osb_ip = index_data.get('osb_ip')
 osb_port = index_data.get('osb_port')
 group_dn = index_data.get('group_base_dn')
+server = index_data.get('server')
+database = index_data.get('database')
+db_port = index_data.get('db_port')
+req_number = index_data.get('req_number')
+
+def read_db_creds():
+    creds_file_path = "/apps/aria_automation/db_credentials.txt"
+    try:
+        with open(creds_file_path, 'r') as t:
+            lines = t.readlines()
+            db_username = base64.b64decode(lines[0].strip()).decode('utf-8')
+            db_password = base64.b64decode(lines[1].strip()).decode('utf-8')
+            return db_username, db_password
+    except FileNotFoundError:
+        return None, None
+
+db_username, db_password = read_db_creds()
 
 def generate_random_string(length):
     # Define the characters to choose from
@@ -108,9 +126,7 @@ def receive_message():
         if method_frame:
             # Convert the message body to JSON
             message_data = body.decode('utf-8')
-            print("message_data", message_data)
             data = json.loads(message_data)
-            print("data", data['lan_id'])
             if data['source'] == "API": 
                 deployment_url = f'http://{osb_ip}:{osb_port}/api/devbox/deploy'
             else: 
@@ -119,13 +135,13 @@ def receive_message():
             if deployment_response.status_code == 200:
                 deployment_response_data = deployment_response.json()
                 conn, cursor = connect_to_sql_server(server, database, db_username, db_password, db_port)
-                timestamp = datetime.now().strftime("%Y%m%d%H%M%S%f")
+                timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
                 transaction_id = generate_random_string(4)+"-"+generate_random_string(4)+"-"+timestamp+"-"+generate_random_string(4)
                 service_name = "DevBox"
                 service_action = "CREATE"
                 running_status = "running"
                 created_by = data['lan_id']
-                payload = ""
+                payload = "" if data['source'] == "API" else json.dumps(data)
                 date_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 deployment_id = deployment_response_data['deployment_id']
                 deployment_name = deployment_response_data['deployment_name']
@@ -138,6 +154,7 @@ def receive_message():
                                     "date": date_time,
                                     "tool_integration": "Aria Automation",
                                     "status": "Running",
+                                    "transaction_id" : transaction_id,
                                     "incident": "INC"+str(random.randint(2000, 999999999)),
                                     "no_of_retry": 0
                                 },
@@ -146,6 +163,7 @@ def receive_message():
                                     "date": date_time,
                                     "tool_integration": "Puppet",
                                     "status": "Running",
+                                    "transaction_id" : transaction_id,
                                     "incident": "INC"+str(random.randint(2000, 999999999)),
                                     "no_of_retry": 0
                                 }
@@ -179,11 +197,14 @@ def receive_message():
                     close_connection(conn, cursor)
                 response_data = {'message': 'Message received from RabbitMQ'}
                 return jsonify(response_data), 200
+            
         else:
             return jsonify({'message': 'No messages in the queue'}), 404
 
     except Exception as e:
+        print(e)
         return jsonify({'error': str(e)}), 500
+       
     
 ##################### DATABASE #######################
 def connect_to_sql_server(server, database, db_username, db_password, db_port):
@@ -210,7 +231,7 @@ def execute_query_select(cursor, query):
         column_names = [column[0] for column in cursor.description]
         # Fetch all the rows returned by the query
         rows = cursor.fetchall()
-        # print(rows)
+        row_count = cursor.rowcount
  
         return rows, column_names
  
@@ -399,8 +420,8 @@ def post_transactions():
     except requests.RequestException as e:
         return e
 
-@app.route('/api/transactions_post', methods=['POST'])
-def put_transactions():
+@app.route('/api/transactions/<id>', methods=['PUT'])
+def put_transactions(id):
     url = f"{osb_api}/transactions_post"
     headers = {
         'Content-Type': 'application/json',
@@ -409,9 +430,14 @@ def put_transactions():
     try:
         request_data = request.get_json()
         payload = request_data['data']
-        response = requests.post(url, json=request_data, headers=headers, verify=False)
-        response_json = response.json()
-        return jsonify(response_json), 201
+        childrens = payload['childrens']
+        running_status = payload['running_status']
+        conn, cursor = connect_to_sql_server(server, database, db_username, db_password, db_port)
+        query = f"UPDATE Services SET [running_status]='{running_status}',[childrens] = '{childrens}' WHERE [id] = {id}"
+        execute_query_update(cursor, conn, query)
+        # response = requests.post(url, json=request_data, headers=headers, verify=False)
+        # response_json = response.json()
+        return jsonify({}), 201
     except requests.RequestException as e:
         return e
 
@@ -599,4 +625,3 @@ def validate_user_group():
 
 if __name__ == '__main__':
     app.run(host=osb_ip, port=osb_port, debug=True)
-  
