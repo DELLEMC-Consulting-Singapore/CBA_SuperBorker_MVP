@@ -8,7 +8,7 @@ import { SERVICE_API } from "../config/config";
 import moment from "moment";
 function errorMessage() {
   Modal.error({
-    content: `Internal Server Error. Please try after sometime`,
+    content: ` Please try after sometime.`,
   });
 }
 
@@ -85,27 +85,13 @@ export const DevBoxRequestForm = () => {
       .post(`${SERVICE_API}/devbox/create`, newPlayload)
       .then((response) => {
         if (response.status === 201) {
-          //let responseData = response["data"];
-          setTimeout(()=>{
-            axios
-            .get(`${SERVICE_API}/last_transaction?username=${userInfo["username"]}`)
-            .then((lastTransactionResponse) => {
-              if (lastTransactionResponse.status === 200) {
-                let lastTransactionResponseData = lastTransactionResponse["data"];
-                success(lastTransactionResponseData[0]["request_id"]);
-                setSpinning(false);
-              }
-            })
-            .catch((error) => {
-              console.log("incatch::", error);
-            });
-          }, 5000)
-          
-
+          let responseData = response["data"];
+          success(responseData["req_id"]);          
         }
       })
       .catch((error) => {
         console.log("incatch::", error);
+        errorMessage()
       });
     form.resetFields();
   };
