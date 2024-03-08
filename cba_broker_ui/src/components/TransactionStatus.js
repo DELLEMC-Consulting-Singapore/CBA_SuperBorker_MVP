@@ -57,13 +57,13 @@ const TransactionStatus = () => {
     //axios.get(`http://localhost:3002/`).then((response) => {
     axios.get(`${SERVICE_API}/transactions?username=${username}`).then((response) => {
       let responseData = response["data"];
-      let newdata = responseData.map((r) => {
+      let result = responseData.map((r) => {
         r["deploy_status"] = JSON.parse(r["deploy_status"]);
         r["deploy_status_history"] = JSON.parse(r["deploy_status_history"]);
         r["childrens"] = JSON.parse(r["childrens"])
         return r;
       });
-      setData(newdata);
+      setData(result);
     });
   }
 
@@ -361,7 +361,7 @@ const TransactionStatus = () => {
           color = "green";
         }
 
-        if (tag == "Rollback") {
+        if (tag == "rollback") {
           color = "geekblue";
           tag = "Rollback Successful";
         }
@@ -410,36 +410,18 @@ const TransactionStatus = () => {
   let parentData = [];
   parentData["service_name"] = "DevBox";
 
-  // useEffect(() => {
-  //   let username = Auth.getUserProfile1();
-  //   //axios.get(`http://10.45.197.10:5000/api/transactions`).then((response) => {
-  //   axios.get(`http://localhost:3002`).then((response) => {
-  //     let responseData = sortByKey(response["data"]);
-  //     let newdata = responseData.map((r) => {
-  //       if (username == "puppetuser" || username == "puppet") {
-  //         let puppet = r["childrens"].filter((c) => {
-  //           if (c["tool_integration"] == "Puppet") {
-  //             return c;
-  //           }
-  //         });
-  //         r["childrens"] = [...puppet];
-  //       }
-
-  //       return r;
-  //     });
-  //     setData(sortByKey(newdata));
-  //   });
-  // }, []);
-
-  async function sendData(transactions) {
-    let sendData = JSON.stringify(transactions);
+  async function sendData(running_status, transactions, id) {
     await axios
-      .post(`${SERVICE_API}/transactions_post`, {
-        data: sendData,
+      .put(`${SERVICE_API}/transactions/${id}`, {
+        data: {
+          running_status,
+          childrens:transactions
+        },
       })
       .then((response) => {})
       .catch((error) => {});
   }
+
   let handleResume = (resumeData) => {
     let i = 0;
     let no_of_error = 0;
@@ -468,10 +450,9 @@ const TransactionStatus = () => {
     });
     if (no_of_error == 1) {
       newData[index]["running_status"] = "running";
-      newData[index]["running_status1"] = "running";
     }
     console.log(newData[index]);
-    sendData(newData[index]);
+    sendData(newData[index]["running_status"], JSON.stringify(newData[index]["childrens"]), newData[index]["id"]);
     handleCancel();
   };
 
@@ -485,8 +466,7 @@ const TransactionStatus = () => {
             //if (resumeData["status"] == "Error") {
             //childerns["status"] = "Revoked";
             newData[j]["childrens"][childerns["key"]]["status"] = "Rollback";
-            newData[j]["running_status"] = "Rollback";
-            newData[j]["running_status1"] = "Rollback";
+            newData[j]["running_status"] = "rollback";
 
             //}
           });
@@ -497,7 +477,7 @@ const TransactionStatus = () => {
       });
       setData([...newData]);
     }
-    sendData(newData[index]);
+    sendData("rollback", JSON.stringify(newData[index]["childrens"]), newData[index]["id"]);
     handleCancel();
   };
 
