@@ -23,24 +23,9 @@ const Activities = () => {
 
   function getNewTransaction() {
     let username = Auth.getUserProfile1();
-    //axios.get(`http://localhost:3002/`).then((response) => {
     axios.get(`${SERVICE_API}/transactions?username=${username}`).then((response) => {
-      // console.log("DATA", response["data"])
-      // let responseData = (response["data"]);
-      // let newdata = responseData.map((r) => {
-      //   if (username == "puppetuser" || username == "puppet") {
-      //     let puppet = r["childrens"].filter((c) => {
-      //       if (c["tool_integration"] == "Puppet") {
-      //         return c;
-      //       }
-      //     });
-      //     r["childrens"] = [...puppet];
-      //   }
-
-      //   return r;
-      // });
       setData(response["data"]);
-    });
+    }).catch(e => setData([]));
   }
 
   const showModal = (type, historyData) => {
