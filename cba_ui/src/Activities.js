@@ -173,7 +173,7 @@ const Activities = () => {
           color = "green";
         }
 
-        if (tag == "Rollback") {
+        if (tag == "rollback") {
           color = "geekblue";
           tag = "Rollback Successful";
         }
