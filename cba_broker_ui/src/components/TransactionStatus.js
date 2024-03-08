@@ -64,7 +64,7 @@ const TransactionStatus = () => {
         return r;
       });
       setData(result);
-    });
+    }).catch(e => sendData([]));
   }
 
   // useEffect(() => {
