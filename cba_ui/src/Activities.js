@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Spin, Space, Table, Tag, Tooltip } from "antd";
+import { Modal, Spin, Row, Table, Tag, Tooltip, Alert, Col } from "antd";
 import axios from "axios";
 import moment from "moment";
 import Auth from "./components/Auth";
@@ -285,7 +285,17 @@ const Activities = () => {
 
   return (
     <>
-      <Table columns={columns} dataSource={newData} bordered={true} size="10" />
+   
+      <Row style={{float:"right"}}>
+          <Alert
+            message="Pages refreshes after 10 seconds"
+            type="info"
+            style={{ fontSize: 10 }}
+            showIcon
+            banner
+          /> 
+        </Row> 
+      <Table style={{marginTop:40}} columns={columns} dataSource={newData} bordered={true} size="10" />
 
       <Modal
         title=""
