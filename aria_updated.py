@@ -15,17 +15,6 @@ app = Flask(__name__)
 
 cors = CORS(app)
 
-
-# server = "10.45.198.34"
-# database = "OSBDB"
-# db_username = "acoe_sqlapp_osb"
-# db_password = "UXAp!1thoTmMzPq"
-# db_port = "1433"
-
-# req_number = 2000
-
-# group_dn = "CN=SGG_CBA_ED_DAAS_USERS,OU=DaaS,OU=Applications,OU=Groups,DC=au,DC=cbainet,DC=com"
-
 def read_index_json():
     file_path = "/apps/aria_automation/index.json"
     try:
@@ -38,7 +27,6 @@ def read_index_json():
     except json.JSONDecodeError as e:
         print(f"Error decoding JSON: {e}")
         return None
-
 
 index_data = read_index_json()
 osb_api = index_data.get('osb_api')
@@ -78,143 +66,143 @@ def generate_random_string(length):
 
 ############# RABBITMQ#############
 # Establish connection to RabbitMQ
-credentials = pika.PlainCredentials(username="test", password="test@123")
+# credentials = pika.PlainCredentials(username="test", password="test@123")
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(
-    host="10.45.197.10",
-    port=5672,
-    virtual_host='/',
-    credentials=credentials
-))
-channel = connection.channel()
-channel.queue_declare(queue="test", durable=True)
+# connection = pika.BlockingConnection(pika.ConnectionParameters(
+#     host="10.45.197.10",
+#     port=5672,
+#     virtual_host='/',
+#     credentials=credentials
+# ))
+# channel = connection.channel()
+# channel.queue_declare(queue="test", durable=True)
 
 
 # Route to handle POST requests
-@app.route('/api/devbox/create_mq', methods=['POST'])
-def send_message():
-    try:
-        # Get JSON data from the request
-        data = request.get_json()
-        data = json.dumps(data)
+# @app.route('/api/devbox/create_mq', methods=['POST'])
+# def send_message():
+#     try:
+#         # Get JSON data from the request
+#         data = request.get_json()
+#         data = json.dumps(data)
 
-        # Ensure the payload is not empty
-        if not data:
-            return jsonify({'error': 'Empty payload'}), 400
+#         # Ensure the payload is not empty
+#         if not data:
+#             return jsonify({'error': 'Empty payload'}), 400
 
-        # Convert the payload to a string
-        #   message_body = str(data)
-        #   print("json_string",message_body)
+#         # Convert the payload to a string
+#         #   message_body = str(data)
+#         #   print("json_string",message_body)
 
-        # Publish the message to RabbitMQ
-        channel.basic_publish(
-            exchange='',
-            routing_key="test",
-            body=data,
-            properties=pika.BasicProperties(
-                delivery_mode=2,  # Make the message persistent
-            )
-        )
+#         # Publish the message to RabbitMQ
+#         channel.basic_publish(
+#             exchange='',
+#             routing_key="test",
+#             body=data,
+#             properties=pika.BasicProperties(
+#                 delivery_mode=2,  # Make the message persistent
+#             )
+#         )
 
-        # Include the JSON data in the response
-        response_data = {'message': 'Request created successfully'}
-        return jsonify(response_data), 201
+#         # Include the JSON data in the response
+#         response_data = {'message': 'Request created successfully'}
+#         return jsonify(response_data), 201
 
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
 
 
 # Route to handle GET requests
-@app.route('/api/rabbitmq-transaction', methods=['GET'])
-def receive_message():
-    try:
-        # Get a message from RabbitMQ with auto-acknowledgment
-        method_frame, header_frame, body = channel.basic_get(queue="test", auto_ack=True)
+# @app.route('/api/rabbitmq-transaction', methods=['GET'])
+# def receive_message():
+#     try:
+#         # Get a message from RabbitMQ with auto-acknowledgment
+#         method_frame, header_frame, body = channel.basic_get(queue="test", auto_ack=True)
 
-        if method_frame:
-            # Convert the message body to JSON
-            message_data = body.decode('utf-8')
-            data = json.loads(message_data)
-            if data['source'] == "API":
-                deployment_url = f'http://{osb_ip}:{osb_port}/api/devbox/deploy'
-            else:
-                deployment_url = f'http://{osb_ip}:{osb_port}/api/ui/devbox/deploy'
-            deployment_response = requests.post(deployment_url, json=data)
-            if deployment_response.status_code == 200:
-                deployment_response_data = deployment_response.json()
-                conn, cursor = connect_to_sql_server(server, database, db_username, db_password, db_port)
-                timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-                transaction_id = generate_random_string(4) + "-" + generate_random_string(
-                    4) + "-" + timestamp + "-" + generate_random_string(4)
-                service_name = "DevBox"
-                service_action = "CREATE"
-                running_status = "running"
-                created_by = data['lan_id']
-                payload = "" if data['source'] == "API" else json.dumps(data)
-                date_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                deployment_id = deployment_response_data['deployment_id']
-                deployment_name = deployment_response_data['deployment_name']
-                source = data['source']
-                deploy_status = json.dumps({})
-                deploy_status_history = json.dumps([])
-                childrens = [
-                    {
-                        "key": 0,
-                        "date": date_time,
-                        "tool_integration": "Aria Automation",
-                        "status": "Running",
-                        "transaction_id": transaction_id,
-                        "incident": "INC" + str(random.randint(2000, 999999999)),
-                        "no_of_retry": 0
-                    },
-                    {
-                        "key": 1,
-                        "date": date_time,
-                        "tool_integration": "Puppet",
-                        "status": "Running",
-                        "transaction_id": transaction_id,
-                        "incident": "INC" + str(random.randint(2000, 999999999)),
-                        "no_of_retry": 0
-                    }
-                ]
-                childrens = json.dumps(childrens)
-                insert_data = (
-                "", transaction_id, service_name, service_action, running_status, created_by, payload, date_time,
-                deployment_id, deployment_name, source, deploy_status, deploy_status_history, childrens)
-                if conn and cursor:
-                    query = """
-                                INSERT INTO services (
-                                request_id, 
-                                transaction_id, 
-                                service_name, 
-                                service_action, 
-                                running_status, 
-                                created_by, 
-                                payload, 
-                                date_time, 
-                                deployment_id, 
-                                deployment_name, 
-                                source, 
-                                deploy_status, 
-                                deploy_status_history, 
-                                childrens)
-                                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                            """
+#         if method_frame:
+#             # Convert the message body to JSON
+#             message_data = body.decode('utf-8')
+#             data = json.loads(message_data)
+#             if data['source'] == "API":
+#                 deployment_url = f'http://{osb_ip}:{osb_port}/api/devbox/deploy'
+#             else:
+#                 deployment_url = f'http://{osb_ip}:{osb_port}/api/ui/devbox/deploy'
+#             deployment_response = requests.post(deployment_url, json=data)
+#             if deployment_response.status_code == 200:
+#                 deployment_response_data = deployment_response.json()
+#                 conn, cursor = connect_to_sql_server(server, database, db_username, db_password, db_port)
+#                 timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+#                 transaction_id = generate_random_string(4) + "-" + generate_random_string(
+#                     4) + "-" + timestamp + "-" + generate_random_string(4)
+#                 service_name = "DevBox"
+#                 service_action = "CREATE"
+#                 running_status = "running"
+#                 created_by = data['lan_id']
+#                 payload = "" if data['source'] == "API" else json.dumps(data)
+#                 date_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+#                 deployment_id = deployment_response_data['deployment_id']
+#                 deployment_name = deployment_response_data['deployment_name']
+#                 source = data['source']
+#                 deploy_status = json.dumps({})
+#                 deploy_status_history = json.dumps([])
+#                 childrens = [
+#                     {
+#                         "key": 0,
+#                         "date": date_time,
+#                         "tool_integration": "Aria Automation",
+#                         "status": "Running",
+#                         "transaction_id": transaction_id,
+#                         "incident": "INC" + str(random.randint(2000, 999999999)),
+#                         "no_of_retry": 0
+#                     },
+#                     {
+#                         "key": 1,
+#                         "date": date_time,
+#                         "tool_integration": "Puppet",
+#                         "status": "Running",
+#                         "transaction_id": transaction_id,
+#                         "incident": "INC" + str(random.randint(2000, 999999999)),
+#                         "no_of_retry": 0
+#                     }
+#                 ]
+#                 childrens = json.dumps(childrens)
+#                 insert_data = (
+#                 "", transaction_id, service_name, service_action, running_status, created_by, payload, date_time,
+#                 deployment_id, deployment_name, source, deploy_status, deploy_status_history, childrens)
+#                 if conn and cursor:
+#                     query = """
+#                                 INSERT INTO services (
+#                                 request_id,
+#                                 transaction_id,
+#                                 service_name,
+#                                 service_action,
+#                                 running_status,
+#                                 created_by,
+#                                 payload,
+#                                 date_time,
+#                                 deployment_id,
+#                                 deployment_name,
+#                                 source,
+#                                 deploy_status,
+#                                 deploy_status_history,
+#                                 childrens)
+#                                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+#                             """
 
-                    # Execute SQL query
-                    execute_query_insert(cursor, conn, query, insert_data)
-                    # conn.commit()
-                    # Close connection
-                    close_connection(conn, cursor)
-                response_data = {'message': 'Message received from RabbitMQ'}
-                return jsonify(response_data), 200
+#                     # Execute SQL query
+#                     execute_query_insert(cursor, conn, query, insert_data)
+#                     # conn.commit()
+#                     # Close connection
+#                     close_connection(conn, cursor)
+#                 response_data = {'message': 'Message received from RabbitMQ'}
+#                 return jsonify(response_data), 200
 
-        else:
-            return jsonify({'message': 'No messages in the queue'}), 404
+#         else:
+#             return jsonify({'message': 'No messages in the queue'}), 404
 
-    except Exception as e:
-        print(e)
-        return jsonify({'error': str(e)}), 500
+#     except Exception as e:
+#         print(e)
+#         return jsonify({'error': str(e)}), 500
 
 
 ##################### DATABASE #######################
@@ -307,8 +295,10 @@ def devbox_create():
         data = request.get_json()
         if data['source'] == "API":
             deployment_url = f'http://{osb_ip}:{osb_port}/api/devbox/deploy'
-        else:
+        elif data['source'] == "UI":
             deployment_url = f'http://{osb_ip}:{osb_port}/api/ui/devbox/deploy'
+        else:
+            return jsonify({"error": "source value is incorrect"}), 400
         deployment_response = requests.post(deployment_url, json=data)
         if deployment_response.status_code == 200:
             deployment_response_data = deployment_response.json()
@@ -354,19 +344,19 @@ def devbox_create():
             if conn and cursor:
                 query = """
                             INSERT INTO services (
-                            request_id, 
-                            transaction_id, 
-                            service_name, 
-                            service_action, 
-                            running_status, 
-                            created_by, 
-                            payload, 
-                            date_time, 
-                            deployment_id, 
-                            deployment_name, 
-                            source, 
-                            deploy_status, 
-                            deploy_status_history, 
+                            request_id,
+                            transaction_id,
+                            service_name,
+                            service_action,
+                            running_status,
+                            created_by,
+                            payload,
+                            date_time,
+                            deployment_id,
+                            deployment_name,
+                            source,
+                            deploy_status,
+                            deploy_status_history,
                             childrens)
                             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         """
@@ -377,8 +367,11 @@ def devbox_create():
                 # Close connection
                 close_connection(conn, cursor)
             response_data = {'req_id': req_id}
-            return jsonify(response_data), 200
-
+            return jsonify(response_data), 201
+        elif deployment_response.status_code == 401:
+            return jsonify({'error': 'Unauthorized access'}), 401
+        else:
+            return jsonify({'error': deployment_response.text}), deployment_response.status_code
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -734,3 +727,4 @@ def validate_user_group():
 
 if __name__ == '__main__':
     app.run(host=osb_ip, port=osb_port, debug=True)
+    
