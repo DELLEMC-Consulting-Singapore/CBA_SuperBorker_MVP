@@ -18,8 +18,7 @@ export const ApiDocs = () => {
             class="codeHeader panelHeader pdl"
             style={{ borderBottomWidth: 1 }}
           >
-            <b>Payload to change the default values for requesting
-              'Windows Server {"(DevBox)"}'</b>
+            <b>Below details refers to the OpenServiceBroker's API payoad to make a request to DevBox provisioning by using the IaC scripts or other programming languages</b>
           </div>
           <div class="codeContent panelContent pdl">
             <div>
