@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-  ExceptionOutlined,
-  FileDoneOutlined,
-  FileSyncOutlined,
-  WarningOutlined,
-  ReloadOutlined,
+  WarningOutlined
 } from "@ant-design/icons";
 import { SERVICE_API } from "../config/config";
 import {
@@ -22,6 +18,7 @@ import {
   Flex,
   Select,
   message,
+  Row, Alert
 } from "antd";
 import axios from "axios";
 import Auth from "./Auth";
@@ -559,7 +556,19 @@ const TransactionStatus = () => {
   };
   return (
     <>
+    <Row style={{float:"right"}}>
+          <Alert
+            message="Pages refreshes after 10 seconds"
+            type="info"
+            style={{ fontSize: 10 }}
+            showIcon
+            banner
+          /> 
+        </Row> 
+
       <Table
+      style={{marginTop:40}}
+
         columns={columns}
         expandable={{
           expandedRowRender: (render) => {
