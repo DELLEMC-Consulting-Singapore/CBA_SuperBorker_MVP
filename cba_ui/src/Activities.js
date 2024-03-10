@@ -204,7 +204,7 @@ const Activities = () => {
     getNewTransaction();
     const interval = setInterval(() => {
       getNewTransaction();
-    }, 10000);
+    }, 60000);
     return () => clearInterval(interval);
   }, []);
 
@@ -291,7 +291,7 @@ const Activities = () => {
    
       <Row style={{float:"right"}}>
           <Alert
-            message="Pages refreshes after 10 seconds"
+            message="Pages refreshes after 10 minutes"
             type="info"
             style={{ fontSize: 10 }}
             showIcon
