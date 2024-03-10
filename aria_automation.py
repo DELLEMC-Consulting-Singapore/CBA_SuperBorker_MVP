@@ -304,3 +304,4 @@ def update_transactions():
 
 if __name__ == '__main__':
     app.run(host=worker_node_ip, port=worker_node_port, debug=True)
+    
