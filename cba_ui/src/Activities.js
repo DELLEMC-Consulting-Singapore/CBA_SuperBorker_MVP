@@ -291,7 +291,7 @@ const Activities = () => {
    
       <Row style={{float:"right"}}>
           <Alert
-            message="Pages refreshes after 10 minutes"
+            message="Page refreshes every 1 minute"
             type="info"
             style={{ fontSize: 10 }}
             showIcon
