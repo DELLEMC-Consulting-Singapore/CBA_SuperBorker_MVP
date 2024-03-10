@@ -84,102 +84,85 @@ const TransactionStatus = () => {
 
     let statusInfo =(historyData["deploy_status"]);
     
-    statusInfo['createdBy'] = historyData['created_by']
-    setAriaStatusInfo(statusInfo);
-
-    let color = "geekblue"; //tag.length > 5 ? 'geekblue' : 'green';
-    if (statusInfo["status"].includes("FAILED")) {
-      color = "volcano";
-    } else if (statusInfo["status"].includes("SUCCESSFUL")) {
-      color = "green";
-    }
-
-    setDeploymentStatus(color);
-
-    let allHistory = (historyData["deploy_status_history"]);
-    console.log(historyData["childrens"])
-
-    let puppetHistory = [];
-    let ariaHistory = [];
-    let findPuppet = 0;
-
-    let ariaIndex = 0;
-    allHistory.map((history) => {
-      findPuppet++;
-      if (history["resourceType"] !== undefined) {
-        if (history["resourceType"].includes("Puppet")) {
-          puppetHistory.push(allHistory.slice(0, findPuppet));
-          ariaIndex = findPuppet;
-        } else {
-          if (ariaIndex == 0) {
-            ariaIndex++;
+    if(Object.keys(statusInfo).length > 0){
+      statusInfo['createdBy'] = historyData['created_by']
+      setAriaStatusInfo(statusInfo);
+  
+      let color = "geekblue"; //tag.length > 5 ? 'geekblue' : 'green';
+      if (statusInfo["status"].includes("FAILED")) {
+        color = "volcano";
+      } else if (statusInfo["status"].includes("SUCCESSFUL")) {
+        color = "green";
+      }
+  
+      setDeploymentStatus(color);
+  
+      let allHistory = (historyData["deploy_status_history"]);
+      console.log(historyData["childrens"])
+  
+      let puppetHistory = [];
+      let ariaHistory = [];
+      let findPuppet = 0;
+  
+      let ariaIndex = 0;
+      allHistory.map((history) => {
+        findPuppet++;
+        if (history["resourceType"] !== undefined) {
+          if (history["resourceType"].includes("Puppet")) {
+            puppetHistory.push(allHistory.slice(0, findPuppet));
+            ariaIndex = findPuppet;
           } else {
-            ariaHistory.push(
-              allHistory.slice(ariaIndex, allHistory.length - 1)
-            );
+            if (ariaIndex == 0) {
+              ariaIndex++;
+            } else {
+              ariaHistory.push(
+                allHistory.slice(ariaIndex, allHistory.length - 1)
+              );
+            }
           }
         }
-      }
-    });
-    console.log(type);
-    if (type == "all") {
-      if (ariaIndex == 1) {
-        setAriaStatusHistory(allHistory);
-      } else {
-        setAriaStatusHistory(ariaHistory[ariaHistory.length - 1]);
-      }
-      if (puppetHistory.length)
-        setPuppetStatusHistory(puppetHistory[puppetHistory.length - 1]);
-      else {
-        setPuppetStatusHistory([]);
-      }
-      setStatusHistory([]);
-    } else if (type == "Puppet") {
-      if (puppetHistory.length)
-        setStatusHistory(puppetHistory[puppetHistory.length - 1]);
-      else {
+      });
+      console.log(type);
+      if (type == "all") {
+        if (ariaIndex == 1) {
+          setAriaStatusHistory(allHistory);
+        } else {
+          setAriaStatusHistory(ariaHistory[ariaHistory.length - 1]);
+        }
+        if (puppetHistory.length)
+          setPuppetStatusHistory(puppetHistory[puppetHistory.length - 1]);
+        else {
+          setPuppetStatusHistory([]);
+        }
         setStatusHistory([]);
-      }
-      setPuppetStatusHistory([]);
-      setAriaStatusHistory([]);
-      setRetryData(historyData["childrens"][1]);
-    } else {
-      if (ariaIndex == 1) {
-        setStatusHistory(allHistory);
+      } else if (type == "Puppet") {
+        if (puppetHistory.length)
+          setStatusHistory(puppetHistory[puppetHistory.length - 1]);
+        else {
+          setStatusHistory([]);
+        }
+        setPuppetStatusHistory([]);
+        setAriaStatusHistory([]);
+        setRetryData(historyData["childrens"][1]);
       } else {
-        setStatusHistory(ariaHistory[ariaHistory.length - 1]);
+        if (ariaIndex == 1) {
+          setStatusHistory(allHistory);
+        } else {
+          setStatusHistory(ariaHistory[ariaHistory.length - 1]);
+        }
+        setPuppetStatusHistory([]);
+        setAriaStatusHistory([]);
+        setRetryData(historyData["childrens"][0]);
       }
-      setPuppetStatusHistory([]);
-      setAriaStatusHistory([]);
-      setRetryData(historyData["childrens"][0]);
-    }
-
-    if (type == "Puppet") {
-      setTitle("Puppet Log Details");
-    }
-    //incidents
-    if (type == "all") {
-      let incidentData = [];
-      let noOfRtries = 0;
-      historyData["childrens"].map((c) => {
-        if (c["status"] == "Failed") {
-          incidentData.push({
-            incident: c["incident"],
-            status: "Inprogress",
-            comments: `We are acknowledging the error, checking the ${c["tool_integration"]} integration with OSB.`,
-          });
-        }
-        noOfRtries += Number(c["no_of_retry"]);
-      });
-
-      setIncidents(incidentData);
-
-      setRetries(noOfRtries);
-    } else if (type == "Puppet") {
-      let incidentData = [];
-      let noOfRtries = 0;
-      historyData["childrens"].map((c) => {
-        if (c["tool_integration"] == "Puppet") {
+  
+      if (type == "Puppet") {
+        setTitle("Puppet Log Details");
+      }
+      //incidents
+      if (type == "all") {
+        let incidentData = [];
+        let noOfRtries = 0;
+        historyData["childrens"].map((c) => {
           if (c["status"] == "Failed") {
             incidentData.push({
               incident: c["incident"],
@@ -188,30 +171,50 @@ const TransactionStatus = () => {
             });
           }
           noOfRtries += Number(c["no_of_retry"]);
-        }
-      });
-
-      setIncidents(incidentData);
-      setRetries(noOfRtries);
-    } else {
-      let incidentData = [];
-      let noOfRtries = 0;
-      historyData["childrens"].map((c) => {
-        if (c["tool_integration"] == "Aria Automation") {
-          if (c["status"] == "Failed") {
-            incidentData.push({
-              incident: c["incident"],
-              status: "Inprogress",
-              comments: `We are acknowledging the error, checking the ${c["tool_integration"]} integration with OSB.`,
-            });
+        });
+  
+        setIncidents(incidentData);
+  
+        setRetries(noOfRtries);
+      } else if (type == "Puppet") {
+        let incidentData = [];
+        let noOfRtries = 0;
+        historyData["childrens"].map((c) => {
+          if (c["tool_integration"] == "Puppet") {
+            if (c["status"] == "Failed") {
+              incidentData.push({
+                incident: c["incident"],
+                status: "Inprogress",
+                comments: `We are acknowledging the error, checking the ${c["tool_integration"]} integration with OSB.`,
+              });
+            }
+            noOfRtries += Number(c["no_of_retry"]);
           }
-          noOfRtries += Number(c["no_of_retry"]);
-        }
-      });
-
-      setIncidents(incidentData);
-      setRetries(noOfRtries);
+        });
+  
+        setIncidents(incidentData);
+        setRetries(noOfRtries);
+      } else {
+        let incidentData = [];
+        let noOfRtries = 0;
+        historyData["childrens"].map((c) => {
+          if (c["tool_integration"] == "Aria Automation") {
+            if (c["status"] == "Failed") {
+              incidentData.push({
+                incident: c["incident"],
+                status: "Inprogress",
+                comments: `We are acknowledging the error, checking the ${c["tool_integration"]} integration with OSB.`,
+              });
+            }
+            noOfRtries += Number(c["no_of_retry"]);
+          }
+        });
+  
+        setIncidents(incidentData);
+        setRetries(noOfRtries);
+      }
     }
+   
 
     setSpinning(false);
   };
