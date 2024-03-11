@@ -105,6 +105,14 @@ const Activities = () => {
         //   setPuppetStatusHistory(puppetHistory[puppetHistory.length - 1]);
         // }
       }
+    }else{
+      setAriaStatusInfo({});
+      setDeploymentStatus("geekblue");
+      setAriaStatusHistory([])
+      setPuppetStatusHistory([])
+      setStatusHistory([]);
+      setRetryData({})
+      setIncidents([])
     }
     
 
