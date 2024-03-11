@@ -40,7 +40,7 @@ export const TopHeader = () => {
         background: colorBgContainer,
       }}
     >
-      <span class="digital-cloud-header">Digital Cloud</span>
+      <span class="digital-cloud-header">OSB Console</span>
       <span
         style={{
           position: "absolute",
