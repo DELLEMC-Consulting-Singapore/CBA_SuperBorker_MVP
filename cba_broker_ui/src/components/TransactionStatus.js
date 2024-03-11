@@ -219,7 +219,7 @@ const TransactionStatus = () => {
       }
     }else{
       setAriaStatusInfo({});
-      setDeploymentStatus("");
+      setDeploymentStatus("geekblue");
       setAriaStatusHistory([])
       setPuppetStatusHistory([])
       setStatusHistory([]);
