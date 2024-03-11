@@ -52,7 +52,7 @@ const TransactionStatus = () => {
   function getNewTransaction() {
     let username = Auth.getUserProfile1();
     //axios.get(`http://localhost:3002/`).then((response) => {
-    axios.get(`${SERVICE_API}/transactions?username=${username}`).then((response) => {
+    axios.get(`${SERVICE_API}/transactions?username=`).then((response) => {
       let responseData = response["data"];
       let result = responseData.map((r) => {
         r["deploy_status"] = JSON.parse(r["deploy_status"]);
