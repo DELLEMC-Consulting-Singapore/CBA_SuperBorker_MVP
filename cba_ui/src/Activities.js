@@ -24,7 +24,14 @@ const Activities = () => {
   function getNewTransaction() {
     let username = Auth.getUserProfile1();
     axios.get(`${SERVICE_API}/transactions?username=${username}`).then((response) => {
-      setData(response["data"]);
+      let responseData = response["data"];
+      let result = responseData.map((r) => {
+        r["deploy_status"] = JSON.parse(r["deploy_status"]);
+        r["deploy_status_history"] = JSON.parse(r["deploy_status_history"]);
+        r["childrens"] = JSON.parse(r["childrens"])
+        return r;
+      });
+      setData(result);
     }).catch(e => setData([]));
   }
 
@@ -32,7 +39,7 @@ const Activities = () => {
     setSpinning(true);
     setIsModalOpen(true);
 
-    let statusInfo = JSON.parse(historyData["deploy_status"]);
+    let statusInfo = historyData["deploy_status"];
     if(Object.keys(statusInfo).length > 0){
       //if (statusInfo !== undefined)
       {
@@ -48,7 +55,7 @@ const Activities = () => {
 
         setDeploymentStatus(color);
 
-        let allHistory = JSON.parse(historyData["deploy_status_history"]);
+        let allHistory = historyData["deploy_status_history"];
 
         let puppetHistory = [];
         let ariaHistory = [];
@@ -76,7 +83,7 @@ const Activities = () => {
             setPuppetStatusHistory(puppetHistory[puppetHistory.length - 1]);
           setStatusHistory([]);
         }
-        historyData["childrens"] = JSON.parse(historyData["childrens"])
+        historyData["childrens"] = historyData["childrens"]
         //incidents
         let incidentData = [];
         let noOfRtries = 0;
@@ -301,6 +308,8 @@ const Activities = () => {
       <Table style={{marginTop:40}} columns={columns} dataSource={newData} bordered={true} size="10" />
 
       <Modal
+      destroyOnClose={true}
+      afterClose={()=>setSpinning(false)}
         title=""
         open={isModalOpen}
         onOk={handleOk}
