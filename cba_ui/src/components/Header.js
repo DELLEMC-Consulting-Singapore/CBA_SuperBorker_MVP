@@ -40,7 +40,7 @@ export const TopHeader = () => {
         background: colorBgContainer,
       }}
     >
-      <span class="digital-cloud-header">Service Catalogue</span>
+      <span class="digital-cloud-header">Service Catalog</span>
       <span
         style={{
           position: "absolute",
