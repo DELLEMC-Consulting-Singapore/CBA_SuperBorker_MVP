@@ -585,6 +585,8 @@ const TransactionStatus = () => {
       />
 
       <Modal
+       destroyOnClose={true}
+       afterClose={()=>setSpinning(false)}
         title=""
         open={isModalOpen}
         onOk={handleOk}
@@ -737,6 +739,8 @@ const TransactionStatus = () => {
       </Modal>
 
       <Modal
+      destroyOnClose={true}
+      afterClose={()=>setSpinning(false)}
         open={isModalOpen1}
         onOk={handleOk1}
         onCancel={handleCancel1}
