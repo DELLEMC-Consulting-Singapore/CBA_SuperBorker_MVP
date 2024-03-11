@@ -94,9 +94,10 @@ const TransactionStatus = () => {
       } else if (statusInfo["status"].includes("SUCCESSFUL")) {
         color = "green";
       }
-  
+      
       setDeploymentStatus(color);
-  
+      
+
       let allHistory = (historyData["deploy_status_history"]);
       console.log(historyData["childrens"])
   
@@ -122,6 +123,9 @@ const TransactionStatus = () => {
           }
         }
       });
+
+      
+      
       console.log(type);
       if (type == "all") {
         if (ariaIndex == 1) {
@@ -213,6 +217,14 @@ const TransactionStatus = () => {
         setIncidents(incidentData);
         setRetries(noOfRtries);
       }
+    }else{
+      setAriaStatusInfo({});
+      setDeploymentStatus("");
+      setAriaStatusHistory([])
+      setPuppetStatusHistory([])
+      setStatusHistory([]);
+      setRetryData({})
+      setIncidents([])
     }
    
 
