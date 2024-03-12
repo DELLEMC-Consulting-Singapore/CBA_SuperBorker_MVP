@@ -5,3 +5,7 @@
 * * * * * ( sleep 40 ; curl GET http://10.45.197.10:5000/api/update_transactions -k )
 * * * * * ( sleep 50 ; curl GET http://10.45.197.10:5000/api/update_transactions -k )
 * * * * * /apps/aria_automation/cron.sh
+
+
+#### Currently using only below ############
+*/2 * * * * ( curl GET http://10.45.197.10:5000/api/update_transactions -k )
