@@ -41,11 +41,6 @@ def read_sa_creds():
 
 sa_username, sa_password = read_sa_creds()
 
-def read_transactions():
-    with open('transactions.json', 'r') as file:
-        data = json.load(file)
-    return data
-
 def get_refresh_token(sa_username, sa_password):
     print("USERNAME", sa_username)
     print("PASSWORD", sa_password)
@@ -169,7 +164,6 @@ def deploy_history(request_id_data, deploymentID, bearer_token):
     except requests.RequestException as e:
         return e
 
-
 @app.route('/api/deploy', methods=['POST'])
 def deploy():
     data = {}
@@ -193,85 +187,6 @@ def deploy():
             return jsonify({'error': 'Bearer Token not obtained'}), 500
     else:
         return jsonify({'error': 'Refresh Token not obtained'}), 500
-
-@app.route('/api/deploy_status', methods=['GET'])
-def get_deploy_status():
-    deploymentID = request.args.get("deploymentId")
-    refresh_token = get_refresh_token(sa_username, sa_password)
-    if refresh_token:
-        bearer_token = get_bearer_token(refresh_token)
-        if bearer_token:
-           response_json = deploy_status(deploymentID, bearer_token)
-           if response_json:
-                # Return the raw JSON response from the external API call
-                return jsonify(response_json), 200
-           else:
-                return jsonify({'error': 'Failed to retrieve deployment status'}), 500
-        else:
-            return jsonify({'error': 'Bearer Token not obtained'}), 500
-    else:
-        return jsonify({'error': 'Refresh Token not obtained'}), 500
-
-@app.route('/api/deploy_history_status', methods=['GET'])
-def get_deploy_history():
-    deploymentID = request.args.get("deploymentId")
-    refresh_token = get_refresh_token(sa_username, sa_password)
-    if refresh_token:
-        bearer_token = get_bearer_token(refresh_token)
-        if bearer_token:
-           request_id_data = request_id(deploymentID, bearer_token)
-           if request_id_data:
-                response_json = deploy_history(request_id_data, deploymentID, bearer_token)
-                if response_json:
-                   return jsonify(response_json), 200
-                else:
-                   return jsonify({'error': 'Failed to retrieve deployment History status'}), 500
-           else:
-                return jsonify({'error': 'Failed to retrieve the Request ID'}), 500
-        else:
-            return jsonify({'error': 'Bearer Token not obtained'}), 500
-    else:
-        return jsonify({'error': 'Refresh Token not obtained'}), 500
-
-
-@app.route('/api/transactions', methods=['GET'])
-def get_transactions():
-    data = read_transactions()
-    if data:
-        return jsonify(data), 200
-    else:
-        return jsonify({'error': 'No data found'}), 500
-
-@app.route('/api/transactions', methods=['POST'])
-def post_transactions():
-    request_data = request.get_json()
-    payload = request_data['data']
-    trans = read_transactions()
-    len_trans = len(trans) + 1
-    payload_data = json.loads(payload)
-    payload_data[0]['key'] = len_trans
-    trans.append(payload_data[0])
-    with open("transactions.json", "w") as outfile:
-       json.dump(trans, outfile)
-    return jsonify({}), 201
-
-def map_data(old_data, new_data):
-    print(new_data)
-
-@app.route('/api/transactions_post', methods=['POST'])
-def put_transactions():
-    request_data = request.get_json()
-    payload = json.loads(request_data['data'])
-    trans = read_transactions()
-    newdata = []
-    for data in trans:
-       if data["key"]== payload["key"]:
-          newdata.append(payload)
-       else:
-          newdata.append(data)
-    with open("transactions.json", "w") as outfile:
-       json.dump(newdata, outfile)
-    return jsonify({}), 201
 
 @app.route('/api/update_transactions', methods=['GET'])
 def update_transactions():
