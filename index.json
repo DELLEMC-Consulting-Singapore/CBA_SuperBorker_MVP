@@ -5,5 +5,10 @@
   "osb_api": "http://10.45.197.28:8443/api",
   "group_base_dn": "CN=SGG-PRIVAS-USERS,OU=Application Access,OU=Applications,OU=Groups,DC=au,DC=cbainet,DC=com",
   "osb_ip": "10.45.197.10",
-  "osb_port": 5000
+  "osb_port": 5000,
+  "server" : "10.45.198.34",
+  "database" : "OSBDB",
+  "db_port" : "1433",
+  "req_number" : 2000
 }
+
