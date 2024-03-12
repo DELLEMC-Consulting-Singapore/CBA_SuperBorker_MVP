@@ -9,6 +9,7 @@ app = Flask(__name__)
 
 cors = CORS(app)
 
+##### Read Parameter file "index.json" and return the content of the file #####
 def read_index_json():
     file_path = "/apps/vmware_aria_integration/index.json"
     try:
@@ -16,17 +17,16 @@ def read_index_json():
             index_data = json.load(file)
             return index_data
     except FileNotFoundError:
-        print(f"File '{file_path}' not found.")
-        return None
+        return f"File '{file_path}' not found."
     except json.JSONDecodeError as e:
-        print(f"Error decoding JSON: {e}")
-        return None
+        return f"Error decoding JSON: {e}"
 
 index_data = read_index_json()
 aria_api = index_data.get('aria_api')
 worker_node_ip = index_data.get('worker_node_ip')
 worker_node_port = index_data.get('worker_node_port')
 
+##### Read MS SQL Database credentials file "service_account_credentials.txt" and decode using base64 and return the decoded Service Account credentials #####
 def read_sa_creds():
     creds_file_path = "/apps/vmware_aria_integration/service_account_credentials.txt"
     try:
@@ -36,14 +36,14 @@ def read_sa_creds():
             sa_password = base64.b64decode(lines[1].strip()).decode('utf-8')
             return sa_username, sa_password
     except FileNotFoundError:
-        print(f"File '{creds_file_path}' not found.")
-        return None, None
+        return f"Credentials file '{creds_file_path}' not found."
+    except Exception as e:
+        return f"Error reading database credentials: {e}"
 
 sa_username, sa_password = read_sa_creds()
 
+##### GET Refresh Token #####
 def get_refresh_token(sa_username, sa_password):
-    print("USERNAME", sa_username)
-    print("PASSWORD", sa_password)
     url = f"{aria_api}/csp/gateway/am/api/login?access_token="
     headers = {
         'Content-Type': 'application/json',
@@ -63,9 +63,9 @@ def get_refresh_token(sa_username, sa_password):
         else:
             return None
     except requests.RequestException as e:
-        print(e)
-        return None
+        return e
 
+##### GET Bearer Token #####
 def get_bearer_token(refresh_token):
     url = f"{aria_api}/iaas/api/login"
     headers = {
@@ -85,8 +85,9 @@ def get_bearer_token(refresh_token):
         else:
             return None
     except requests.RequestException as e:
-        return None
+        return e
 
+##### Deploy Aria automation #####
 def deploy_resource(bearer_token, lan_id):
     url = f"{aria_api}/catalog/api/items/4c31e0fc-02f9-354d-b4c7-088ea2d0bfad/request"
     headers = {
@@ -112,11 +113,11 @@ def deploy_resource(bearer_token, lan_id):
             deployment_name = response_json[0].get('deploymentName')
             if deployment_id:
                 return deployment_id, deployment_name
-        # If 'deploymentID' is not found
         return None, None
     except requests.RequestException as e:
         return False
 
+##### Get the current status of the deployment #####
 def deploy_status(deploymentID, bearer_token):
     url = f"{aria_api}/deployment/api/deployments/{deploymentID}?expand=resources"
     headers = {
@@ -131,6 +132,7 @@ def deploy_status(deploymentID, bearer_token):
     except requests.RequestException as e:
         return e
 
+###### Get the Request ID of the deployment #####
 def request_id(deploymentID, bearer_token):
     url = f"{aria_api}/deployment/api/deployments/{deploymentID}/requests?size=100&apiVersion=2020-08-25"
     headers = {
@@ -150,6 +152,7 @@ def request_id(deploymentID, bearer_token):
     except requests.RequestException as e:
         return e
 
+#### Get the complete History status of the deployment #####
 def deploy_history(request_id_data, deploymentID, bearer_token):
     url = f"{aria_api}/deployment/api/deployments/{deploymentID}/requests/{request_id_data}/events?page=0&size=50&apiVersion=2020-08-25"
     headers = {
@@ -164,6 +167,7 @@ def deploy_history(request_id_data, deploymentID, bearer_token):
     except requests.RequestException as e:
         return e
 
+##### API call to deploy the Aria Automation #######
 @app.route('/api/deploy', methods=['POST'])
 def deploy():
     data = {}
@@ -187,7 +191,8 @@ def deploy():
             return jsonify({'error': 'Bearer Token not obtained'}), 500
     else:
         return jsonify({'error': 'Refresh Token not obtained'}), 500
-
+    
+###### API call to retrieve the Deployment Status and History Status #############
 @app.route('/api/update_transactions', methods=['GET'])
 def update_transactions():
     deployment_id = request.args.get('deployment_id')
