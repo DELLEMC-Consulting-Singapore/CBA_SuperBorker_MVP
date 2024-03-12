@@ -235,23 +235,6 @@ def devbox_create():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-###### UI ############
-@app.route('/api/ui/devbox/deploy', methods=['POST'])
-def deploy_ui():
-    url = f"{osb_api}/deploy"
-    headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    }
-    try:
-        request_data = request.get_json()
-        response = requests.post(url, json=request_data, headers=headers, verify=False)
-        response_json = response.json()
-        return jsonify(response_json), 200
-    except requests.RequestException as e:
-        return e
-
-
 #### POSTMAN ######
 @app.route('/api/devbox/deploy', methods=['POST'])
 def deploy_postman():
@@ -282,39 +265,6 @@ def deploy_postman():
     except requests.RequestException as e:
         return str(e), 500
 
-
-@app.route('/api/deploy_history_status', methods=['GET'])
-def get_deploy_history_status():
-    deploymentID = request.args.get("deploymentId")
-    url = f"{osb_api}/deploy_history_status?deploymentId=" + deploymentID
-    headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    }
-    try:
-        response = requests.get(url, headers=headers, verify=False)
-        response_json = response.json()
-        return jsonify(response_json["content"]), 200
-    except requests.RequestException as e:
-        return e
-
-
-@app.route('/api/deploy_status', methods=['GET'])
-def get_deploy_status():
-    deploymentID = request.args.get("deploymentId")
-    url = f"{osb_api}/deploy_status?deploymentId=" + deploymentID
-    headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    }
-    try:
-        response = requests.get(url, headers=headers, verify=False)
-        response_json = response.json()
-        return jsonify(response_json), 200
-    except requests.RequestException as e:
-        return e
-
-
 @app.route('/api/transactions', methods=['GET'])
 def get_transactions():
     username = request.args.get('username')
@@ -337,43 +287,6 @@ def get_transactions():
     except requests.RequestException as e:
         return jsonify({'error': str(e)}), 500
 
-
-@app.route('/api/last_transaction', methods=['GET'])
-def get_last_transaction():
-    username = request.args.get('username')
-    if username:
-        # if not username:
-        #     return jsonify({'error': 'Username parameter is required'}), 400
-
-        try:
-            conn, cursor = connect_to_sql_server(server, database, db_username, db_password, db_port)
-            query = f'''SELECT TOP(1) request_id FROM Services WHERE created_by = '{username}' ORDER BY id DESC'''
-            response_json, column_names = execute_query_select(cursor, query)
-            result = [{key: value for key, value in zip(column_names, data)} for data in response_json]
-            return jsonify(result), 200
-        except requests.RequestException as e:
-            return jsonify({'error': str(e)}), 500
-    else:
-        return jsonify({'message': "[username] missing"}), 500
-
-
-@app.route('/api/transactions', methods=['POST'])
-def post_transactions():
-    url = f"{osb_api}/transactions"
-    headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    }
-    try:
-        request_data = request.get_json()
-        payload = request_data['data']
-        response = requests.post(url, json=request_data, headers=headers, verify=False)
-        response_json = response.json()
-        return jsonify(response_json), 201
-    except requests.RequestException as e:
-        return e
-
-
 @app.route('/api/transactions/<id>', methods=['PUT'])
 def put_transactions(id):
     url = f"{osb_api}/transactions_post"
@@ -394,21 +307,6 @@ def put_transactions(id):
         return jsonify({}), 201
     except requests.RequestException as e:
         return e
-
-
-# @app.route('/api/update_transactions', methods=['GET'])
-# def update_transactions():
-#     url = f"{osb_api}/update_transactions"
-#     headers = {
-#         'Content-Type': 'application/json',
-#         'Accept': 'application/json'
-#     }
-#     try:
-#         response = requests.get(url, json={}, headers=headers, verify=False)
-#         response_json = response.json()
-#         return jsonify(response_json), 200
-#     except requests.RequestException as e:
-#         return e
 
 @app.route('/api/update_transactions', methods=['GET'])
 def update_transactions():
