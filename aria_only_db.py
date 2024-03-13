@@ -276,7 +276,7 @@ def get_transactions():
     except requests.RequestException as e:
         return jsonify({'error': str(e)}), 500
 
-##### Retreive and Update the 'childrens' & 'running_status' based on specific 'id'. We use it for RESET & ROLLBACK logic #####
+##### Retreive and Update the 'childrens' & 'running_status' based on specific 'id'. We use it for RETRY & ROLLBACK logic #####
 @app.route('/api/transactions/<id>', methods=['PUT'])
 def put_transactions(id):
     try:
