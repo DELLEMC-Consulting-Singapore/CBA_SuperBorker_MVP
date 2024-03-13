@@ -9,7 +9,7 @@ The Flask application provids endpoints for various functionalities such as devb
     
 To install the necessary dependencies, run the following command:
 
-    pip install -r requirements.txt
+    pip3 install -r requirements.txt
     
 ### Steps to Execute the Python Flask file :
 
