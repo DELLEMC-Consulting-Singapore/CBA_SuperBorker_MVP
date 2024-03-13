@@ -16,10 +16,12 @@ Encode the Credentials of Service Account by using Base64 Encoding tool.
 
 #### Start the Service 
 Run the Service Manually:
-python3 aria_automation.py
+
+    python3 aria_automation.py
 
 Run the Service in background:
-nohup python3 aria_automation.py &
+
+    nohup python3 aria_automation.py &
 
 #### API EndPoints 
 Deploy Aria Automation:
