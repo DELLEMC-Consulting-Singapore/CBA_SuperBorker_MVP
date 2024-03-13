@@ -2,15 +2,6 @@ import React from "react";
 import { Button, Pagination } from "antd";
 import "./css/ratings.css";
 
-const itemRender = (_, type, originalElement) => {
-  if (type === "prev") {
-    return <a>Previous</a>;
-  }
-  if (type === "next") {
-    return <a>Next</a>;
-  }
-  return originalElement;
-};
 export const RatingLinux = () => {
   return (
     <>

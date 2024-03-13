@@ -5,39 +5,10 @@ import queryString from "query-string";
 import { useNavigate } from "react-router-dom";
 import Auth from "./Auth";
 import { SERVICE_API } from "../config/config";
-import moment from "moment";
 function errorMessage() {
   Modal.error({
     content: ` Please try after sometime.`,
   });
-}
-
-function randomString(length) {
-  var chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  var result = "";
-  for (var i = length; i > 0; --i)
-    result += chars[Math.floor(Math.random() * chars.length)];
-  return result;
-}
-
-function randomNumeric(length) {
-  var chars = "0123456789";
-  var result = "";
-  for (var i = length; i > 0; --i)
-    result += chars[Math.floor(Math.random() * chars.length)];
-  return result;
-}
-
-function getRandomInt1(min = 100000, max = 999999) {
-  const minCeiled = Math.ceil(min);
-  const maxFloored = Math.floor(max);
-  return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
-}
-
-function getRandomInt(min = 2000, max = 2999) {
-  const minCeiled = Math.ceil(min);
-  const maxFloored = Math.floor(max);
-  return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
 }
 
 const layout = {
@@ -120,29 +91,6 @@ export const DevBoxRequestForm = () => {
       }}
       validateMessages={validateMessages}
     >
-      {/* <Form.Item
-        name={["payload", "os"]}
-        label="Operating System"
-        rules={[
-          {
-            required: true,
-          },
-        ]}
-      >
-        <Select
-          placeholder="Select Operating System"
-          options={[
-            {
-              value: "Windows Server 2019",
-              label: "Windows Server 2019",
-            },
-            {
-              value: "RedHat Linux 8x",
-              label: "RedHat Linux 8x",
-            },
-          ]}
-        />
-      </Form.Item> */}
       <Form.Item
         name={["payload", "os"]}
         label="Operating System"
@@ -216,17 +164,6 @@ export const DevBoxRequestForm = () => {
       >
         <Input disabled={true} />
       </Form.Item>
-      {/* <Form.Item
-        name={['payload', 'application_stack']}
-        label="Application Stack (Only One)"
-        rules={[
-          {
-            required: true,
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item> */}
 
       <Form.Item
         wrapperCol={{

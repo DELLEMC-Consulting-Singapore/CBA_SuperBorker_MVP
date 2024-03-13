@@ -57,15 +57,6 @@ const Auth = {
 
         
         await this.getUserProfile();
-
-        // sessionStorage.setItem("username", email)
-        // localStorage.setItem("token", true);
-        // localStorage.setItem("username", email);
-        //await this.getUserProfile();
-      // } catch (err) {
-      //   console.log(err);
-      //   throw err;
-      // }
     }
   },
   isAuthenticated: function () {

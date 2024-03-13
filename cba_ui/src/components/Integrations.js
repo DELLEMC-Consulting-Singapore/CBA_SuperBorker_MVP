@@ -119,19 +119,10 @@ export const Integrations = () => {
                             class="container"
                             title="Hint: double-click to select code"
                           >
-                            {/* <div
-                            class="line number1 index0 alt2"
-                            data-bidi-marker="true"
-                          >
-                            <code class="csharp plain">{"{"}</code>
-                          </div> */}
                             <div
                               class="line number2 index1 alt1"
                               data-bidi-marker="true"
                             >
-                              {/* <code class="csharp spaces">
-                              &nbsp;&nbsp;&nbsp;&nbsp;
-                            </code> */}
                               <code class="csharp string">
                                 <span style={{ color: "#0672cb" }}>from</span>{" "}
                                 <span style={{ color: "#fff" }}>flask</span>{" "}
@@ -144,33 +135,22 @@ export const Integrations = () => {
                                   </span>{" "}
                                 </>
                               </code>
-                              {/* <code class="csharp plain">: GUID,&nbsp; </code> */}
-                              {/* <code class="csharp comments">
-                              // Your existing planId
-                            </code> */}
                             </div>
                             <div
                               class="line number3 index2 alt2"
                               data-bidi-marker="true"
                             >
-                              {/* <code class="csharp spaces">
-                              &nbsp;&nbsp;&nbsp;&nbsp;
-                            </code> */}
                               <code class="csharp string">
                                 <span style={{ color: "#fff" }}>
                                   app = Flask(__name__)
                                 </span>
                               </code>
-                              {/* <code class="csharp plain">: GUID,</code> */}
                             </div>
                             <br />
                             <div
                               class="line number4 index3 alt1"
                               data-bidi-marker="true"
                             >
-                              {/* <code class="csharp spaces">
-                              &nbsp;&nbsp;&nbsp;&nbsp;
-                            </code> */}
                               <code class="csharp string">
                                 {" "}
                                 <span style={{ color: "#ACB0B0" }}>
@@ -183,15 +163,11 @@ export const Integrations = () => {
                                 'POST'
                                 <span style={{ color: "#ACB0B0" }}>])</span>
                               </code>
-                              {/* <code class="csharp plain">: {"{"}</code> */}
                             </div>
                             <div
                               class="line number5 index4 alt2"
                               data-bidi-marker="true"
                             >
-                              {/* <code class="csharp spaces">
-                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            </code> */}
                               <code class="csharp string">
                                 <span style={{ color: "#0672cb" }}>def</span>{" "}
                                 <span style={{ color: "#DF1111" }}>
@@ -199,7 +175,6 @@ export const Integrations = () => {
                                 </span>
                                 <span style={{ color: "#fff" }}>():</span>
                               </code>
-                              {/* <code class="csharp plain">: TROUXID,</code> */}
                             </div>
                             <div
                               class="line number6 index5 alt1"
@@ -213,12 +188,6 @@ export const Integrations = () => {
                                   # Parse Request Parameters
                                 </span>
                               </code>
-                              {/* <code class="csharp plain">: DC, </code> */}
-                              {/* <code class="csharp comments">
-                              // DURHAM-DEV, RR2C-NONPROD, DURHAM-PROD,
-                              PC1-PROD, S3B-PROD, LIMERICK-PROD,
-                              LIMERICK-NONPROD
-                            </code> */}
                             </div>
                             <div
                               class="line number6 index5 alt1"

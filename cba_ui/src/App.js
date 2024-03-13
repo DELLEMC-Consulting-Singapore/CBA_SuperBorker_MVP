@@ -9,26 +9,19 @@ import {
 import { Breadcrumb, Layout, Menu, theme, ConfigProvider } from "antd";
 import { TopHeader } from "./components/Header";
 import { MenuBar } from "./components/Menu";
-import Reporting from "./components/Reporting";
 import Home from "./components/Home";
 import Protected from "./Protected";
 import Auth from "./components/Auth";
 
 import {
-  DesktopOutlined,
-  FileOutlined,
-  PieChartOutlined,
-  TeamOutlined,
-  BellOutlined,
   HomeOutlined,
-  AppstoreOutlined,
 } from "@ant-design/icons";
 import { DevBox } from "./components/DevBox";
 import { DevBoxRequestForm } from "./components/DevBoxRequestForm";
 import Login from "./components/Login";
-import { Detail, DetailWindows } from "./components/DetailWindows";
+import { DetailWindows } from "./components/DetailWindows";
 import { DetailLinux } from "./components/DetailLinux";
-import Activities from "./Activities";
+import Activities from "./components/Activities";
 import { KnowledgeBase } from "./components/KnowledgeBase";
 import CapacityCalculation from "./components/CapacityCalculation";
 import { Integrations } from "./components/Integrations";

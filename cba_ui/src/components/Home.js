@@ -38,42 +38,8 @@ const Home = () => {
         The services under below product catalogs are available for self-service
         on the CBA Digital Cloud
       </Paragraph>
-
-      {/* <Card
-        style={{
-          width: 300,
-          marginTop: 16,
-        }}
-        hoverable={false}
-      >
-        <Skeleton avatar loading={false}>
-          <Meta
-            avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-            title="Cache"
-            description="This is the description"
-          />
-        </Skeleton>
-      </Card> */}
       <Row justify="center">
-        {/* <Col span={6}>
-          <Card
-            hoverable
-            style={{ width: 240, justifyContent: "center" }}
-          >
-            <i class="dds__icon dds__icon--cloud-document dds__icon--color"></i>
-
-            <Paragraph
-              style={{
-                "font-weight": "630",
-                "font-size": "25px",
-                margin: "0",
-              }}
-            >
-              Cache
-            </Paragraph>
-
-          </Card>
-        </Col> */}
+       
         <Col
           xs={{
             span: 4,
@@ -116,7 +82,7 @@ const Home = () => {
         <Col span={6}>
           <Card hoverable style={{ width: 240, justifyContent: "center" }}>
             <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i>
-            {/* <img alt="example" src={window.location.origin + '/products/compute.svg'} height={95}/> */}
+            
             <Paragraph
               style={{
                 "font-weight": "630",
@@ -130,20 +96,6 @@ const Home = () => {
         </Col>
       </Row>
       <Row style={{ marginTop: 16 }} justify="center">
-        {/* <Col span={6}>
-          <Card hoverable style={{ width: 240, justifyContent: "center" }}>
-            <i class="dds__icon dds__icon--scale dds__icon--color"></i>
-            <Paragraph
-              style={{
-                "font-weight": "630",
-                "font-size": "25px",
-                margin: "0",
-              }}
-            >
-              F5 LB
-            </Paragraph>
-          </Card>
-        </Col> */}
         <Col
           xs={{
             span: 4,
@@ -156,7 +108,7 @@ const Home = () => {
         >
           <Card hoverable style={{ width: 240, justifyContent: "center" }}>
             <i class="dds__icon dds__icon--network-vert dds__icon--color"></i>
-            {/* <img alt="example" src={window.location.origin + '/products/compute.svg'} height={95}/> */}
+            
             <Paragraph
               style={{
                 "font-weight": "630",
@@ -171,7 +123,7 @@ const Home = () => {
         <Col span={6}>
           <Card hoverable style={{ width: 240, justifyContent: "center" }}>
             <i class="dds__icon dds__icon--device-storage-array dds__icon--color"></i>
-            {/* <img alt="example" src={window.location.origin + '/products/compute.svg'} height={95}/> */}
+            
             <Paragraph
               style={{
                 "font-weight": "630",
@@ -186,7 +138,7 @@ const Home = () => {
         <Col span={6}>
           <Card hoverable style={{ width: 240, justifyContent: "center" }}>
             <i class="dds__icon dds__icon--share dds__icon--color"></i>
-            {/* <img alt="example" src={window.location.origin + '/products/compute.svg'} height={95}/> */}
+            
             <Paragraph
               style={{
                 "font-weight": "630",
@@ -199,81 +151,6 @@ const Home = () => {
           </Card>
         </Col>
       </Row>
-
-      {/* <Row>
-        <Col
-          xs={{
-            span: 5,
-            offset: 1,
-          }}
-          lg={{
-            span: 5,
-            offset: 4,
-          }}
-        >
-          <Card hoverable style={{ width: 240, justifyContent: "center" }}>
-            <i class="dds__icon dds__icon--share dds__icon--color"></i>
-            
-            <Paragraph
-              style={{
-                "font-weight": "630",
-                "font-size": "25px",
-                margin: "0",
-              }}
-            >
-              Group File Share
-            </Paragraph>
-          </Card>
-        </Col>
-        <Col
-          xs={{
-            span: 8,
-            offset: 1,
-          }}
-          lg={{
-            span: 4,
-            offset: 1,
-          }}
-        >
-          <Card hoverable style={{ width: 240, justifyContent: "center" }}>
-            <i class="dds__icon dds__icon--share dds__icon--color"></i>
-            
-            <Paragraph
-              style={{
-                "font-weight": "630",
-                "font-size": "25px",
-                margin: "0",
-              }}
-            >
-              Group File Share
-            </Paragraph>
-          </Card>
-        </Col>
-        <Col
-          xs={{
-            span: 8,
-            offset: 1,
-          }}
-          lg={{
-            span: 4,
-            offset: 2,
-          }}
-        >
-          <Card hoverable style={{ width: 240, justifyContent: "center" }}>
-            <i class="dds__icon dds__icon--share dds__icon--color"></i>
-            
-            <Paragraph
-              style={{
-                "font-weight": "630",
-                "font-size": "25px",
-                margin: "0",
-              }}
-            >
-              Group File Share
-            </Paragraph>
-          </Card>
-        </Col>
-      </Row> */}
     </>
   );
 };

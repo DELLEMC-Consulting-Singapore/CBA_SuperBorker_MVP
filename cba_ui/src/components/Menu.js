@@ -47,18 +47,8 @@ export const MenuBar = () => {
     getItem("My Requests", 16, <PullRequestOutlined />),
     getItem("Capacity Calculation", 11, <CalculatorOutlined />),
     getItem("Integrations", 12, <InteractionOutlined />),
-    //getItem("User Administration", 13, <TeamOutlined />),
     getItem("Knowledge Base", 14, <RiseOutlined />),
     getItem("Logout", 15, <LogoutOutlined />),
-    // getItem('Reporting', 6, <FileOutlined />),
-    // getItem('Alerts', 7, <BellOutlined />),
-    // getItem('User', 'sub1', <UserOutlined />, [
-    //     getItem('Tom', '3'),
-    //     getItem('Bill', '4'),
-    //     getItem('Alex', '5'),
-    // ]),
-    // getItem('Team', 'sub2', <TeamOutlined />, [getItem('Team 1', '6'), getItem('Team 2', '8')]),
-    // getItem('Files', '9', <FileOutlined />),
   ];
 
   const onClick = (e) => {
@@ -120,6 +110,7 @@ export const MenuBar = () => {
         mode="inline"
         items={items}
         onClick={onClick}
+        defaultOpenKeys={false}
       />
     </ConfigProvider>
   );
