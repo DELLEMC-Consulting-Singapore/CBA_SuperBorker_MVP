@@ -10,8 +10,9 @@
 
 #### Update the Service Account credential file "service_account_credentials.txt"
 Encode the Credentials of Service Account by using Base64 Encoding tool.
-base64_encoded_username
-base64_encoded_password
+
+    base64_encoded_username
+    base64_encoded_password
 
 #### Start the Service 
 Run the Service Manually:
