@@ -2,6 +2,8 @@
 
 ### Steps to Execute the Python Flask file :
 
+    Python3.9 version is installed
+
 #### Update the parameter file "index.json" with ARIA API, Worker node IP Addresses & Worker node Port
 
     "aria_api" : "<ARIA_API>",
