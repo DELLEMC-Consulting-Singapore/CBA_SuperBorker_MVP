@@ -4,18 +4,12 @@ import {
 } from "@ant-design/icons";
 import { SERVICE_API } from "../config/config";
 import {
-  Badge,
-  Dropdown,
-  Space,
   Table,
   Tag,
   Tooltip,
   Modal,
-  Typography,
-  Divider,
   Spin,
   Button,
-  Flex,
   Select,
   message,
   Row, Alert
@@ -42,6 +36,9 @@ const TransactionStatus = () => {
   let [toolType, setToolType] = useState("all");
   const [messageApi, contextHolder] = message.useMessage();
 
+  /***
+   * Display error message when user not selecting number of retries
+   */
   const errorRetries = (errorRetryMsg) => {
     messageApi.open({
       type: "error",
@@ -49,9 +46,10 @@ const TransactionStatus = () => {
     });
   };
 
+  /***
+   * Get all transactions
+   */
   function getNewTransaction() {
-    let username = Auth.getUserProfile1();
-    //axios.get(`http://localhost:3002/`).then((response) => {
     axios.get(`${SERVICE_API}/transactions?username=`).then((response) => {
       let responseData = response["data"];
       let result = responseData.map((r) => {
@@ -61,14 +59,12 @@ const TransactionStatus = () => {
         return r;
       });
       setData(result);
-    }).catch(e => sendData([]));
+    }).catch(e => setData([]));
   }
 
-  // useEffect(() => {
-
-  //   getNewTransaction();
-  // }, []);
-
+  /***
+   * Auto trigger getTransaction function every 1 minute
+   */
   useEffect(() => {
     getNewTransaction();
     const interval = setInterval(() => {
@@ -77,6 +73,14 @@ const TransactionStatus = () => {
     return () => clearInterval(interval);
   }, []);
 
+  /***
+   * ShowModal: 
+   * When user clicks on transaction status display particular transaction info on pop-up.
+   * Status Info
+   * Incident Info
+   * Aria automation status history
+   * Puppet status history
+   */
   const showModal = (type, historyData) => {
     setToolType(type);
     setSpinning(true);
@@ -230,80 +234,140 @@ const TransactionStatus = () => {
 
     setSpinning(false);
   };
+
+  /***
+   * Close the transaction info pop-up
+   */
   const handleOk = () => {
     setIsModalOpen(false);
   };
+
+  
+  /***
+   * Close the transaction info pop-up
+   */
   const handleCancel = () => {
     setIsModalOpen(false);
   };
 
-  const showModal1 = (revokeData) => {
+  /*** 
+   * Confirmation pop-up for Rollback the transaction
+   */
+  const showModalRollback = (revokeData) => {
     setRevokeData(revokeData);
     setIsModalOpen1(true);
   };
+
+  
+  /*** 
+   * User submits from confirmation for Rollback
+   * handleRollback : Send particular transaction for updating Rollback status
+   * setIsModalOpen1 : Close the pop-up
+   */
   const handleOk1 = () => {
-    handleRevoke(retryData);
+    handleRollback(retryData);
     setIsModalOpen1(false);
   };
+
+  /***
+   * Cancel the rollback and close the pop-up 
+   */
   const handleCancel1 = () => {
     setIsModalOpen1(false);
   };
 
-  const expandedRowRender1 = (data) => {
-    const columns = [
-      {
-        title: "Date",
-        dataIndex: "date",
-        key: "date",
-      },
-      {
-        title: "Tool Integration",
-        dataIndex: "tool_integration",
-        key: "tool_integration",
-      },
-      {
-        title: "Status",
-        key: "status",
-        render: (d) => {
-          let color = "error"; //tag.length > 5 ? 'geekblue' : 'green';
-          let status = d["status"];
-          if (d["status"] == "Running") {
-            color = "processing";
-            status = d["status"];
-          } else if (d["status"] == "Completed") {
-            color = "success";
-            status = d["status"];
-          }
-          if (d["status"] == "Rollback") {
-            color = "geekblue";
-            status = "Rollback Successful";
-          }
 
-          return (
-            <a>
-              <Tag
-                color={color}
-                key={status}
-                onClick={() => showModal(d["tool_integration"], data)}
-              >
-                {status.toUpperCase()}
-              </Tag>
-            </a>
-          );
-        },
-      },
-    ];
-    return (
-      <Table
-        columns={columns}
-        dataSource={data["childrens"]}
-        pagination={false}
-        bordered={true}
-        size="small"
-      />
-    );
+  /***
+   * Set the number of retries for particular transaction
+   */
+  let handleChangeRetry = (e) => {
+    setRetries(e);
+  };
+  /***
+   * handleRetries function for collecting number of retries value selected by user
+   */
+  let handleRetries = (resumeData) => {
+    let i = 0;
+    let no_of_error = 0;
+    let index = 0;
+    newData.map((d) => {
+      if (d["childrens"] !== undefined && d["childrens"].length > 0) {
+        d["childrens"].map((childerns) => {
+          if (childerns["transaction_id"] == resumeData["transaction_id"]) {
+            if (childerns["status"] == "Failed") {
+              if (childerns["key"] == resumeData["key"]) {
+                newData[i]["childrens"][resumeData["key"]]["status"] =
+                  "Running";
+                newData[i]["childrens"][resumeData["key"]]["no_of_retry"] =
+                  parseInt(
+                    newData[i]["childrens"][resumeData["key"]]["no_of_retry"]
+                  ) + retries;
+                setData([...newData]);
+                index = i;
+              }
+              no_of_error += 1;
+            }
+          }
+        });
+      }
+      i++;
+    });
+    if (no_of_error == 1) {
+      newData[index]["running_status"] = "running";
+    }
+    updateTransaction(newData[index]["running_status"], JSON.stringify(newData[index]["childrens"]), newData[index]["id"]);
+    handleCancel();
   };
 
+  
+  /***
+   * updateTransaction function for updating rollback and number of retries 
+   */
+  async function updateTransaction(running_status, transactions, id) {
+    await axios
+      .put(`${SERVICE_API}/transactions/${id}`, {
+        data: {
+          running_status,
+          childrens:transactions
+        },
+      })
+      .then((response) => {})
+      .catch((error) => {});
+  }
+
+  /***
+   * handleRollback: function 
+   * Sending particular transaction for rollback
+   */
+  let handleRollback = (resumeData) => {
+    let j = 0;
+    let index = 0;
+    if (resumeData["status"] == "Failed") {
+      newData.map((d) => {
+        if (d["transaction_id"] == resumeData["transaction_id"]) {
+          d["childrens"].map((childerns) => {
+            //if (resumeData["status"] == "Error") {
+            //childerns["status"] = "Revoked";
+            newData[j]["childrens"][childerns["key"]]["status"] = "Rollback";
+            newData[j]["running_status"] = "rollback";
+
+            //}
+          });
+          index = j;
+        }
+
+        j++;
+      });
+      setData([...newData]);
+    }
+    updateTransaction("rollback", JSON.stringify(newData[index]["childrens"]), newData[index]["id"]);
+    handleCancel();
+  };
+
+
+  /***
+   * Columns for Incident history table
+   */
   const incidentHistory = [
     {
       title: "Incident Id",
@@ -322,6 +386,9 @@ const TransactionStatus = () => {
     },
   ];
 
+  /***
+   * Columns for Transaction history table
+   */
   const columns = [
     {
       title: "Date",
@@ -419,80 +486,68 @@ const TransactionStatus = () => {
     //     ),
     //   },
   ];
-  let parentData = [];
-  parentData["service_name"] = "DevBox";
 
-  async function sendData(running_status, transactions, id) {
-    await axios
-      .put(`${SERVICE_API}/transactions/${id}`, {
-        data: {
-          running_status,
-          childrens:transactions
-        },
-      })
-      .then((response) => {})
-      .catch((error) => {});
-  }
-
-  let handleResume = (resumeData) => {
-    let i = 0;
-    let no_of_error = 0;
-    let index = 0;
-    newData.map((d) => {
-      if (d["childrens"] !== undefined && d["childrens"].length > 0) {
-        d["childrens"].map((childerns) => {
-          if (childerns["transaction_id"] == resumeData["transaction_id"]) {
-            if (childerns["status"] == "Failed") {
-              if (childerns["key"] == resumeData["key"]) {
-                newData[i]["childrens"][resumeData["key"]]["status"] =
-                  "Running";
-                newData[i]["childrens"][resumeData["key"]]["no_of_retry"] =
-                  parseInt(
-                    newData[i]["childrens"][resumeData["key"]]["no_of_retry"]
-                  ) + retries;
-                setData([...newData]);
-                index = i;
-              }
-              no_of_error += 1;
-            }
+  /***
+   * Function contains table column and dispay Aria Automation and Puppet information
+   */
+  const expandedRowRender1 = (data) => {
+    const columns = [
+      {
+        title: "Date",
+        dataIndex: "date",
+        key: "date",
+      },
+      {
+        title: "Tool Integration",
+        dataIndex: "tool_integration",
+        key: "tool_integration",
+      },
+      {
+        title: "Status",
+        key: "status",
+        render: (d) => {
+          let color = "error"; //tag.length > 5 ? 'geekblue' : 'green';
+          let status = d["status"];
+          if (d["status"] == "Running") {
+            color = "processing";
+            status = d["status"];
+          } else if (d["status"] == "Completed") {
+            color = "success";
+            status = d["status"];
           }
-        });
-      }
-      i++;
-    });
-    if (no_of_error == 1) {
-      newData[index]["running_status"] = "running";
-    }
-    console.log(newData[index]);
-    sendData(newData[index]["running_status"], JSON.stringify(newData[index]["childrens"]), newData[index]["id"]);
-    handleCancel();
+          if (d["status"] == "Rollback") {
+            color = "geekblue";
+            status = "Rollback Successful";
+          }
+
+          return (
+            <a>
+              <Tag
+                color={color}
+                key={status}
+                onClick={() => showModal(d["tool_integration"], data)}
+              >
+                {status.toUpperCase()}
+              </Tag>
+            </a>
+          );
+        },
+      },
+    ];
+    return (
+      <Table
+        columns={columns}
+        dataSource={data["childrens"]}
+        pagination={false}
+        bordered={true}
+        size="small"
+      />
+    );
   };
 
-  let handleRevoke = (resumeData) => {
-    let j = 0;
-    let index = 0;
-    if (resumeData["status"] == "Failed") {
-      newData.map((d) => {
-        if (d["transaction_id"] == resumeData["transaction_id"]) {
-          d["childrens"].map((childerns) => {
-            //if (resumeData["status"] == "Error") {
-            //childerns["status"] = "Revoked";
-            newData[j]["childrens"][childerns["key"]]["status"] = "Rollback";
-            newData[j]["running_status"] = "rollback";
-
-            //}
-          });
-          index = j;
-        }
-
-        j++;
-      });
-      setData([...newData]);
-    }
-    sendData("rollback", JSON.stringify(newData[index]["childrens"]), newData[index]["id"]);
-    handleCancel();
-  };
-
+  /***
+   * Columns for status history of aria automation and puppet 
+   */
   const columnStatusHistory = [
     {
       title: "Date",
@@ -540,6 +595,16 @@ const TransactionStatus = () => {
     },
   ];
 
+  /**
+   * Table two column structure definition 
+   * Display info of 
+   * 1. Deployment status
+   * 2. RequestId
+   * 3. CreatedBy
+   * 4. CreatedAt
+   * 5. No. of Retries
+   * 
+   */
   let showInfo = [
     {
       title: "Date",
@@ -553,6 +618,9 @@ const TransactionStatus = () => {
     },
   ];
 
+  /***
+   * Options for no. of retries
+   */
   const retryOptions = [
     { name: 1, id: 1 },
     { name: 2, id: 2 },
@@ -566,9 +634,7 @@ const TransactionStatus = () => {
     { name: 10, id: 10 },
   ];
 
-  let handleChangeRetry = (e) => {
-    setRetries(e);
-  };
+  
   return (
     <>
     <Row style={{float:"right"}}>
@@ -638,14 +704,14 @@ const TransactionStatus = () => {
                     if (retries == 0) {
                       errorRetries("Please select no. of retries");
                     } else {
-                      handleResume(retryData);
+                      handleRetries(retryData);
                     }
                   }}
                   danger
                 >
                   Retry
                 </Button>
-                <Button type="primary" onClick={() => showModal1(retryData)}>
+                <Button type="primary" onClick={() => showModalRollback(retryData)}>
                   Rollback
                 </Button>
               </>
@@ -653,7 +719,6 @@ const TransactionStatus = () => {
           }
         }}
       >
-        {/* <Table dataSource={statusHistory} bordered={true} size="small" /> */}
         <div style={{ display: "flex" }}>
           <div style={{ width: "50%" }}>
             <Table

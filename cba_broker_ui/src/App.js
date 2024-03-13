@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -6,38 +6,24 @@ import {
   Link,
   useNavigate,
 } from "react-router-dom";
-import { Breadcrumb, Layout, Menu, theme, ConfigProvider } from "antd";
+import { Breadcrumb, Layout, theme, ConfigProvider } from "antd";
 import { TopHeader } from "./components/Header";
 import { MenuBar } from "./components/Menu";
-import Reporting from "./components/Reporting";
 import Home from "./components/Home";
 import Protected from "./Protected";
 import Auth from "./components/Auth";
 
 import {
-  DesktopOutlined,
-  FileOutlined,
-  PieChartOutlined,
-  TeamOutlined,
-  BellOutlined,
   HomeOutlined,
-  AppstoreOutlined,
 } from "@ant-design/icons";
-import { DevBox } from "./components/DevBox";
-import { DevBoxRequestForm } from "./components/DevBoxRequestForm";
 import Login from "./components/Login";
 import TransactionStatus from "./components/TransactionStatus";
-import AriaAutomation from "./components/AriaAutomation";
-import Puppet from "./components/Puppet";
-import Qualys from "./components/Qualys";
-import ServiceNow from "./components/ServiceNow";
 import { KnowledgeBase } from "./components/KnowledgeBase";
 import CapacityCalculation from "./components/CapacityCalculation";
 import { Integrations } from "./components/Integrations";
 const { Content, Footer, Sider } = Layout;
 
 const App = () => {
-  const history = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -49,28 +35,6 @@ const App = () => {
     setAuthAuthenticated(status);
   };
 
-  const layout = {
-    labelCol: {
-      xs: { span: 24 },
-      sm: { span: 12 },
-      md: { span: 8 },
-      lg: { span: 8 },
-    },
-    wrapperCol: {
-      xs: { span: 24 },
-      sm: { span: 12 },
-      md: { span: 12 },
-      lg: { span: 12 },
-    },
-  };
-  const tailLayout = {
-    wrapperCol: {
-      xs: { span: 24 },
-      sm: { span: 12, offset: 12 },
-      md: { span: 12, offset: 8 },
-      lg: { span: 12, offset: 8 },
-    },
-  };
 
   return (
     <ConfigProvider
@@ -160,46 +124,12 @@ const App = () => {
                         </Protected>
                       }
                     />
-                    <Route
-                      path="/devbox"
-                      element={
-                        <Protected isLoggedIn={Auth.isAuthenticated()}>
-                          <DevBox />
-                        </Protected>
-                      }
-                    />
-                    <Route
-                      path="/devbox/request-vm"
-                      element={
-                        <Protected isLoggedIn={Auth.isAuthenticated()}>
-                          <DevBoxRequestForm />
-                        </Protected>
-                      }
-                    />
 
                     <Route
                       path="/transaction-status"
                       element={
                         <Protected isLoggedIn={Auth.isAuthenticated()}>
                           <TransactionStatus />
-                        </Protected>
-                      }
-                    />
-
-                    <Route
-                      path="/aria-automation-transaction-status"
-                      element={
-                        <Protected isLoggedIn={Auth.isAuthenticated()}>
-                          <AriaAutomation />
-                        </Protected>
-                      }
-                    />
-
-                    <Route
-                      path="/puppet-transaction-status"
-                      element={
-                        <Protected isLoggedIn={Auth.isAuthenticated()}>
-                          <Puppet />
                         </Protected>
                       }
                     />
@@ -212,23 +142,7 @@ const App = () => {
                         </Protected>
                       }
                     />
-                    <Route
-                      path="/qualys-transaction-status"
-                      element={
-                        <Protected isLoggedIn={Auth.isAuthenticated()}>
-                          <Qualys />
-                        </Protected>
-                      }
-                    />
-                    <Route
-                      path="/servicenow-transaction-status"
-                      element={
-                        <Protected isLoggedIn={Auth.isAuthenticated()}>
-                          <ServiceNow />
-                        </Protected>
-                      }
-                    />
-
+                    
                     <Route
                       path="/capacity-calculation"
                       element={
@@ -247,7 +161,6 @@ const App = () => {
                       }
                     />
 
-                    {/* <Route path='/login' element={<Login />}></Route> */}
                   </Routes>
                 </div>
               </Content>

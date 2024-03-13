@@ -2,10 +2,7 @@ import React from "react";
 import { Button, Result } from "antd";
 import {
   BrowserRouter as Router,
-  Routes,
-  Route,
   Link,
-  useNavigate,
 } from "react-router-dom";
 const CapacityCalculation = () => (
   <Result

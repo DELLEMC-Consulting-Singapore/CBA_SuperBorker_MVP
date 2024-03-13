@@ -6,14 +6,11 @@ import {
   Col,
   Progress,
   Space,
-  notification,
-  Button,
   Modal,
   Alert,
 } from "antd";
 import { Link } from "react-router-dom";
 import { CheckCircleFilled, CloseCircleFilled } from "@ant-design/icons";
-const { Meta } = Card;
 const { Paragraph } = Typography;
 
 const config = {
@@ -35,16 +32,6 @@ const config = {
 };
 
 const Home = (props) => {
-  console.log(props);
-  // const [api, contextHolder] = notification.useNotification();
-  // const openNotificationWithIcon = (type) => {
-  //   api[type]({
-  //     message: "",
-  //     description:
-  //       "CBA's Ansible infrastructure configuration management platform is not available due to the emergency change activity. Respective teams are actively working to bring up the Ansible Tower interface. If you need details, please refer to the incident INC289112 for more details. Or, you can send an email to ansible_automation@cba.com.au</a>",
-  //   });
-  // };
-
   const [modal, contextHolder] = Modal.useModal();
 
   return (
@@ -221,9 +208,6 @@ const Home = (props) => {
                       Aria Automation
                     </Paragraph>
 
-                    {/* <Paragraph>
-                In computing, a cache is a high-speed data storage layer which stores a subset ...
-              </Paragraph> */}
                   </Card>
                 </Link>
               </Col>
@@ -262,7 +246,6 @@ const Home = (props) => {
                       </div>
                     }
                   >
-                    {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
                     <Paragraph
                       style={{
                         "font-weight": "630",
@@ -312,7 +295,6 @@ const Home = (props) => {
                       </div>
                     }
                   >
-                    {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
                     <Paragraph
                       style={{
                         "font-weight": "630",
@@ -363,7 +345,6 @@ const Home = (props) => {
                       </div>
                     }
                   >
-                    {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
                     <Paragraph
                       style={{
                         "font-weight": "630",
@@ -402,15 +383,6 @@ const Home = (props) => {
                             src={
                               window.location.origin + "/products/Ansible.png"
                             }
-                            // style={{
-                            //   width: "200px",
-                            //   padding: "5px 0px 0px 0px",
-                            //   position: "relative",
-                            //   "min-width": "unset!important",
-                            //   "min-height": "102px",
-                            //   "margin-left": "-5px",
-                            //   "margin-right": "auto",
-                            // }}
                             className="ansible"
                           />
                         </div>
@@ -420,7 +392,6 @@ const Home = (props) => {
                       </div>
                     }
                   >
-                    {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
                     <Paragraph
                       style={{
                         "font-weight": "630",
@@ -467,7 +438,6 @@ const Home = (props) => {
                       </div>
                     }
                   >
-                    {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
                     <Paragraph
                       style={{
                         "font-weight": "630",
@@ -515,7 +485,6 @@ const Home = (props) => {
                       </div>
                     }
                   >
-                    {/* <i class="dds__icon dds__icon--cloud-document dds__icon--color"></i> */}
 
                     <Paragraph
                       style={{
@@ -528,9 +497,6 @@ const Home = (props) => {
                       AWS
                     </Paragraph>
 
-                    {/* <Paragraph>
-                In computing, a cache is a high-speed data storage layer which stores a subset ...
-              </Paragraph> */}
                   </Card>
                 </Link>
               </Col>
@@ -567,7 +533,6 @@ const Home = (props) => {
                       </div>
                     }
                   >
-                    {/* <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i> */}
                     <Paragraph
                       style={{
                         "font-weight": "630",
@@ -581,100 +546,6 @@ const Home = (props) => {
                   </Card>
                 </Link>
               </Col>
-
-              {/* <Col span={4}>
-          <Link to={"/"}>
-            <Card
-              hoverable
-              style={{
-                width: 190,
-                justifyContent: "center",
-                border: "2px solid #f0f0f0",
-                height: 175,
-              }}
-              cover={
-                <div style={{ display: "flex" }}>
-                  <div>
-                    <img
-                      alt="Kubernetes"
-                      src={window.location.origin + "/products/Kubernetes.png"}
-                      style={{
-                        width: "140px",
-                        padding: "5px 0px 0px 20px",
-                        position: "relative",
-                        "min-width": "unset!important",
-                        "min-height": "102px",
-                        "margin-left": "12px",
-                        "margin-right": "auto",
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <CheckCircleFilled className="tool-check" />
-                  </div>
-                </div>
-              }
-            >
-              <Paragraph
-                style={{
-                  "font-weight": "630",
-                  "font-size": "17px",
-                  "margin-left": "25px",
-                  "margin-right": "auto",
-                }}
-              >
-                Kubernetes
-              </Paragraph>
-            </Card>
-          </Link>
-        </Col>
-
-        <Col span={4}>
-          <Link to={"/"}>
-            <Card
-              hoverable
-              style={{
-                width: 190,
-                justifyContent: "center",
-                border: "2px solid #f0f0f0",
-                height: 175,
-              }}
-              cover={
-                <div style={{ display: "flex" }}>
-                  <div>
-                    <img
-                      alt="TeamCity"
-                      src={window.location.origin + "/products/TeamCity.png"}
-                      style={{
-                        width: "120px",
-                        padding: "5px 0px 0px 20px",
-                        position: "relative",
-                        "min-width": "unset!important",
-                        "min-height": "102px",
-                        "margin-left": "30px",
-                        "margin-right": "auto",
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <CheckCircleFilled className="tool-check" />
-                  </div>
-                </div>
-              }
-            >
-              <Paragraph
-                style={{
-                  "font-weight": "630",
-                  "font-size": "17px",
-                  "margin-left": "30px",
-                  "margin-right": "auto",
-                }}
-              >
-                TeamCity
-              </Paragraph>
-            </Card>
-          </Link>
-        </Col> */}
             </Row>
           </div>
         </div>
