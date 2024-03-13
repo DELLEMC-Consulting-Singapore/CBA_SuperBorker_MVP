@@ -4,6 +4,10 @@
 
     Python3.9 version is installed
 
+To install the necessary dependencies, run the following command:
+
+    pip install -r requirements.txt
+
 #### Update the parameter file "index.json" with ARIA API, Worker node IP Addresses & Worker node Port
 
     "aria_api" : "<ARIA_API>",
