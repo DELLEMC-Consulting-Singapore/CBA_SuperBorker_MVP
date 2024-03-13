@@ -24,12 +24,12 @@ Run the Service in background:
     nohup python3 aria_automation.py &
 
 #### API EndPoints 
-Deploy Aria Automation:
+**Deploy Aria Automation:**
 - Endpoint: /api/deploy
 - Method: POST
 - Payload: JSON object with lan_id
 
-Update Transactions:
+**Update Transactions:**
 - Endpoint: /api/update_transactions
 - Method: GET
 - Query Parameters: deployment_id
