@@ -1,5 +1,11 @@
 # CBA_SuperBorker_MVP
 
-1. Setup
+## Setup
+
 Clone the repository and install the dependencies
+```bash
 npm install
+
+### How to run tests
+```bash
+npm start
