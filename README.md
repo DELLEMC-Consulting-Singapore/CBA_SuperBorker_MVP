@@ -4,6 +4,9 @@
 The Flask application provids endpoints for various functionalities such as devbox creation, message handling with RabbitMQ, LDAP user validation and database interaction.
 
 ### Steps to Execute the Python Flask file :
+
+    Python3.9 version is installed
+    
 To install the necessary dependencies, run the following command:
 
     pip install -r requirements.txt
