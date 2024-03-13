@@ -1,5 +1,15 @@
 # CBA_SuperBorker_MVP
 
+# Middleware
+The Flask application provids endpoints for various functionalities such as devbox creation, message handling with RabbitMQ, LDAP user validation and database interaction.
+
+### Steps to Execute the Python Flask file :
+To install the necessary dependencies, run the following command:
+
+    pip install -r requirements.txt
+    
+
+
 ### Steps to Execute the Python Flask file :
 
 #### Update the parameter file "index.json" with ARIA API, Worker node IP Addresses & Worker node Port
