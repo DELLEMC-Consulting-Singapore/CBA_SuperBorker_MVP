@@ -6,7 +6,7 @@ Clone the repository and install the dependencies
 npm install
 ```
 
-## How to run tests
+## How to run
 ```bash
 npm start
 ```
