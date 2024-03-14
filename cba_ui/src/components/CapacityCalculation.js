@@ -1,8 +1,6 @@
 import React from "react";
 import { Button, Result } from "antd";
-import {
-  Link,
-} from "react-router-dom";
+import { Link } from "react-router-dom";
 const CapacityCalculation = () => (
   <Result
     status="404"
@@ -14,13 +12,7 @@ const CapacityCalculation = () => (
     }
     extra={
       <Link to="/">
-        <Button
-          type="primary"
-          style={{
-            backgroundColor: "#fc0",
-            color: "#231f20",
-          }}
-        >
+        <Button type="primary" className="button-css">
           Back Home
         </Button>
       </Link>

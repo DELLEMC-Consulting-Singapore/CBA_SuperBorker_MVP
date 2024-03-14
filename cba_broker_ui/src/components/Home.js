@@ -17,14 +17,14 @@ const config = {
   title: "",
   content: (
     <>
-      CBA's Ansible infrastructure configuration management platform is not
-      available due to the emergency change activity. Respective teams are
-      actively working to bring up the Ansible Tower interface. If you need
+      Dell Technologies Ansible infrastructure configuration management platform
+      is not available due to the emergency change activity. Respective teams
+      are actively working to bring up the Ansible Tower interface. If you need
       details, please refer to the incident INC289112 for more details. Or, you
       can send an email to&nbsp;
       <span>
-        <a href="mailto:ansible_automation@cba.com.au">
-          ansible_automation@cba.com.au
+        <a href="mailto:ansible_automation@dell.com">
+          ansible_automation@dell.com
         </a>
       </span>
     </>
@@ -66,8 +66,8 @@ const Home = (props) => {
           "margin-bottom": "24px",
         }}
       >
-        The Open Service Broker API connects the Developers to CBA's ecosystem
-        of services & platforms
+        The Open Service Broker API connects the Developers to Dell
+        Technologies's ecosystem of services & platforms
       </Paragraph>
 
       <Card
@@ -207,7 +207,6 @@ const Home = (props) => {
                     >
                       Aria Automation
                     </Paragraph>
-
                   </Card>
                 </Link>
               </Col>
@@ -387,7 +386,7 @@ const Home = (props) => {
                           />
                         </div>
                         <div>
-                          <CloseCircleFilled className="tool-check-error" />
+                          <CheckCircleFilled className="tool-check" />
                         </div>
                       </div>
                     }
@@ -485,7 +484,6 @@ const Home = (props) => {
                       </div>
                     }
                   >
-
                     <Paragraph
                       style={{
                         "font-weight": "630",
@@ -496,7 +494,6 @@ const Home = (props) => {
                     >
                       AWS
                     </Paragraph>
-
                   </Card>
                 </Link>
               </Col>

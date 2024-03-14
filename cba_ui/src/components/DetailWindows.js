@@ -100,11 +100,7 @@ export const DetailWindows = () => {
                   type="primary"
                   size="large"
                   htmlType="submit"
-                  class="button-css"
-                  style={{
-                    backgroundColor: "#fc0",
-                    color: "#231f20",
-                  }}
+                  className="button-css"
                 >
                   Request Service
                 </Button>
@@ -117,7 +113,7 @@ export const DetailWindows = () => {
         theme={{
           token: {
             // Seed Token
-            colorPrimary: "#fc0",
+            colorPrimary: "#0076ce",
             // Alias Token
           },
         }}

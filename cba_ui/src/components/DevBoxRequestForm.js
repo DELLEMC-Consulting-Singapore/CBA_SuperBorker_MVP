@@ -44,25 +44,25 @@ export const DevBoxRequestForm = () => {
   } else {
     os = "RedHat Linux 8x";
   }
-  
+
   const onFinish = async (values) => {
     setSpinning(true);
-    let userInfo = await Auth.getUserProfile()
+    let userInfo = await Auth.getUserProfile();
     //userInfo = JSON.parse(userInfo["token"])
     values["payload"]["lan_id"] = userInfo["username"];
-    let newPlayload = values["payload"]
-    newPlayload["source"] = "UI"
+    let newPlayload = values["payload"];
+    newPlayload["source"] = "UI";
     axios
       .post(`${SERVICE_API}/devbox/create`, newPlayload)
       .then((response) => {
         if (response.status === 201) {
           let responseData = response["data"];
-          success(responseData["req_id"]);          
+          success(responseData["req_id"]);
         }
       })
       .catch((error) => {
         console.log("incatch::", error);
-        errorMessage()
+        errorMessage();
       });
     form.resetFields();
   };
@@ -75,7 +75,7 @@ export const DevBoxRequestForm = () => {
       //content: `Request has been opened successfully`,
       onOk: async () => {
         navigate("/activities", { replace: true });
-        navigate(0)
+        navigate(0);
       },
     });
   }
@@ -175,11 +175,7 @@ export const DevBoxRequestForm = () => {
           type="primary"
           size="large"
           htmlType="submit"
-          class="button-css"
-          style={{
-            backgroundColor: "#fc0",
-            color: "#231f20",
-          }}
+          className="button-css"
         >
           Submit
         </Button>

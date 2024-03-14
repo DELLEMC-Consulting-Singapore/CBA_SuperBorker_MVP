@@ -13,9 +13,7 @@ import Home from "./components/Home";
 import Protected from "./Protected";
 import Auth from "./components/Auth";
 
-import {
-  HomeOutlined,
-} from "@ant-design/icons";
+import { HomeOutlined } from "@ant-design/icons";
 import { DevBox } from "./components/DevBox";
 import { DevBoxRequestForm } from "./components/DevBoxRequestForm";
 import Login from "./components/Login";
@@ -34,7 +32,7 @@ const App = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
-
+  console.log("colorBgContainer", colorBgContainer);
   const [authAuthenticated, setAuthAuthenticated] = useState(false);
   console.log("Auth.isAuthenticated", Auth.isAuthenticated());
   const getAuthAuthenticatedStatus = (status) => {
@@ -61,27 +59,50 @@ const App = () => {
               collapsed={collapsed}
               onCollapse={(value) => setCollapsed(value)}
               width={250}
+              style={{ backgroundColor: "#fff" }}
             >
-              <div class="demo-logo-vertical">
-                <Link
-                  to={"/home"}
-                  style={{ margin: collapsed ? "15px" : "80px" }}
-                >
+              <div
+                class="demo-logo-vertical"
+                style={{ display: collapsed ? "none" : "block" }}
+              >
+                <Link to={"/home"}>
                   <img
-                    src={window.location.origin + "/logo2.svg"}
+                    src={window.location.origin + "/logo.svg"}
                     style={{
-                      height: "60px",
-                      width: "40px",
+                      height: "65px",
+                      width: "250px",
                       marginLeft: "auto",
                       marginRight: "auto",
+                      color: "#0076ce",
+                      background: "#fff",
+                      padding: 22,
                     }}
                   />{" "}
                   <span
-                    class="logo-cba-text"
+                    class="logo-Dell Technologies-text"
                     style={{ display: collapsed ? "none" : "block" }}
-                  >
-                    Commonwealth Bank
-                  </span>
+                  ></span>
+                </Link>
+              </div>
+
+              <div
+                class="demo-logo-vertical"
+                style={{ display: collapsed ? "block" : "none" }}
+              >
+                <Link to={"/home"}>
+                  <img
+                    src={window.location.origin + "/Dell_Logo.png"}
+                    style={{
+                      height: "80px",
+                      width: "80px",
+                      marginTop: -5,
+                      marginLeft: "auto",
+                      marginRight: "auto",
+                      color: "#0076ce",
+                      background: "#fff",
+                      padding: 22,
+                    }}
+                  />
                 </Link>
               </div>
 

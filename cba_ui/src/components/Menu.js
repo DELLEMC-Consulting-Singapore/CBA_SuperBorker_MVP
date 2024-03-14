@@ -77,13 +77,13 @@ export const MenuBar = () => {
   useEffect(() => {
     if (window.location.pathname == "/devbox") {
       setCurrent("4");
-    }else if(window.location.pathname == "/activities"){
+    } else if (window.location.pathname == "/activities") {
       setCurrent("16");
-    }else if(window.location.pathname == "/knowledge-base"){
+    } else if (window.location.pathname == "/knowledge-base") {
       setCurrent("14");
-    }else if(window.location.pathname == "/capacity-calculation"){
+    } else if (window.location.pathname == "/capacity-calculation") {
       setCurrent("11");
-    }else if(window.location.pathname == "/integrations"){
+    } else if (window.location.pathname == "/integrations") {
       setCurrent("12");
     } else if (
       window.location.pathname == "/home" ||
@@ -98,13 +98,13 @@ export const MenuBar = () => {
       theme={{
         components: {
           Menu: {
-            darkItemSelectedBg: "#fc0",
+            darkItemSelectedBg: "#0076ce",
           },
         },
       }}
     >
       <Menu
-        theme="dark"
+        theme="light"
         selectedKeys={[current]}
         defaultSelectedKeys={[current]}
         mode="inline"

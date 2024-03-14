@@ -1,73 +1,73 @@
-import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { Form, Input, Button, message, Row, Col, Layout, Card } from 'antd'
-import styled from 'styled-components'
-import Auth from './Auth'
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Form, Input, Button, message, Row, Col, Layout, Card } from "antd";
+import styled from "styled-components";
+import Auth from "./Auth";
 
-const { Content } = Layout
+const { Content } = Layout;
 
 const StyledForm = styled(Form)`
   .ant-input {
     font-size: 15px !important;
   }
-`
+`;
 
 const Password = styled(Input.Password)`
   .ant-input {
     border: none !important;
     font-size: 5px 2px !important;
   }
-`
+`;
 
 const FormItem = styled(Form.Item)`
   .ant-form-item-label > label {
     font-size: 14px !important;
   }
-`
+`;
 
 const Login = (props) => {
-  const history = useNavigate()
+  const history = useNavigate();
 
   const LoginForm = () => {
     const tailLayout = {
       wrapperCol: { offset: 8, span: 16 },
-    }
+    };
 
     const errorMsg = (msg) => {
       message.error({
         content: msg,
         style: {
-          marginTop: '5vh',
+          marginTop: "5vh",
         },
         duration: 2,
-      })
-    }
+      });
+    };
 
     const onSubmit = async (value) => {
-      console.log('values', value)
+      console.log("values", value);
       //console.log('URL : ', window._env_.API_URL);
       message.loading({
-        content: 'Loading...',
+        content: "Loading...",
         style: {
-          marginTop: '5vh',
+          marginTop: "5vh",
         },
         duration: 1,
-      })
+      });
       await Auth.authenticate(value.username, value.password).catch((err) => {
         if (err) {
-          errorMsg('Unauthorized access')
+          errorMsg("Unauthorized access");
         }
-      })
+      });
 
       //  if(true){
       if (Auth.isAuthenticated()) {
-        history('/home')
-        message.destroy()
-        props.isAuthAuthenticated(true)
+        history("/home");
+        message.destroy();
+        props.isAuthAuthenticated(true);
       } else {
-        props.isAuthAuthenticated(false)
+        props.isAuthAuthenticated(false);
       }
-    }
+    };
 
     return (
       <div class="bg-img login-form-background">
@@ -75,12 +75,16 @@ const Login = (props) => {
           type="flex"
           justify="center"
           align="middle"
-          style={{ minHeight: '100vh' }}
+          style={{ minHeight: "100vh" }}
 
           // span={36}
         >
           <Card
-            style={{ width: '460px', height: '100%' }}
+            style={{
+              width: "460px",
+              height: "100%",
+              background: "rgb(243, 242, 241)",
+            }}
             //    bodyStyle={{backgroundColor: '', border: 0,width:'500px' }}
             // bodyStyle={{backgroundImage:'url(https://miro.medium.com/v2/resize:fit:1100/format:webp/0*WsWN7LCn6zwplYr4.jpeg)',backgroundRepeat:'repeat'}}
           >
@@ -97,32 +101,23 @@ const Login = (props) => {
 
                 <div class="MuiStack-root css-kl5oqq">
                   <img
-                    src={window.location.origin + '/logo2.svg'}
+                    src={window.location.origin + "/logo.svg"}
                     alt="CommSec"
                     width="225"
                     height="64"
                     style={{
-                      padding: '0px 0px 0px 0px',
-                      margin: '0px 85px',
+                      padding: "0px 0px 0px 0px",
+                      margin: "0px 85px",
                     }}
                   />
                   <span
                     style={{
-                      fontSize: 'larger',
-                      fontWeight: '800',
-                      padding: '0px 0px 0px 120px',
+                      fontSize: "x-large",
+                      fontWeight: "800",
+                      padding: "0px 0px 0px 105px",
                     }}
                   >
-                    Commonwealth Bank
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 'larger',
-                      fontWeight: '800',
-                      padding: '0px 0px 0px 132px',
-                    }}
-                  >
-                   Services Catalog
+                    Services Catalog
                   </span>
                 </div>
 
@@ -130,16 +125,15 @@ const Login = (props) => {
                   name="basic"
                   layout="vertical"
                   onFinish={onSubmit}
-                  style={{ padding: '10px 35px' }}
+                  style={{ padding: "10px 35px" }}
                 >
-                  
                   <FormItem
                     // label='User Email'
                     name="username"
                     rules={[
                       {
                         required: true,
-                        message: 'Please input your LAN User ID!',
+                        message: "Please input your LAN User ID!",
                       },
                     ]}
                   >
@@ -153,7 +147,7 @@ const Login = (props) => {
                     rules={[
                       {
                         required: true,
-                        message: 'Please input your LAN password!',
+                        message: "Please input your LAN password!",
                       },
                     ]}
                   >
@@ -177,12 +171,7 @@ const Login = (props) => {
                       type="primary"
                       size="large"
                       htmlType="submit"
-                      class="button-css"
-                      style={{
-                        'background-color': '#fc0',
-                        color: '#231f20',
-                        margin:"15px"
-                      }}
+                      className="button-css"
                     >
                       Login
                     </Button>
@@ -193,17 +182,17 @@ const Login = (props) => {
           </Card>
         </Row>
       </div>
-    )
-  }
-  console.log('show props::', props)
+    );
+  };
+  console.log("show props::", props);
   if (Auth.isAuthenticated()) {
-    history('/home')
+    history("/home");
     //props.isAuthAuthenticated(true);
-    return null
+    return null;
   } else {
-    console.log('PROPS', props)
-    props.isAuthAuthenticated(false)
-    return <LoginForm />
+    console.log("PROPS", props);
+    props.isAuthAuthenticated(false);
+    return <LoginForm />;
   }
-}
-export default Login
+};
+export default Login;

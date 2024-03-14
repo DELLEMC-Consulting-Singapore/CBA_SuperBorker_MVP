@@ -10,7 +10,8 @@
   font-family: "dds-icons";
   font-style: normal;
   font-weight: normal;
-  src: url("//dds.dell.com/icons/2.8.1/dds-icons.woff2") format("woff2"), url("//dds.dell.com/icons/2.8.1/dds-icons.woff") format("woff");
+  src: url("//dds.dell.com/icons/2.8.1/dds-icons.woff2") format("woff2"),
+    url("//dds.dell.com/icons/2.8.1/dds-icons.woff") format("woff");
 }
 
 .dds__icon {
@@ -1855,7 +1856,7 @@
 
 .dds__icon--color {
   font-size: 68px;
-  background: linear-gradient(180deg, #fc0 0%, #fc0 100%);
+  background: linear-gradient(180deg, #0076ce 0%, #0076ce 100%);
   -webkit-background-clip: text;
   -moz-background-clip: text;
   background-clip: text;
@@ -1865,7 +1866,7 @@
 .dds__icon--round {
   box-shadow: 0 0 0.1875rem #f3d306f6;
   align-items: center;
-  background-color: #fc0;
+  background-color: #0076ce;
   border-radius: 50%;
   display: flex;
   height: 7.3125rem;

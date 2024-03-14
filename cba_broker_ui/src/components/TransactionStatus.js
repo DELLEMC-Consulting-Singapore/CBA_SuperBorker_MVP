@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  WarningOutlined
-} from "@ant-design/icons";
+import { WarningOutlined } from "@ant-design/icons";
 import { SERVICE_API } from "../config/config";
 import {
   Table,
@@ -12,7 +10,8 @@ import {
   Button,
   Select,
   message,
-  Row, Alert
+  Row,
+  Alert,
 } from "antd";
 import axios from "axios";
 import Auth from "./Auth";
@@ -50,16 +49,19 @@ const TransactionStatus = () => {
    * Get all transactions
    */
   function getNewTransaction() {
-    axios.get(`${SERVICE_API}/transactions?username=`).then((response) => {
-      let responseData = response["data"];
-      let result = responseData.map((r) => {
-        r["deploy_status"] = JSON.parse(r["deploy_status"]);
-        r["deploy_status_history"] = JSON.parse(r["deploy_status_history"]);
-        r["childrens"] = JSON.parse(r["childrens"])
-        return r;
-      });
-      setData(result);
-    }).catch(e => setData([]));
+    axios
+      .get(`${SERVICE_API}/transactions?username=`)
+      .then((response) => {
+        let responseData = response["data"];
+        let result = responseData.map((r) => {
+          r["deploy_status"] = JSON.parse(r["deploy_status"]);
+          r["deploy_status_history"] = JSON.parse(r["deploy_status_history"]);
+          r["childrens"] = JSON.parse(r["childrens"]);
+          return r;
+        });
+        setData(result);
+      })
+      .catch((e) => setData([]));
   }
 
   /***
@@ -74,7 +76,7 @@ const TransactionStatus = () => {
   }, []);
 
   /***
-   * ShowModal: 
+   * ShowModal:
    * When user clicks on transaction status display particular transaction info on pop-up.
    * Status Info
    * Incident Info
@@ -86,29 +88,28 @@ const TransactionStatus = () => {
     setSpinning(true);
     setIsModalOpen(true);
 
-    let statusInfo =(historyData["deploy_status"]);
-    
-    if(Object.keys(statusInfo).length > 0){
-      statusInfo['createdBy'] = historyData['created_by']
+    let statusInfo = historyData["deploy_status"];
+
+    if (Object.keys(statusInfo).length > 0) {
+      statusInfo["createdBy"] = historyData["created_by"];
       setAriaStatusInfo(statusInfo);
-  
+
       let color = "geekblue"; //tag.length > 5 ? 'geekblue' : 'green';
       if (statusInfo["status"].includes("FAILED")) {
         color = "volcano";
       } else if (statusInfo["status"].includes("SUCCESSFUL")) {
         color = "green";
       }
-      
-      setDeploymentStatus(color);
-      
 
-      let allHistory = (historyData["deploy_status_history"]);
-      console.log(historyData["childrens"])
-  
+      setDeploymentStatus(color);
+
+      let allHistory = historyData["deploy_status_history"];
+      console.log(historyData["childrens"]);
+
       let puppetHistory = [];
       let ariaHistory = [];
       let findPuppet = 0;
-  
+
       let ariaIndex = 0;
       allHistory.map((history) => {
         findPuppet++;
@@ -128,8 +129,6 @@ const TransactionStatus = () => {
         }
       });
 
-      
-      
       console.log(type);
       if (type == "all") {
         if (ariaIndex == 1) {
@@ -162,7 +161,7 @@ const TransactionStatus = () => {
         setAriaStatusHistory([]);
         setRetryData(historyData["childrens"][0]);
       }
-  
+
       if (type == "Puppet") {
         setTitle("Puppet Log Details");
       }
@@ -180,9 +179,9 @@ const TransactionStatus = () => {
           }
           noOfRtries += Number(c["no_of_retry"]);
         });
-  
+
         setIncidents(incidentData);
-  
+
         setRetries(noOfRtries);
       } else if (type == "Puppet") {
         let incidentData = [];
@@ -199,7 +198,7 @@ const TransactionStatus = () => {
             noOfRtries += Number(c["no_of_retry"]);
           }
         });
-  
+
         setIncidents(incidentData);
         setRetries(noOfRtries);
       } else {
@@ -217,20 +216,19 @@ const TransactionStatus = () => {
             noOfRtries += Number(c["no_of_retry"]);
           }
         });
-  
+
         setIncidents(incidentData);
         setRetries(noOfRtries);
       }
-    }else{
+    } else {
       setAriaStatusInfo({});
       setDeploymentStatus("geekblue");
-      setAriaStatusHistory([])
-      setPuppetStatusHistory([])
+      setAriaStatusHistory([]);
+      setPuppetStatusHistory([]);
       setStatusHistory([]);
-      setRetryData({})
-      setIncidents([])
+      setRetryData({});
+      setIncidents([]);
     }
-   
 
     setSpinning(false);
   };
@@ -242,7 +240,6 @@ const TransactionStatus = () => {
     setIsModalOpen(false);
   };
 
-  
   /***
    * Close the transaction info pop-up
    */
@@ -250,7 +247,7 @@ const TransactionStatus = () => {
     setIsModalOpen(false);
   };
 
-  /*** 
+  /***
    * Confirmation pop-up for Rollback the transaction
    */
   const showModalRollback = (revokeData) => {
@@ -258,8 +255,7 @@ const TransactionStatus = () => {
     setIsModalOpen1(true);
   };
 
-  
-  /*** 
+  /***
    * User submits from confirmation for Rollback
    * handleRollback : Send particular transaction for updating Rollback status
    * setIsModalOpen1 : Close the pop-up
@@ -270,12 +266,11 @@ const TransactionStatus = () => {
   };
 
   /***
-   * Cancel the rollback and close the pop-up 
+   * Cancel the rollback and close the pop-up
    */
   const handleCancel1 = () => {
     setIsModalOpen1(false);
   };
-
 
   /***
    * Set the number of retries for particular transaction
@@ -315,20 +310,23 @@ const TransactionStatus = () => {
     if (no_of_error == 1) {
       newData[index]["running_status"] = "running";
     }
-    updateTransaction(newData[index]["running_status"], JSON.stringify(newData[index]["childrens"]), newData[index]["id"]);
+    updateTransaction(
+      newData[index]["running_status"],
+      JSON.stringify(newData[index]["childrens"]),
+      newData[index]["id"]
+    );
     handleCancel();
   };
 
-  
   /***
-   * updateTransaction function for updating rollback and number of retries 
+   * updateTransaction function for updating rollback and number of retries
    */
   async function updateTransaction(running_status, transactions, id) {
     await axios
       .put(`${SERVICE_API}/transactions/${id}`, {
         data: {
           running_status,
-          childrens:transactions
+          childrens: transactions,
         },
       })
       .then((response) => {})
@@ -336,7 +334,7 @@ const TransactionStatus = () => {
   }
 
   /***
-   * handleRollback: function 
+   * handleRollback: function
    * Sending particular transaction for rollback
    */
   let handleRollback = (resumeData) => {
@@ -360,10 +358,13 @@ const TransactionStatus = () => {
       });
       setData([...newData]);
     }
-    updateTransaction("rollback", JSON.stringify(newData[index]["childrens"]), newData[index]["id"]);
+    updateTransaction(
+      "rollback",
+      JSON.stringify(newData[index]["childrens"]),
+      newData[index]["id"]
+    );
     handleCancel();
   };
-
 
   /***
    * Columns for Incident history table
@@ -397,7 +398,7 @@ const TransactionStatus = () => {
       width: 120,
       render: (d) => {
         return moment(d).format("MM-DD-YYYY HH:mm");
-      }
+      },
     },
     {
       title: "Request Id",
@@ -459,7 +460,7 @@ const TransactionStatus = () => {
             {/* <a>
               {tag != "completed" && (
                 <ReloadOutlined
-                  style={{ fontSize: "20px", color: "#fc0" }}
+                  style={{ fontSize: "20px", color: "#0076ce" }}
                   onClick={() => refreshData(data)}
                 />
               )}
@@ -546,7 +547,7 @@ const TransactionStatus = () => {
   };
 
   /***
-   * Columns for status history of aria automation and puppet 
+   * Columns for status history of aria automation and puppet
    */
   const columnStatusHistory = [
     {
@@ -596,14 +597,14 @@ const TransactionStatus = () => {
   ];
 
   /**
-   * Table two column structure definition 
-   * Display info of 
+   * Table two column structure definition
+   * Display info of
    * 1. Deployment status
    * 2. RequestId
    * 3. CreatedBy
    * 4. CreatedAt
    * 5. No. of Retries
-   * 
+   *
    */
   let showInfo = [
     {
@@ -634,22 +635,20 @@ const TransactionStatus = () => {
     { name: 10, id: 10 },
   ];
 
-  
   return (
     <>
-    <Row style={{float:"right"}}>
-          <Alert
-            message="Page refreshes every 1 minute"
-            type="info"
-            style={{ fontSize: 10 }}
-            showIcon
-            banner
-          /> 
-        </Row> 
+      <Row style={{ float: "right" }}>
+        <Alert
+          message="Page refreshes every 1 minute"
+          type="info"
+          style={{ fontSize: 10 }}
+          showIcon
+          banner
+        />
+      </Row>
 
       <Table
-      style={{marginTop:40}}
-
+        style={{ marginTop: 40 }}
         columns={columns}
         expandable={{
           expandedRowRender: (render) => {
@@ -663,8 +662,8 @@ const TransactionStatus = () => {
       />
 
       <Modal
-       destroyOnClose={true}
-       afterClose={()=>setSpinning(false)}
+        destroyOnClose={true}
+        afterClose={() => setSpinning(false)}
         title=""
         open={isModalOpen}
         onOk={handleOk}
@@ -688,8 +687,12 @@ const TransactionStatus = () => {
                 {contextHolder}
                 <Button onClick={handleCancel}>Cancel</Button>
                 &nbsp;
-                <Select value={0} onChange={handleChangeRetry} style={{width:175}}>
-                <Select.Option value={0}>Select No. of Retries</Select.Option>
+                <Select
+                  value={0}
+                  onChange={handleChangeRetry}
+                  style={{ width: 175 }}
+                >
+                  <Select.Option value={0}>Select No. of Retries</Select.Option>
                   {retryOptions.map((item, index) => (
                     <Select.Option key={index} value={item.id}>
                       {item.name}
@@ -697,7 +700,6 @@ const TransactionStatus = () => {
                   ))}
                 </Select>
                 &nbsp;
-
                 <Button
                   type="primary"
                   onClick={() => {
@@ -711,7 +713,10 @@ const TransactionStatus = () => {
                 >
                   Retry
                 </Button>
-                <Button type="primary" onClick={() => showModalRollback(retryData)}>
+                <Button
+                  type="primary"
+                  onClick={() => showModalRollback(retryData)}
+                >
                   Rollback
                 </Button>
               </>
@@ -816,8 +821,8 @@ const TransactionStatus = () => {
       </Modal>
 
       <Modal
-      destroyOnClose={true}
-      afterClose={()=>setSpinning(false)}
+        destroyOnClose={true}
+        afterClose={() => setSpinning(false)}
         open={isModalOpen1}
         onOk={handleOk1}
         onCancel={handleCancel1}

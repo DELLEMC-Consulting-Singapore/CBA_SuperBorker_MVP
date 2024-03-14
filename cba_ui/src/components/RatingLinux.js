@@ -79,11 +79,7 @@ export const RatingLinux = () => {
                               type="primary"
                               size="large"
                               htmlType="submit"
-                              class="button-css"
-                              style={{
-                                backgroundColor: "#fc0",
-                                color: "#231f20",
-                              }}
+                              className="button-css"
                             >
                               Provide Feedback
                             </Button>

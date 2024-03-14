@@ -1,14 +1,14 @@
-import axios from 'axios';
-import {SERVICE_API} from "../config/config"
+import axios from "axios";
+import { SERVICE_API, AuthRequired } from "../config/config";
 // import bcrypt from 'bcryptjs';
 
-import {  message } from 'antd';
+import { message } from "antd";
 
 const errorMsg = (msg) => {
   message.error({
     content: msg,
     style: {
-      marginTop: '5vh',
+      marginTop: "5vh",
     },
     duration: 2,
   });
@@ -19,44 +19,49 @@ const Auth = {
     if (email != "" && password != "") {
       //try {
 
-        var data = JSON.stringify({
-          "username": email,
-          "password": password
-        });
-        
+      var data = JSON.stringify({
+        username: email,
+        password: password,
+      });
+
+      if (AuthRequired == true) {
         var config = {
-          method: 'post',
+          method: "post",
           url: `${SERVICE_API}/ldap/validate-user`,
-          headers: { 
-            'Content-Type': 'application/json'
+          headers: {
+            "Content-Type": "application/json",
           },
-          data : data
+          data: data,
         };
 
-        
-
         await axios(config)
-        .then((response) => {
-          if(response["status"] == 200){
-            sessionStorage.setItem("username", email)
-            sessionStorage.setItem("token", JSON.stringify({username:email}))
-          }
-        })
-        .catch(function (error) {
-          if(error["response"]["status"] == 401){
-            errorMsg('Unauthorized access');
-            return;
-          }else if(error["response"]["status"] == 500){
-            errorMsg('Something went wrong! Please contact administrator');
-            return;
-          }else if(error["response"]["status"] == 404){
-            errorMsg('Services are unavailable, Please try after sometime');
-            return;
-          }
-        })
+          .then((response) => {
+            if (response["status"] == 200) {
+              sessionStorage.setItem("username", email);
+              sessionStorage.setItem(
+                "token",
+                JSON.stringify({ username: email })
+              );
+            }
+          })
+          .catch(function (error) {
+            if (error["response"]["status"] == 401) {
+              errorMsg("Unauthorized access");
+              return;
+            } else if (error["response"]["status"] == 500) {
+              errorMsg("Something went wrong! Please contact administrator");
+              return;
+            } else if (error["response"]["status"] == 404) {
+              errorMsg("Services are unavailable, Please try after sometime");
+              return;
+            }
+          });
+      } else {
+        sessionStorage.setItem("username", email);
+        sessionStorage.setItem("token", JSON.stringify({ username: email }));
+      }
 
-        
-        await this.getUserProfile();
+      await this.getUserProfile();
     }
   },
   isAuthenticated: function () {
@@ -74,7 +79,7 @@ const Auth = {
     } else {
       return {
         username,
-        token
+        token,
       };
     }
   },
@@ -88,7 +93,7 @@ const Auth = {
   invalidate: function () {
     sessionStorage.removeItem("username");
     sessionStorage.removeItem("token");
-  }
+  },
 };
 
 export default Auth;

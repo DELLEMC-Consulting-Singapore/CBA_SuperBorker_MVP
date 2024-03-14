@@ -1,15 +1,15 @@
 body {
   margin: 0;
-  font-family: 'Roboto' !important
+  font-family: "Roboto" !important;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
 .demo-logo-vertical {
-  height: 120px;
+  height: 65px;
   margin: 0px;
 }
 
@@ -29,22 +29,21 @@ code {
   color: "#565656";
   text-align: "center";
   margin: "2rem 0";
-  width: "100%"
+  width: "100%";
 }
 
 .ant-input:focus {
-  border-color: #fc0;
+  border-color: #0076ce;
 }
 
 .ant-input:hover {
-  border-color: #fc0;
+  border-color: #0076ce;
 }
 
 .login-form {
   left: 50%;
   top: 50%;
   position: absolute;
-
 }
 
 .login-form-forgot {

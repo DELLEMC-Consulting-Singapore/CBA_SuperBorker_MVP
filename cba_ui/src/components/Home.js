@@ -36,10 +36,9 @@ const Home = () => {
         }}
       >
         The services under below product catalogs are available for self-service
-        on the CBA Digital Cloud
+        on the Dell Technologies Digital Cloud
       </Paragraph>
       <Row justify="center">
-       
         <Col
           xs={{
             span: 4,
@@ -82,7 +81,7 @@ const Home = () => {
         <Col span={6}>
           <Card hoverable style={{ width: 240, justifyContent: "center" }}>
             <i class="dds__icon dds__icon--hyper-converged-infrastructure dds__icon--color"></i>
-            
+
             <Paragraph
               style={{
                 "font-weight": "630",
@@ -108,7 +107,7 @@ const Home = () => {
         >
           <Card hoverable style={{ width: 240, justifyContent: "center" }}>
             <i class="dds__icon dds__icon--network-vert dds__icon--color"></i>
-            
+
             <Paragraph
               style={{
                 "font-weight": "630",
@@ -123,7 +122,7 @@ const Home = () => {
         <Col span={6}>
           <Card hoverable style={{ width: 240, justifyContent: "center" }}>
             <i class="dds__icon dds__icon--device-storage-array dds__icon--color"></i>
-            
+
             <Paragraph
               style={{
                 "font-weight": "630",
@@ -138,7 +137,7 @@ const Home = () => {
         <Col span={6}>
           <Card hoverable style={{ width: 240, justifyContent: "center" }}>
             <i class="dds__icon dds__icon--share dds__icon--color"></i>
-            
+
             <Paragraph
               style={{
                 "font-weight": "630",

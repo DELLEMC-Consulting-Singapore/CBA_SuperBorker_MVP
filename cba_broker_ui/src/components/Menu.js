@@ -7,17 +7,13 @@ import {
   InteractionOutlined,
 } from "@ant-design/icons";
 import { Menu, ConfigProvider } from "antd";
-import {
-  BrowserRouter as Router,
-  Link,
-  useNavigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Link, useNavigate } from "react-router-dom";
 import Auth from "./Auth";
 
 export const MenuBar = () => {
   const history = useNavigate();
   const [current, setCurrent] = useState("1");
- 
+
   const onClick = (e) => {
     setCurrent(e.key);
     if (e.key == 2) {
@@ -49,13 +45,13 @@ export const MenuBar = () => {
       theme={{
         components: {
           Menu: {
-            darkItemSelectedBg: "#fc0",
+            darkItemSelectedBg: "#0076ce",
           },
         },
       }}
     >
       <Menu
-        theme="dark"
+        theme="light"
         selectedKeys={[current]}
         defaultSelectedKeys={[current]}
         mode="inline"
