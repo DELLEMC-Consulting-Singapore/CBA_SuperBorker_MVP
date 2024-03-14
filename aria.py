@@ -56,20 +56,20 @@ def read_db_creds():
 db_username, db_password = read_db_creds()
 
 ##### Read RabbitMQ credentials file "rabbitmq.txt" and decode using base64 and return the decoded DB credentials #####
-def read_rmq_creds():
-    creds_file_path = "/apps/aria_automation/rabbitmq.txt"
-    try:
-        with open(creds_file_path, 'r') as t:
-            lines = t.readlines()
-            rmq_username = base64.b64decode(lines[0].strip()).decode('utf-8')
-            rmq_password = base64.b64decode(lines[1].strip()).decode('utf-8')
-            return rmq_username, rmq_password
-    except FileNotFoundError:
-        return f"Credentials file '{creds_file_path}' not found."
-    except Exception as e:
-        return f"Error reading rabbitmq credentials: {e}"
+# def read_rmq_creds():
+#     creds_file_path = "/apps/aria_automation/rabbitmq.txt"
+#     try:
+#         with open(creds_file_path, 'r') as t:
+#             lines = t.readlines()
+#             rmq_username = base64.b64decode(lines[0].strip()).decode('utf-8')
+#             rmq_password = base64.b64decode(lines[1].strip()).decode('utf-8')
+#             return rmq_username, rmq_password
+#     except FileNotFoundError:
+#         return f"Credentials file '{creds_file_path}' not found."
+#     except Exception as e:
+#         return f"Error reading rabbitmq credentials: {e}"
 
-rmq_username, rmq_password = read_rmq_creds()
+# rmq_username, rmq_password = read_rmq_creds()
 
 ##### Generate the random string #####
 def generate_random_string(length):
@@ -82,137 +82,137 @@ def generate_random_string(length):
 ############# RABBITMQ#############
 ##### Establish connection to RabbitMQ #####
 
-credentials = pika.PlainCredentials(username=rmq_username, password=rmq_password)
+# credentials = pika.PlainCredentials(username=rmq_username, password=rmq_password)
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(
-    host=rabbitmq_host,
-    port=rabbitmq_port,
-    virtual_host='/',
-    credentials=credentials
-))
-channel = connection.channel()
-channel.queue_declare(queue=rabbitmq_queue_name, durable=True)
+# connection = pika.BlockingConnection(pika.ConnectionParameters(
+#     host=rabbitmq_host,
+#     port=rabbitmq_port,
+#     virtual_host='/',
+#     credentials=credentials
+# ))
+# channel = connection.channel()
+# channel.queue_declare(queue=rabbitmq_queue_name, durable=True)
 
 # Route to handle POST requests
-@app.route('/api/devbox/create', methods=['POST'])
-def send_message():
-    try:
-        # Get JSON data from the request
-        data = request.get_json()
-        data = json.dumps(data)
+# @app.route('/api/devbox/create', methods=['POST'])
+# def send_message():
+#     try:
+#         # Get JSON data from the request
+#         data = request.get_json()
+#         data = json.dumps(data)
 
-        # Ensure the payload is not empty
-        if not data:
-            return jsonify({'error': 'Empty payload'}), 400
+#         # Ensure the payload is not empty
+#         if not data:
+#             return jsonify({'error': 'Empty payload'}), 400
 
-        # Publish the message to RabbitMQ
-        channel.basic_publish(
-            exchange='',
-            routing_key=rabbitmq_queue_name,
-            body=data,
-            properties=pika.BasicProperties(
-                delivery_mode=2,  # Make the message persistent
-            )
-        )
+#         # Publish the message to RabbitMQ
+#         channel.basic_publish(
+#             exchange='',
+#             routing_key=rabbitmq_queue_name,
+#             body=data,
+#             properties=pika.BasicProperties(
+#                 delivery_mode=2,  # Make the message persistent
+#             )
+#         )
 
-        # Include the JSON data in the response
-        response_data = {'message': 'Request created successfully'}
-        return jsonify(response_data), 201
+#         # Include the JSON data in the response
+#         response_data = {'message': 'Request created successfully'}
+#         return jsonify(response_data), 201
 
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
 
-##### This function handles requests to create a devbox. Process the request data, validates it, performs the deployment and insert data into the database with the deployment details #####
-@app.route('/api/rabbitmq-transaction', methods=['GET'])
-def receive_message():
-    try:
-        # Get a message from RabbitMQ with auto-acknowledgment
-        method_frame, header_frame, body = channel.basic_get(queue="test", auto_ack=True)
+# ##### This function handles requests to create a devbox. Process the request data, validates it, performs the deployment and insert data into the database with the deployment details #####
+# @app.route('/api/rabbitmq-transaction', methods=['GET'])
+# def receive_message():
+#     try:
+#         # Get a message from RabbitMQ with auto-acknowledgment
+#         method_frame, header_frame, body = channel.basic_get(queue="test", auto_ack=True)
 
-        if method_frame:
-            # Convert the message body to JSON
-            message_data = body.decode('utf-8')
-            data = json.loads(message_data)
-            # Based on the source, the devbox deployment URL is called. 
-        if data['source'] == "API":
-            deployment_url = f'http://{osb_ip}:{osb_port}/api/devbox/deploy'
-        elif data['source'] == "UI":
-            deployment_url = f'http://{osb_ip}:{osb_port}/api/ui/devbox/deploy'
-        else:
-            return jsonify({"error": "source value is incorrect"}), 400
-        deployment_response = requests.post(deployment_url, json=data)
-        if deployment_response.status_code == 200:
-            # Prepare the data for insertion into the database, execute the insertion query and commits the transaction. It returns a JSON response containing the request ID (req_id) if the operation is successful
-            deployment_response_data = deployment_response.json()
-            conn, cursor = connect_to_sql_server(server, database, db_username, db_password, db_port)
-            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-            transaction_id = generate_random_string(4)+"-"+generate_random_string(4)+"-"+timestamp+"-"+generate_random_string(4)
-            service_name = "DevBox"
-            service_action = "CREATE"
-            running_status = "running"
-            created_by = data['lan_id']
-            payload = "" if data['source'] == "API" else json.dumps(data)
-            date_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            deployment_id = deployment_response_data['deployment_id']
-            deployment_name = deployment_response_data['deployment_name']
-            source = data['source']
-            deploy_status = json.dumps({})
-            deploy_status_history = json.dumps([])
-            childrens = [
-                            {
-                                "key": 0,
-                                "date": date_time,
-                                "tool_integration": "Aria Automation",
-                                "status": "Running",
-                                "transaction_id" : transaction_id,
-                                "incident": "INC"+str(random.randint(2000, 999999999)),
-                                "no_of_retry": 0
-                            },
-                            {
-                                "key": 1,
-                                "date": date_time,
-                                "tool_integration": "Puppet",
-                                "status": "Running",
-                                "transaction_id" : transaction_id,
-                                "incident": "INC"+str(random.randint(2000, 999999999)),
-                                "no_of_retry": 0
-                            }
-                        ]
-            childrens = json.dumps(childrens)
-            insert_data = ("", transaction_id, service_name, service_action, running_status, created_by, payload, date_time, deployment_id, deployment_name, source, deploy_status, deploy_status_history, childrens)
-            if conn and cursor:
-                query = """
-                            INSERT INTO services (
-                            request_id, 
-                            transaction_id, 
-                            service_name, 
-                            service_action, 
-                            running_status, 
-                            created_by, 
-                            payload, 
-                            date_time, 
-                            deployment_id, 
-                            deployment_name, 
-                            source, 
-                            deploy_status, 
-                            deploy_status_history, 
-                            childrens)
-                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                        """
+#         if method_frame:
+#             # Convert the message body to JSON
+#             message_data = body.decode('utf-8')
+#             data = json.loads(message_data)
+#             # Based on the source, the devbox deployment URL is called. 
+#         if data['source'] == "API":
+#             deployment_url = f'http://{osb_ip}:{osb_port}/api/devbox/deploy'
+#         elif data['source'] == "UI":
+#             deployment_url = f'http://{osb_ip}:{osb_port}/api/ui/devbox/deploy'
+#         else:
+#             return jsonify({"error": "source value is incorrect"}), 400
+#         deployment_response = requests.post(deployment_url, json=data)
+#         if deployment_response.status_code == 200:
+#             # Prepare the data for insertion into the database, execute the insertion query and commits the transaction. It returns a JSON response containing the request ID (req_id) if the operation is successful
+#             deployment_response_data = deployment_response.json()
+#             conn, cursor = connect_to_sql_server(server, database, db_username, db_password, db_port)
+#             timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+#             transaction_id = generate_random_string(4)+"-"+generate_random_string(4)+"-"+timestamp+"-"+generate_random_string(4)
+#             service_name = "DevBox"
+#             service_action = "CREATE"
+#             running_status = "running"
+#             created_by = data['lan_id']
+#             payload = "" if data['source'] == "API" else json.dumps(data)
+#             date_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+#             deployment_id = deployment_response_data['deployment_id']
+#             deployment_name = deployment_response_data['deployment_name']
+#             source = data['source']
+#             deploy_status = json.dumps({})
+#             deploy_status_history = json.dumps([])
+#             childrens = [
+#                             {
+#                                 "key": 0,
+#                                 "date": date_time,
+#                                 "tool_integration": "Aria Automation",
+#                                 "status": "Running",
+#                                 "transaction_id" : transaction_id,
+#                                 "incident": "INC"+str(random.randint(2000, 999999999)),
+#                                 "no_of_retry": 0
+#                             },
+#                             {
+#                                 "key": 1,
+#                                 "date": date_time,
+#                                 "tool_integration": "Puppet",
+#                                 "status": "Running",
+#                                 "transaction_id" : transaction_id,
+#                                 "incident": "INC"+str(random.randint(2000, 999999999)),
+#                                 "no_of_retry": 0
+#                             }
+#                         ]
+#             childrens = json.dumps(childrens)
+#             insert_data = ("", transaction_id, service_name, service_action, running_status, created_by, payload, date_time, deployment_id, deployment_name, source, deploy_status, deploy_status_history, childrens)
+#             if conn and cursor:
+#                 query = """
+#                             INSERT INTO services (
+#                             request_id, 
+#                             transaction_id, 
+#                             service_name, 
+#                             service_action, 
+#                             running_status, 
+#                             created_by, 
+#                             payload, 
+#                             date_time, 
+#                             deployment_id, 
+#                             deployment_name, 
+#                             source, 
+#                             deploy_status, 
+#                             deploy_status_history, 
+#                             childrens)
+#                             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+#                         """
                 
-                # Execute SQL query
-                execute_query_insert(cursor, conn, query, insert_data)
-                #conn.commit()
-                # Close connection
-                close_connection(conn, cursor)
-            response_data = {'message': 'Message received from RabbitMQ'}
-            return jsonify(response_data), 200
-        else:
-            return jsonify({'message': 'No messages in the queue'}), 404
+#                 # Execute SQL query
+#                 execute_query_insert(cursor, conn, query, insert_data)
+#                 #conn.commit()
+#                 # Close connection
+#                 close_connection(conn, cursor)
+#             response_data = {'message': 'Message received from RabbitMQ'}
+#             return jsonify(response_data), 200
+#         else:
+#             return jsonify({'message': 'No messages in the queue'}), 404
 
-    except Exception as e:
-        print(e)
-        return jsonify({'error': str(e)}), 500
+    # except Exception as e:
+    #     print(e)
+    #     return jsonify({'error': str(e)}), 500
 
 ##### Connection to MS SQL Database is established #####
 def connect_to_sql_server(server, database, db_username, db_password, db_port):
