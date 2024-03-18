@@ -9,7 +9,7 @@ app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
+const transactions = require("./transactions.json");
 function readData() {
   //   return fs.readFile("transactions.json", "utf8", function (err, data) {
   //     return data;
@@ -22,9 +22,8 @@ function readData() {
     return err;
   }
 }
-app.get("/", async (req, res) => {
-  let d = await readData();
-  res.send(JSON.parse(d));
+app.get("/api/transactions", async (req, res) => {
+  res.send(transactions);
 });
 
 app.post("/", async (req, res) => {
