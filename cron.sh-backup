@@ -1,7 +1,0 @@
-#!/bin/bash
-
-while true; do
-    curl http://10.45.197.10:5000/api/rabbitmq-transaction
-   # Sleep for 3 seconds
-    sleep 3
-done
